@@ -4,7 +4,8 @@
   "description": "foodbank delivery service",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server",
+    "server": "nodemon server"
   },
   "repository": {
     "type": "git",
@@ -26,5 +27,9 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.5",
     "request": "^2.88.2"
+  },
+  "devDependencies": {
+    "concurrently": "^5.1.0",
+    "nodemon": "^2.0.2"
   }
 }
