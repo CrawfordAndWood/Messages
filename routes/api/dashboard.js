@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
 
-//@route    GET api/users
+//@route    GET api/dashboard
 //@desc     Test route
 //@access   Public
-router.get("/", (req, res) => res.send("User route"));
+router.get("/", (req, res) => res.send("dashboard route"));
 
 module.exports = router;
