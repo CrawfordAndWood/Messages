@@ -11,9 +11,11 @@ const ProfileSchema = new mongoose.Schema({
   region: {
     type: String
   },
-  assignedHouseholds: {
-    type: [String]
-  }
+  assignedHouseholds: [
+    {
+      address: { type: String }
+    }
+  ]
 });
 
 module.exports = Profile = mongoose.model("profile", ProfileSchema);
