@@ -6,9 +6,8 @@ import PropTypes from "prop-types";
 const Landing = ({ isAuthenticated }) => {
   if (isAuthenticated) {
     return <Redirect to="/dashboard" />;
-  } else {
-    return <Redirect to="/login" />;
   }
+  return <div>Welcome to Messages</div>;
 };
 
 Landing.propTypes = {

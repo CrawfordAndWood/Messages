@@ -11,6 +11,18 @@ const ProfileSchema = new mongoose.Schema({
   region: {
     type: String
   },
+  addresslineone: {
+    type: String
+  },
+  addresslinetwo: {
+    type: String
+  },
+  postcode: {
+    type: String
+  },
+  social: {
+    type: String
+  },
   assignedHouseholds: [
     {
       address: { type: String }

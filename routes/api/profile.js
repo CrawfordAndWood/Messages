@@ -33,7 +33,7 @@ router.post(
   [
     auth,
     [
-      check("role", "Role is required")
+      check("postcode", "Postcode is required")
         .not()
         .isEmpty()
     ]
@@ -49,6 +49,10 @@ router.post(
     //Build profile
     const profileFields = {};
     profileFields.user = req.user.id;
+    profileFields.addresslineone = req.body.addresslineone;
+    profileFields.addresslinetwo = req.body.addresslinetwo;
+    profileFields.postcode = req.body.postcode;
+
     if (role) profileFields.role = role;
     try {
       let profile = await Profile.findOne({ user: req.user.id });
@@ -65,6 +69,8 @@ router.post(
       }
 
       profile = new Profile(profileFields);
+      console.log(profileFields);
+      console.log(profile);
 
       await profile.save();
       res.json(profile);
