@@ -1,0 +1,4 @@
+{
+  "mongoURI": "mongodb+srv://liam:B1tch1nn@md-test-m7hg5.azure.mongodb.net/test?retryWrites=true&w=majority",
+  "jwtSecret": "TotalRules"
+}
