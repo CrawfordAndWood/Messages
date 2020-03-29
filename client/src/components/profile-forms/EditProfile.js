@@ -43,11 +43,12 @@ const EditProfile = ({
 
   return (
     <Fragment>
-      <h1>Edit Your Profile</h1>
+      <h2>Edit Your Profile</h2>
       <form onSubmit={e => onSubmit(e)}>
         <div>
           {" "}
           <input
+            className="formInput"
             type="text"
             placeholder="Address Line 1"
             name="addresslineone"
@@ -58,6 +59,7 @@ const EditProfile = ({
         <div>
           {" "}
           <input
+            className="formInput"
             type="text"
             placeholder="Address Line 2"
             name="addresslinetwo"
@@ -68,6 +70,7 @@ const EditProfile = ({
         <div>
           {" "}
           <input
+            className="formInput"
             type="text"
             placeholder="Postcode"
             name="postcode"
@@ -77,6 +80,7 @@ const EditProfile = ({
         </div>
         <div>
           <button
+            className="btn btn-secondary"
             onClick={() => toggleSocialInputs(!displaySocialInputs)}
             type="button"
           >
@@ -87,6 +91,7 @@ const EditProfile = ({
           <Fragment>
             <div>
               <input
+                className="formInput"
                 type="text"
                 placeholder="Social"
                 name="social"
@@ -96,7 +101,9 @@ const EditProfile = ({
             </div>
           </Fragment>
         )}
-        <button type="Submit">Submit</button>
+        <button type="Submit" className="btn btn-primary">
+          Submit
+        </button>
         <Link to="/dashboard">Dashboard</Link>
       </form>
     </Fragment>

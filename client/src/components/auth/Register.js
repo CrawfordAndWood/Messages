@@ -33,11 +33,13 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
 
   return (
     <Fragment>
+      <h2>Register New Account</h2>
       <form className="form" onSubmit={e => onSubmit(e)}>
         <div className="form-group">
           <input
+            className="formInput"
             type="text"
-            placeholder="name"
+            placeholder="Name"
             name="name"
             value={name}
             onChange={e => onChange(e)}
@@ -45,6 +47,7 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
         </div>
         <div className="form-group">
           <input
+            className="formInput"
             type="email"
             placeholder="Email address"
             name="email"
@@ -54,6 +57,7 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
         </div>
         <div className="form-group">
           <input
+            className="formInput"
             type="text"
             placeholder="Postcode"
             name="postcode"
@@ -63,6 +67,7 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
         </div>
         <div className="form-group">
           <input
+            className="formInput"
             type="password"
             placeholder="Password"
             name="password"
@@ -72,6 +77,7 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
         </div>
         <div className="form-group">
           <input
+            className="formInput"
             type="password"
             placeholder="Repeat Password"
             name="password2"
