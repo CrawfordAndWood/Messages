@@ -1,0 +1,76 @@
+@import url("https://fonts.googleapis.com/css?family=Saira+Semi+Condensed|Sanchez|Satisfy|Scada|Scheherazade|Seaweed+Script|Zilla+Slab&display=swap");
+
+$myColor: rgb(131, 12, 12);
+$myColorLight: rgb(131, 62, 62);
+
+$myBlue: rgb(88, 127, 185);
+$myBlueTrim: rgba(206, 203, 236, 0.863);
+$myBlueBackground: rgb(249, 251, 255);
+
+$titlefont: "Sanchez";
+$secondaryfont: "Scada";
+
+h2 {
+  font-family: $titlefont;
+  text-align: center;
+}
+
+.main-body-container {
+  padding: 1em;
+}
+
+.container {
+  background-color: $myBlueBackground;
+  font-family: $secondaryfont;
+  text-align: justify;
+  text-justify: inter-word;
+  font-size: 1.5em;
+  padding: 1em;
+  height: inherit;
+}
+
+.paragraph {
+  padding: 1em;
+}
+
+.btn {
+  border: none;
+  border-radius: 0.1em;
+  color: white;
+  margin-top: 1em;
+  padding: 0.5em;
+  text-align: center;
+  display: inline-block;
+  font-size: 1em;
+  margin-right: 2em;
+}
+
+.btn-primary {
+  background-color: $myBlue;
+}
+
+.btn-secondary {
+  background-color: $myBlueTrim;
+}
+
+.form {
+  margin: 0 auto;
+  width: 20%;
+  border: 0.05em solid $myBlueTrim;
+  padding: 1em;
+}
+
+.formInput {
+  padding: 0.5em;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  border: 2px solid #ccc;
+  -webkit-border-radius: 1px;
+  border-radius: 2px;
+  width: 92%;
+  font-size: 0.8em;
+}
+
+.formInput:focus {
+  border-color: #333;
+}

@@ -21,6 +21,9 @@
   },
   "homepage": "https://github.com/CrawfordAndWood/Messages#readme",
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.28",
+    "@fortawesome/free-solid-svg-icons": "^5.13.0",
+    "@fortawesome/react-fontawesome": "^0.1.9",
     "bcryptjs": "^2.4.3",
     "config": "^3.3.0",
     "express": "^4.17.1",
@@ -29,10 +32,14 @@
     "i": "^0.3.6",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.5",
+    "node-sass": "^4.13.1",
+    "react-fontawesome": "^1.7.1",
+    "react-icons": "^3.9.0",
     "request": "^2.88.2"
   },
   "devDependencies": {
     "concurrently": "^5.1.0",
+    "font-awesome": "^4.7.0",
     "nodemon": "^2.0.2"
   }
 }

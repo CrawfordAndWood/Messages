@@ -18,7 +18,7 @@ const Dashboard = ({
     <Spinner />
   ) : (
     <Fragment>
-      <h1>Dashboard</h1>
+      <h2>Dashboard</h2>
       <p>Welome {user && user.name}</p>
       {profile !== null ? (
         <Fragment>

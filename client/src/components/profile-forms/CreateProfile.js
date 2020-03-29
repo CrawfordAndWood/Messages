@@ -26,11 +26,12 @@ const CreateProfile = ({ createProfile, history }) => {
 
   return (
     <Fragment>
-      <h1>Create Your Profile</h1>
+      <h2>Create Your Profile</h2>
       <form onSubmit={e => onSubmit(e)}>
         <div>
           {" "}
           <input
+            className="formInput"
             type="text"
             placeholder="Address Line 1"
             name="addresslineone"
@@ -41,6 +42,7 @@ const CreateProfile = ({ createProfile, history }) => {
         <div>
           {" "}
           <input
+            className="formInput"
             type="text"
             placeholder="Address Line 2"
             name="addresslinetwo"
@@ -51,6 +53,7 @@ const CreateProfile = ({ createProfile, history }) => {
         <div>
           {" "}
           <input
+            className="formInput"
             type="text"
             placeholder="Postcode"
             name="postcode"
@@ -70,6 +73,7 @@ const CreateProfile = ({ createProfile, history }) => {
           <Fragment>
             <div>
               <input
+                className="formInput"
                 type="text"
                 placeholder="Social"
                 name="social"
@@ -79,7 +83,9 @@ const CreateProfile = ({ createProfile, history }) => {
             </div>
           </Fragment>
         )}
-        <button type="Submit">Submit</button>
+        <button type="Submit" className="btn btn-pimary">
+          Submit
+        </button>
         <Link to="/dashboard">Dashboard</Link>
       </form>
     </Fragment>

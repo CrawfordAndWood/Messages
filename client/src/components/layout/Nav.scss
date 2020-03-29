@@ -1,0 +1,70 @@
+@import url("https://fonts.googleapis.com/css?family=Saira+Semi+Condensed|Sanchez|Satisfy|Scada|Scheherazade|Seaweed+Script|Zilla+Slab&display=swap");
+$myBlue: rgba(65, 115, 189, 0.89);
+$myBlueTrim: rgba(203, 218, 236, 0.863);
+$mrSuperDarkBlueFeet: rgba(15, 8, 41, 0.884);
+
+span {
+  vertical-align: bottom;
+}
+
+.navbar {
+  display: flex;
+  background-color: $myBlue;
+  color: white;
+  border-bottom: $myBlueTrim 0.25em solid;
+  font-size: 1.25em;
+  width: 100%;
+}
+
+.navbar a {
+  color: white;
+  text-decoration: none;
+  vertical-align: bottom;
+}
+
+.navLink {
+  margin-right: 3em;
+  display: flex;
+  font-family: Georgia, "Times New Roman", Times, serif;
+}
+
+.navLink :hover {
+  background-color: $myBlueTrim;
+  border-radius: 0.02em;
+  color: $myBlue;
+}
+.title :hover {
+  background-color: $myBlueTrim;
+  color: $myBlue;
+  padding-bottom: 0.2em;
+  border-radius: 0.05em;
+}
+
+.navLink span {
+  align-self: flex-end;
+  line-height: 1.75em;
+}
+
+svg {
+  margin-right: 0.25em;
+}
+
+$titlefont: "Sanchez";
+$secondaryfont: "Scada";
+
+.title {
+  font-family: $titlefont;
+  font-size: 1.25em;
+  padding-right: 4em;
+  margin-left: 0.5em;
+}
+
+.footer {
+  background-color: $mrSuperDarkBlueFeet;
+  color: rgb(237, 236, 247);
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  padding: 1em;
+}

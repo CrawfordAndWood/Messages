@@ -3,36 +3,65 @@ import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { logout } from "../../actions/auth";
+import FontAwesome from "react-fontawesome";
+import "./Nav.scss";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faTachometerAlt,
+  faSignOutAlt,
+  faUserPlus,
+  faDoorOpen
+} from "@fortawesome/free-solid-svg-icons";
 
 const Navbar = ({ auth: { isAuthenticated, loading }, logout }) => {
   const authLinks = (
-    <ul>
-      <li>
-        <h1>
-          <Link to="/dashboard">Dashboard</Link>
-        </h1>
-      </li>
-      <li>
+    <Fragment>
+      <Link to="/dashboard">
+        <div className="navLink">
+          <span>
+            {" "}
+            <FontAwesomeIcon icon={faTachometerAlt} />
+            Dashboard
+          </span>
+        </div>
+      </Link>
+      <div className="navLink">
         <a onClick={logout} href="#">
-          <i className="fas fa-sign-out-alt"> </i>
-          <span className="hide=sm">Logout</span>
+          <span>
+            {" "}
+            <FontAwesomeIcon icon={faSignOutAlt} />
+            Logout
+          </span>
         </a>
-      </li>
-    </ul>
+      </div>
+    </Fragment>
   );
 
   const guestLinks = (
-    <ul>
-      <li>
-        <Link to="/register">Register</Link>
-      </li>
-      <li>
-        <Link to="/login">Login</Link>
-      </li>
-    </ul>
+    <Fragment>
+      <Link to="/register">
+        <div className="navLink">
+          <span>
+            <FontAwesomeIcon icon={faUserPlus} />
+            Register
+          </span>
+        </div>
+      </Link>
+      <Link to="/login">
+        <div className="navLink">
+          <span>
+            <FontAwesomeIcon icon={faDoorOpen} />
+            Login
+          </span>
+        </div>
+      </Link>
+    </Fragment>
   );
   return (
-    <nav className="navbar bg-light">
+    <nav className="navbar">
+      <div className="title">
+        <Link to="/">Messages</Link>
+      </div>
       {!loading && (
         <Fragment>{isAuthenticated ? authLinks : guestLinks}</Fragment>
       )}
