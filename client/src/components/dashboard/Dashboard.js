@@ -19,7 +19,7 @@ const Dashboard = ({
   ) : (
     <Fragment>
       <h2>Dashboard</h2>
-      <p>Welome {user && user.name}</p>
+      <p>Welcome {user && user.name}, choose an action from below.</p>
       {profile !== null ? (
         <Fragment>
           <DashbordActions />

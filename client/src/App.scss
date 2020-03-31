@@ -26,6 +26,8 @@ h2 {
   text-justify: inter-word;
   padding: 1em;
   height: inherit;
+  margin: 0 auto;
+  width: 50%;
 }
 
 .paragraph {
@@ -53,8 +55,6 @@ h2 {
 }
 
 .form {
-  margin: 0 auto;
-  width: 20%;
   border: 0.05em solid $myBlueTrim;
   padding: 1em;
 }
@@ -92,4 +92,8 @@ h2 {
 .alert-danger {
   background-color: $myColor;
   border: 2px solid palevioletred;
+}
+
+p {
+  font-size: 1.1em;
 }
