@@ -9,6 +9,7 @@ import Dashboard from "./components/dashboard/Dashboard";
 import CreateProfile from "./components/profile-forms/CreateProfile";
 import EditProfile from "./components/profile-forms/EditProfile";
 import Footer from "./components/layout/Footer";
+import NotFound from "./components/layout/NotFound";
 import PrivateRoute from "./components/routing/PrivateRoute";
 //redux
 import { Provider } from "react-redux";
@@ -49,6 +50,7 @@ const App = () => {
                   path="/edit-profile"
                   component={EditProfile}
                 />
+                <Route component={NotFound} />
               </Switch>
             </div>
           </div>
