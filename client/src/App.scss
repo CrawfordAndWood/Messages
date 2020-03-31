@@ -8,7 +8,7 @@ $myBlueTrim: rgba(206, 203, 236, 0.863);
 $myBlueBackground: rgb(249, 251, 255);
 
 $titlefont: "Sanchez";
-$secondaryfont: "Scada";
+$secondaryfont: "Seaweed+Script";
 
 h2 {
   font-family: $titlefont;
@@ -24,9 +24,10 @@ h2 {
   font-family: $secondaryfont;
   text-align: justify;
   text-justify: inter-word;
-  font-size: 1.5em;
   padding: 1em;
   height: inherit;
+  margin: 0 auto;
+  width: 50%;
 }
 
 .paragraph {
@@ -43,8 +44,8 @@ h2 {
   display: inline-block;
   font-size: 1em;
   margin-right: 2em;
+  cursor: pointer;
 }
-
 .btn-primary {
   background-color: $myBlue;
 }
@@ -54,8 +55,6 @@ h2 {
 }
 
 .form {
-  margin: 0 auto;
-  width: 20%;
   border: 0.05em solid $myBlueTrim;
   padding: 1em;
 }
@@ -73,4 +72,28 @@ h2 {
 
 .formInput:focus {
   border-color: #333;
+}
+
+.alert {
+  border-radius: 0.25em;
+  color: white;
+  padding: 0.5em;
+  font-size: 1.15em;
+  display: flex;
+  position: absolute;
+  width: 97.5%;
+}
+
+.alert-success {
+  background-color: green;
+  border: 2px solid lightgreen;
+}
+
+.alert-danger {
+  background-color: $myColor;
+  border: 2px solid palevioletred;
+}
+
+p {
+  font-size: 1.1em;
 }
