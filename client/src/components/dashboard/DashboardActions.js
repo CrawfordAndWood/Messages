@@ -25,8 +25,8 @@ const DashboardActions = () => {
       <Link to="/role">
         <div
           className="action-item"
-          date-tip="Manage Roles"
-          date-type="success"
+          data-tip="Manage Roles"
+          data-type="success"
         >
           <FontAwesomeIcon icon={faTasks} size="lg" />
         </div>
