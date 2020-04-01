@@ -1,7 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserPlus, faAddressCard } from "@fortawesome/free-solid-svg-icons";
+import {
+  faUserPlus,
+  faAddressCard,
+  faTasks
+} from "@fortawesome/free-solid-svg-icons";
 import ReactTooltip from "react-tooltip";
 import "./dashboard.scss";
 
@@ -18,6 +22,15 @@ const DashboardActions = () => {
         <FontAwesomeIcon icon={faUserPlus} size="lg" />
         <Link to="/add-new-user"></Link>
       </div>
+      <Link to="/role">
+        <div
+          className="action-item"
+          date-tip="Manage Roles"
+          date-type="success"
+        >
+          <FontAwesomeIcon icon={faTasks} size="lg" />
+        </div>
+      </Link>
       <ReactTooltip />
     </div>
   );

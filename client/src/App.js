@@ -11,6 +11,7 @@ import EditProfile from "./components/profile-forms/EditProfile";
 import Footer from "./components/layout/Footer";
 import NotFound from "./components/layout/NotFound";
 import PrivateRoute from "./components/routing/PrivateRoute";
+import Role from "./components/role/Role";
 //redux
 import { Provider } from "react-redux";
 import store from "./store";
@@ -50,6 +51,7 @@ const App = () => {
                   path="/edit-profile"
                   component={EditProfile}
                 />
+                <PrivateRoute exact path="/role" component={Role} />
                 <PrivateRoute component={NotFound} />
               </Switch>
             </div>
