@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
-import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
-const NotFound = () => {
+const NotFound = isAuthenticated => {
   return (
     <Fragment>
       <h2>Sorry, Not found</h2>
@@ -9,4 +9,8 @@ const NotFound = () => {
   );
 };
 
-export default NotFound;
+const mapStateToProps = state => ({
+  isAuthenticated: state.auth.isAuthenticated
+});
+
+export default connect(mapStateToProps)(NotFound);

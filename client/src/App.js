@@ -50,7 +50,7 @@ const App = () => {
                   path="/edit-profile"
                   component={EditProfile}
                 />
-                <Route component={NotFound} />
+                <PrivateRoute component={NotFound} />
               </Switch>
             </div>
           </div>

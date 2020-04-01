@@ -95,7 +95,7 @@ export const login = (email, password) => async dispatch => {
 //Logout
 
 export const logout = history => dispatch => {
-  history.push("/login");
   dispatch({ type: CLEAR_PROFILE });
   dispatch({ type: LOGOUT });
+  history.push("/login");
 };
