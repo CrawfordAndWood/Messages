@@ -11,7 +11,7 @@ import {
 //Get current users profile
 export const getRoles = () => async dispatch => {
   try {
-    const res = await axios.get("api/role");
+    const res = await axios.get("api/roles");
     dispatch({ type: GET_ROLES, payload: res.data });
   } catch (error) {
     dispatch({

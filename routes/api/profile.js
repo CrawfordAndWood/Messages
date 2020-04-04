@@ -44,7 +44,7 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { role } = req.body;
+    const { profile } = req.body;
 
     //Build profile
     const profileFields = {};
@@ -53,7 +53,7 @@ router.post(
     profileFields.addresslinetwo = req.body.addresslinetwo;
     profileFields.postcode = req.body.postcode;
 
-    if (role) profileFields.role = role;
+    if (profile) profileFields.profile = profile;
     try {
       let profile = await Profile.findOne({ user: req.user.id });
       if (profile) {

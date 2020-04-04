@@ -3,7 +3,7 @@ const router = express.Router();
 const auth = require("../../middleware/auth");
 const { check, validationResult } = require("express-validator/check");
 
-const Role = require("../../models/Role");
+const Roles = require("../../models/Roles");
 
 //what are some requirements?
 //only a global admin can create and edit sys roles
@@ -14,7 +14,7 @@ const Role = require("../../models/Role");
 //@access   Private - eventually only global admin has option
 router.get("/", auth, async (req, res) => {
   try {
-    const roles = await Role.find({}).populate("role", ["name"]);
+    const roles = await Roles.find();
     res.json(roles);
   } catch (err) {
     console.error(err.messge);
@@ -41,14 +41,15 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { role } = req.body;
-
+    const { name } = req.body;
     //Build role
     const roleFields = {};
-    roleFields.name = req.body.name;
+    roleFields.name = name;
+    console.log("rolen", roleFields);
 
     try {
-      let role = await Role.findOne({ role: req.role.id });
+      let role = await Roles.findOne({ role: name });
+      console.log("rolen", role);
       if (role) {
         role = await Role.findOneAndUpdate(
           { role: req.role.id },
@@ -61,14 +62,14 @@ router.post(
         return res.json(role);
       }
 
-      role = new Profile(roleFields);
-      console.log(roleFields);
-      console.log(role);
+      role = new Roles(roleFields);
+      console.log("fi", roleFields);
+      console.log("ro", role);
 
       await role.save();
       res.json(role);
     } catch (err) {
-      console.error(err.messge);
+      console.error("error me", err);
       res.status(500).send("Server error");
     }
   }

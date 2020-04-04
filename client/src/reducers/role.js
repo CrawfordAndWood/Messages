@@ -32,7 +32,7 @@ export default function(state = initialState, action) {
       return {
         ...state,
         roles: payload,
-        loadig: false
+        loading: false
       };
     case ROLE_ERROR:
       return {

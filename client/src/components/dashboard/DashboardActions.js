@@ -22,7 +22,7 @@ const DashboardActions = () => {
         <FontAwesomeIcon icon={faUserPlus} size="lg" />
         <Link to="/add-new-user"></Link>
       </div>
-      <Link to="/role">
+      <Link to="/roles">
         <div
           className="action-item"
           data-tip="Manage Roles"
