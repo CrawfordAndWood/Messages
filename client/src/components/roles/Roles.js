@@ -11,24 +11,21 @@ import { loadUser } from "../../actions/auth";
 
 const Roles = ({ getRoles, role: { roles, loading } }) => {
   const [roleData, setRoleData] = useState({ roles: [] });
-
+  const [canAdd, setCanAdd] = useState(true);
   useEffect(() => {
     getRoles();
     setRoleData({ roles: roles });
+    console.log("useeffect after del");
   }, [loading]);
-
-  let counter = 0;
 
   const onAddRow = (e) => {
     e.preventDefault();
-    if (counter === 1) {
-      console.log("error");
-      return false;
+
+    if (canAdd) {
+      setCanAdd(false);
+      roleData.roles.push({ _id: 0, name: "" });
+      setRoleData({ ...roleData });
     }
-    counter += 1;
-    const role = { _id: 0, name: "" };
-    roleData.roles.push(role);
-    setRoleData({ ...roleData });
   };
 
   return (
@@ -50,7 +47,7 @@ const Roles = ({ getRoles, role: { roles, loading } }) => {
             <tbody className="roles">
               {roleData.roles.length > 0 ? (
                 roleData.roles.map((role) => (
-                  <RoleItem key={role._id} role={role} />
+                  <RoleItem key={role._id} role={role} canAdd={canAdd} />
                 ))
               ) : (
                 <tr>
