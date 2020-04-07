@@ -12,7 +12,7 @@ const User = require("../../models/User");
 router.get("/me", auth, async (req, res) => {
   try {
     const profile = await Profile.findOne({
-      user: req.user.id
+      user: req.user.id,
     }).populate("user", ["name", "avatar"]);
     if (!profile) {
       return res.status(400).json({ msg: "No User Profile exists" });
@@ -30,14 +30,7 @@ router.get("/me", auth, async (req, res) => {
 
 router.post(
   "/",
-  [
-    auth,
-    [
-      check("postcode", "Postcode is required")
-        .not()
-        .isEmpty()
-    ]
-  ],
+  [auth, [check("postcode", "Postcode is required").not().isEmpty()]],
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -61,7 +54,7 @@ router.post(
           { user: req.user.id },
           { $set: profileFields },
           {
-            new: true
+            new: true,
           }
         );
 
@@ -101,7 +94,7 @@ router.get("/user/:user_id", async (req, res) => {
   try {
     console.log("finding user", req.params.user_id);
     const profile = await Profile.findOne({
-      user: req.params.user_id
+      user: req.params.user_id,
     }).populate("user", ["name", "avatar"]);
 
     if (!profile) return res.status(400).json({ msg: "no profile for user" });
@@ -115,7 +108,7 @@ router.get("/user/:user_id", async (req, res) => {
 
 //@route  DELETE api/profile
 //@desc   Delete profile, user & posts
-//@access Provate
+//@access Private
 router.delete("/", auth, async (req, res) => {
   try {
     //remove profile
@@ -136,14 +129,7 @@ router.delete("/", auth, async (req, res) => {
 //@access Private
 router.get(
   "/households",
-  [
-    auth,
-    [
-      check("address", "Address is required")
-        .not()
-        .isEmpty()
-    ]
-  ],
+  [auth, [check("address", "Address is required").not().isEmpty()]],
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -175,7 +161,7 @@ router.delete("/households/:household_id", auth, async (req, res) => {
     const profile = await Profile.findOne({ user: req.user.id });
 
     const removeIndex = profile.assignedHouseholds
-      .map(item => item.id)
+      .map((item) => item.id)
       .indexOf(req.params.household_id);
 
     profile.assignedHouseholds.splice(removeIndex, 1);
