@@ -5,15 +5,16 @@ import "./role.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { connect } from "react-redux";
-import { createRole, deleteRole } from "../../actions/role";
+import { createRole, deleteRole, getRoles } from "../../actions/role";
 
-const RoleItem = ({ role, createRole, deleteRole }) => {
+const RoleItem = ({ role, createRole, deleteRole, getRoles }) => {
   const [rowData, setRowData] = useState({
     id: role._id,
     name: role.name,
   });
-
+  const [canAdd, setCanAdd] = useState(true);
   const { name, id } = rowData;
+  const [deleted, setDeleted] = useState(false);
 
   const onChange = (e) => {
     setRowData({ ...rowData, [e.target.name]: e.target.value });
@@ -21,15 +22,24 @@ const RoleItem = ({ role, createRole, deleteRole }) => {
 
   const onSaveRole = (e) => {
     e.preventDefault();
-    createRole(rowData, role._id !== 0);
+
+    if (canAdd) {
+      createRole(rowData, role._id !== 0);
+      setRowData({ ...rowData, _id: role._id });
+    }
+
+    if (role._id === 0) {
+      setCanAdd(false);
+    }
   };
 
   const onDeleteRole = (e) => {
     e.preventDefault();
     deleteRole(rowData);
+    setDeleted(true);
   };
 
-  return (
+  return deleted ? null : (
     <tr>
       <td>
         <input
@@ -55,4 +65,4 @@ RoleItem.propTypes = {
   role: PropTypes.object.isRequired,
 };
 
-export default connect(null, { createRole, deleteRole })(RoleItem);
+export default connect(null, { createRole, deleteRole, getRoles })(RoleItem);

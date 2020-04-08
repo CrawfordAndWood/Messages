@@ -33,9 +33,10 @@ export const createRole = (formData, edit = false) => async (dispatch) => {
         "Content-Type": "application/json",
       },
     };
-    const res = await axios.post("/api/roles", formData, config);
 
+    const res = await axios.post("/api/roles", formData, config);
     dispatch({ type: GET_ROLES, payload: res.data });
+    console.log("payloard returned", res.data);
 
     dispatch(setAlert(edit ? "Role Updated" : "Role Created", "success"));
   } catch (error) {
@@ -63,6 +64,9 @@ export const deleteRole = (rowData) => async (dispatch) => {
       },
     };
     const res = await axios.delete(`/api/roles/${rowData.id}`, config);
+    //08/04 trying to delete role but it's
+    console.log("action res.data", res.data);
+    dispatch({ type: DELETE_ROLE, payload: res.data });
     dispatch({ type: GET_ROLES, payload: res.data });
     dispatch(setAlert("Role Deleted", "success"));
   } catch (error) {

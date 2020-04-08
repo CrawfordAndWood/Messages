@@ -7,7 +7,6 @@ import { getRoles } from "../../actions/role";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import "./role.scss";
-import { loadUser } from "../../actions/auth";
 
 const Roles = ({ getRoles, role: { roles, loading } }) => {
   const [roleData, setRoleData] = useState({ roles: [] });
@@ -15,12 +14,10 @@ const Roles = ({ getRoles, role: { roles, loading } }) => {
   useEffect(() => {
     getRoles();
     setRoleData({ roles: roles });
-    console.log("useeffect after del");
   }, [loading]);
 
   const onAddRow = (e) => {
     e.preventDefault();
-
     if (canAdd) {
       setCanAdd(false);
       roleData.roles.push({ _id: 0, name: "" });
@@ -46,9 +43,12 @@ const Roles = ({ getRoles, role: { roles, loading } }) => {
             </thead>
             <tbody className="roles">
               {roleData.roles.length > 0 ? (
-                roleData.roles.map((role) => (
-                  <RoleItem key={role._id} role={role} canAdd={canAdd} />
-                ))
+                roleData.roles.map(
+                  (role) => (
+                    console.log(role._id, role.name),
+                    (<RoleItem key={role._id} role={role} />)
+                  )
+                )
               ) : (
                 <tr>
                   <td>No Roles found...</td>

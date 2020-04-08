@@ -40,17 +40,13 @@ router.post(
     const roleFields = {};
     roleFields.name = name;
 
-    console.log("rolebod", req.body);
-
     try {
       if (id === 0) {
         roleFields.id = uuid.v4();
-        console.log("rf", roleFields);
         let role = new Roles(roleFields);
         await role.save();
       } else {
         let role = await Roles.findOne({ _id: id });
-        console.log("role with same id found", role);
         if (role) {
           role = await Roles.findOneAndUpdate(
             { _id: id },
@@ -60,10 +56,10 @@ router.post(
             }
           );
         }
-
-        const roles = await Roles.find();
-        return res.json(roles);
       }
+      const roles = await Roles.find();
+
+      return res.json(roles);
     } catch (err) {
       console.error("error me", err);
       res.status(500).send("Server error");
@@ -81,6 +77,8 @@ router.delete("/:id", auth, async (req, res) => {
     await Roles.findOneAndRemove({ _id: id });
 
     const roles = await Roles.find();
+    console.log("worked", roles);
+
     return res.json(roles);
   } catch (err) {
     console.error(err.message);
