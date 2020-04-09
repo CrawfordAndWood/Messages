@@ -5,16 +5,14 @@ import "./role.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { connect } from "react-redux";
-import { createRole, deleteRole, getRoles } from "../../actions/role";
+import { createRole, deleteRole } from "../../actions/role";
 
-const RoleItem = ({ role, createRole, deleteRole, getRoles }) => {
+const RoleItem = ({ role, createRole, deleteRole }) => {
   const [rowData, setRowData] = useState({
     id: role._id,
     name: role.name,
   });
-  const [canAdd, setCanAdd] = useState(true);
   const { name, id } = rowData;
-  const [deleted, setDeleted] = useState(false);
 
   const onChange = (e) => {
     setRowData({ ...rowData, [e.target.name]: e.target.value });
@@ -22,24 +20,11 @@ const RoleItem = ({ role, createRole, deleteRole, getRoles }) => {
 
   const onSaveRole = (e) => {
     e.preventDefault();
-
-    if (canAdd) {
-      createRole(rowData, role._id !== 0);
-      setRowData({ ...rowData, _id: role._id });
-    }
-
-    if (role._id === 0) {
-      setCanAdd(false);
-    }
+    createRole(rowData, role._id !== 0);
+    setRowData({ ...rowData, _id: role._id });
   };
 
-  const onDeleteRole = (e) => {
-    e.preventDefault();
-    deleteRole(rowData);
-    setDeleted(true);
-  };
-
-  return deleted ? null : (
+  return (
     <tr>
       <td>
         <input
@@ -54,7 +39,7 @@ const RoleItem = ({ role, createRole, deleteRole, getRoles }) => {
       <td className="role-table-save" onClick={(e) => onSaveRole(e)}>
         <FontAwesomeIcon icon={faCheckCircle} />
       </td>
-      <td className="role-table-delete" onClick={(e) => onDeleteRole(e)}>
+      <td className="role-table-delete" onClick={() => deleteRole(rowData)}>
         <FontAwesomeIcon icon={faTrash} />
       </td>
     </tr>
@@ -65,4 +50,4 @@ RoleItem.propTypes = {
   role: PropTypes.object.isRequired,
 };
 
-export default connect(null, { createRole, deleteRole, getRoles })(RoleItem);
+export default connect(null, { createRole, deleteRole })(RoleItem);

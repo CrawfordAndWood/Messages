@@ -64,9 +64,11 @@ export const deleteRole = (rowData) => async (dispatch) => {
         "Content-Type": "application/json",
       },
     };
-    const res = await axios.delete(`/api/roles/${rowData.id}`, config);
-    dispatch({ type: GET_ROLES, payload: res.data });
-    dispatch(setAlert("Role Deleted", "success"));
+    if (rowData.id !== 0) {
+      const res = await axios.delete(`/api/roles/${rowData.id}`, config);
+      dispatch(setAlert("Role Deleted", "success"));
+    }
+    dispatch(getRoles());
   } catch (error) {
     dispatch({
       type: ROLE_ERROR,

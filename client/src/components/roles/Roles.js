@@ -8,7 +8,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import "./role.scss";
 
-const Roles = ({ getRoles, addEmptyRole, role: { roles, loading } }) => {
+const Roles = ({
+  getRoles,
+  addEmptyRole,
+  role: { roles, loading, canAddNewRole },
+}) => {
   useEffect(() => {
     getRoles();
   }, []);
@@ -23,7 +27,12 @@ const Roles = ({ getRoles, addEmptyRole, role: { roles, loading } }) => {
             <thead>
               <tr>
                 <th>Name</th>
-                <th className="role-table-save" onClick={() => addEmptyRole()}>
+                <th
+                  className={
+                    canAddNewRole ? "role-table-save" : "role-table-disabled"
+                  }
+                  onClick={() => (canAddNewRole ? addEmptyRole() : null)}
+                >
                   <FontAwesomeIcon icon={faPlusCircle} size="lg" />
                 </th>
                 <th />
