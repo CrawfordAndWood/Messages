@@ -7,6 +7,7 @@ import {
   UPDATE_ROLE,
   ROLE_ERROR,
   DELETE_ROLE,
+  ADD_EMPTY_ROW,
 } from "./types";
 
 //Get current users profile
@@ -64,9 +65,6 @@ export const deleteRole = (rowData) => async (dispatch) => {
       },
     };
     const res = await axios.delete(`/api/roles/${rowData.id}`, config);
-    //08/04 trying to delete role but it's
-    console.log("action res.data", res.data);
-    dispatch({ type: DELETE_ROLE, payload: res.data });
     dispatch({ type: GET_ROLES, payload: res.data });
     dispatch(setAlert("Role Deleted", "success"));
   } catch (error) {
@@ -78,4 +76,9 @@ export const deleteRole = (rowData) => async (dispatch) => {
       },
     });
   }
+};
+
+export const addEmptyRole = () => (dispatch) => {
+  const newRole = { _id: 0, name: "" };
+  dispatch({ type: ADD_EMPTY_ROW, payload: newRole });
 };

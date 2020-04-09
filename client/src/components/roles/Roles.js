@@ -3,27 +3,15 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import Spinner from "../layout/Spinner";
 import RoleItem from "./RoleItem";
-import { getRoles } from "../../actions/role";
+import { getRoles, addEmptyRole } from "../../actions/role";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import "./role.scss";
 
-const Roles = ({ getRoles, role: { roles, loading } }) => {
-  const [roleData, setRoleData] = useState({ roles: [] });
-  const [canAdd, setCanAdd] = useState(true);
+const Roles = ({ getRoles, addEmptyRole, role: { roles, loading } }) => {
   useEffect(() => {
     getRoles();
-    setRoleData({ roles: roles });
-  }, [loading]);
-
-  const onAddRow = (e) => {
-    e.preventDefault();
-    if (canAdd) {
-      setCanAdd(false);
-      roleData.roles.push({ _id: 0, name: "" });
-      setRoleData({ ...roleData });
-    }
-  };
+  }, []);
 
   return (
     <Fragment>
@@ -35,20 +23,15 @@ const Roles = ({ getRoles, role: { roles, loading } }) => {
             <thead>
               <tr>
                 <th>Name</th>
-                <th className="role-table-save" onClick={(e) => onAddRow(e)}>
+                <th className="role-table-save" onClick={() => addEmptyRole()}>
                   <FontAwesomeIcon icon={faPlusCircle} size="lg" />
                 </th>
                 <th />
               </tr>
             </thead>
             <tbody className="roles">
-              {roleData.roles.length > 0 ? (
-                roleData.roles.map(
-                  (role) => (
-                    console.log(role._id, role.name),
-                    (<RoleItem key={role._id} role={role} />)
-                  )
-                )
+              {roles.length > 0 ? (
+                roles.map((role) => <RoleItem key={role._id} role={role} />)
               ) : (
                 <tr>
                   <td>No Roles found...</td>
@@ -72,4 +55,4 @@ const mapStateToProps = (state) => ({
   roles: state.roles,
 });
 
-export default connect(mapStateToProps, { getRoles })(Roles);
+export default connect(mapStateToProps, { getRoles, addEmptyRole })(Roles);

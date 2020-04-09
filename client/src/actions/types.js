@@ -17,3 +17,4 @@ export const GET_ROLE = "GET_ROLE";
 export const GET_ROLES = "GET_ROLES";
 export const DELETE_ROLE = "DELETE_ROLE";
 export const ROLE_ERROR = "ROLE_ERROR";
+export const ADD_EMPTY_ROW = "ADD_EMPTY_ROW";
