@@ -2,6 +2,13 @@
 $myBlue: rgba(65, 115, 189, 0.89);
 $myBlueTrim: rgba(203, 218, 236, 0.863);
 $mrSuperDarkBlueFeet: rgba(15, 8, 41, 0.884);
+$mybabground: rgba(255, 255, 255, 0.986);
+$myColor: rgb(131, 12, 12);
+$myColorLight: rgb(131, 62, 62);
+
+// body {
+//   background-color: $mybabground;
+// }
 
 span {
   vertical-align: bottom;
@@ -9,7 +16,7 @@ span {
 
 .navbar {
   display: flex;
-  background-color: $myBlue;
+  background-color: $myColorLight;
   color: white;
   border-bottom: $myBlueTrim 0.25em solid;
   font-size: 1.25em;

@@ -8,13 +8,13 @@ const EditProfile = ({
   profile: { profile, loading },
   createProfile,
   getCurrentProfile,
-  history
+  history,
 }) => {
   const [formData, setFormData] = useState({
     addresslineone: "",
     addresslinetwo: "",
     postcode: "",
-    social: ""
+    social: "",
   });
 
   const [displaySocialInputs, toggleSocialInputs] = useState(false);
@@ -27,16 +27,16 @@ const EditProfile = ({
       addresslinetwo:
         loading || !profile.addresslinetwo ? "" : profile.addresslinetwo,
       postcode: loading || !profile.postcode ? "" : profile.postcode,
-      social: loading || !profile.social ? "" : profile.social
+      social: loading || !profile.social ? "" : profile.social,
     });
   }, [loading]);
 
   const { addresslineone, addresslinetwo, postcode, social } = formData;
 
-  const onChange = e =>
+  const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const onSubmit = e => {
+  const onSubmit = (e) => {
     e.preventDefault();
     createProfile(formData, history, true);
   };
@@ -44,7 +44,7 @@ const EditProfile = ({
   return (
     <Fragment>
       <h2>Edit Your Profile</h2>
-      <form onSubmit={e => onSubmit(e)}>
+      <form onSubmit={(e) => onSubmit(e)}>
         <div>
           {" "}
           <input
@@ -53,7 +53,7 @@ const EditProfile = ({
             placeholder="Address Line 1"
             name="addresslineone"
             value={addresslineone}
-            onChange={e => onChange(e)}
+            onChange={(e) => onChange(e)}
           />
         </div>
         <div>
@@ -64,7 +64,7 @@ const EditProfile = ({
             placeholder="Address Line 2"
             name="addresslinetwo"
             value={addresslinetwo}
-            onChange={e => onChange(e)}
+            onChange={(e) => onChange(e)}
           />
         </div>
         <div>
@@ -75,7 +75,7 @@ const EditProfile = ({
             placeholder="Postcode"
             name="postcode"
             value={postcode}
-            onChange={e => onChange(e)}
+            onChange={(e) => onChange(e)}
           />
         </div>
         <div>
@@ -96,7 +96,7 @@ const EditProfile = ({
                 placeholder="Social"
                 name="social"
                 value={social}
-                onChange={e => onChange(e)}
+                onChange={(e) => onChange(e)}
               />
             </div>
           </Fragment>
@@ -113,11 +113,11 @@ const EditProfile = ({
 EditProfile.propTypes = {
   createProfile: PropTypes.func.isRequired,
   getCurrentProfile: PropTypes.func.isRequired,
-  profile: PropTypes.object.isRequired
+  profile: PropTypes.object.isRequired,
 };
 
-const mapStateToProps = state => ({
-  profile: state.profile
+const mapStateToProps = (state) => ({
+  profile: state.profile,
 });
 
 export default connect(mapStateToProps, { createProfile, getCurrentProfile })(

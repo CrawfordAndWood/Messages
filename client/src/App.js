@@ -9,7 +9,9 @@ import Dashboard from "./components/dashboard/Dashboard";
 import CreateProfile from "./components/profile-forms/CreateProfile";
 import EditProfile from "./components/profile-forms/EditProfile";
 import Footer from "./components/layout/Footer";
+import NotFound from "./components/layout/NotFound";
 import PrivateRoute from "./components/routing/PrivateRoute";
+import Roles from "./components/roles/Roles";
 //redux
 import { Provider } from "react-redux";
 import store from "./store";
@@ -49,6 +51,8 @@ const App = () => {
                   path="/edit-profile"
                   component={EditProfile}
                 />
+                <PrivateRoute exact path="/roles" component={Roles} />
+                <PrivateRoute component={NotFound} />
               </Switch>
             </div>
           </div>
