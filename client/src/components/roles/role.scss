@@ -39,3 +39,8 @@ table tr:nth-child(even) td {
   border-radius: 2em;
   float: right;
 }
+
+.role-table-editing svg {
+  cursor: pointer;
+  color: blue;
+}

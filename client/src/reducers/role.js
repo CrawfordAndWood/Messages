@@ -15,7 +15,8 @@ const initialState = {
   loading: true,
   error: {},
   canAddNewRole: true,
-  sortOrder: -1,
+  sortDescending: true,
+  sortColumn: "name",
 };
 export default function (state = initialState, action) {
   const { type, payload } = action;
@@ -45,7 +46,9 @@ export default function (state = initialState, action) {
     case GET_ROLES:
       return {
         ...state,
-        roles: payload,
+        roles: payload
+          .slice()
+          .sort(sortTableColumn(state.sortColumn, state.sortDescending)),
         loading: false,
         canAddNewRole: true,
       };
@@ -59,7 +62,11 @@ export default function (state = initialState, action) {
       return {
         ...state,
         loading: false,
-        roles: state.roles.slice().sort(sortTableColumn(payload)),
+        roles: state.roles
+          .slice()
+          .sort(sortTableColumn(payload, !state.sortDescending)),
+        sortColumn: payload,
+        sortDescending: !state.sortDescending,
       };
     default:
       return state;

@@ -1,4 +1,7 @@
-export const sortTableColumn = (columnName) => {
-  const sortByKey = (key) => (a, b) => (a[key] > b[key] ? 1 : -1);
+export const sortTableColumn = (columnName, sortDescending) => {
+  const sortByKey = sortDescending
+    ? (key) => (a, b) => (a[key] > b[key] ? 1 : -1)
+    : (key) => (a, b) => (a[key] < b[key] ? 1 : -1);
+
   return sortByKey(columnName);
 };

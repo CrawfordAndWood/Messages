@@ -16,9 +16,10 @@ const Roles = ({
   getRoles,
   addEmptyRole,
   sortbyName,
-  role: { roles, loading, canAddNewRole },
+  role: { roles, loading, canAddNewRole, sortDescending },
 }) => {
   useEffect(() => {
+    console.log("smort", sortDescending);
     getRoles();
   }, []);
 
@@ -35,7 +36,9 @@ const Roles = ({
                   Name
                   <FontAwesomeIcon
                     className="table-sort-icon"
-                    icon={faChevronCircleDown}
+                    icon={
+                      sortDescending ? faChevronCircleDown : faChevronCircleUp
+                    }
                     size="lg"
                   />
                 </th>
