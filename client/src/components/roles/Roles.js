@@ -3,14 +3,19 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import Spinner from "../layout/Spinner";
 import RoleItem from "./RoleItem";
-import { getRoles, addEmptyRole } from "../../actions/role";
+import { getRoles, addEmptyRole, sortbyName } from "../../actions/role";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  faPlusCircle,
+  faChevronCircleDown,
+  faChevronCircleUp,
+} from "@fortawesome/free-solid-svg-icons";
 import "./role.scss";
 
 const Roles = ({
   getRoles,
   addEmptyRole,
+  sortbyName,
   role: { roles, loading, canAddNewRole },
 }) => {
   useEffect(() => {
@@ -26,7 +31,14 @@ const Roles = ({
           <table className="table">
             <thead>
               <tr>
-                <th>Name</th>
+                <th onClick={() => sortbyName()}>
+                  Name
+                  <FontAwesomeIcon
+                    className="table-sort-icon"
+                    icon={faChevronCircleDown}
+                    size="lg"
+                  />
+                </th>
                 <th
                   className={
                     canAddNewRole ? "role-table-save" : "role-table-disabled"
@@ -64,4 +76,6 @@ const mapStateToProps = (state) => ({
   roles: state.roles,
 });
 
-export default connect(mapStateToProps, { getRoles, addEmptyRole })(Roles);
+export default connect(mapStateToProps, { getRoles, addEmptyRole, sortbyName })(
+  Roles
+);

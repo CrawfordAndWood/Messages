@@ -1,3 +1,4 @@
+import { sortTableColumn } from "../utils/tableFunctions";
 import {
   ADD_ROLE,
   ROLE_ERROR,
@@ -5,6 +6,7 @@ import {
   GET_ROLES,
   UPDATE_ROLE,
   ADD_EMPTY_ROW,
+  SORT_BY_NAME,
 } from "../actions/types";
 
 const initialState = {
@@ -13,6 +15,7 @@ const initialState = {
   loading: true,
   error: {},
   canAddNewRole: true,
+  sortOrder: -1,
 };
 export default function (state = initialState, action) {
   const { type, payload } = action;
@@ -51,7 +54,12 @@ export default function (state = initialState, action) {
         ...state,
         error: payload,
         loading: false,
-        canAddNewRole: true,
+      };
+    case SORT_BY_NAME:
+      return {
+        ...state,
+        loading: false,
+        roles: state.roles.slice().sort(sortTableColumn(payload)),
       };
     default:
       return state;
