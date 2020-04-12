@@ -18,3 +18,7 @@ export const GET_ROLES = "GET_ROLES";
 export const DELETE_ROLE = "DELETE_ROLE";
 export const ROLE_ERROR = "ROLE_ERROR";
 export const ADD_EMPTY_ROW = "ADD_EMPTY_ROW";
+export const SORT_BY_NAME = "SORT_BY_NAME";
+export const SEARCH = "SEARCH";
+export const RESET_SEARCH = "RESET_SEARCH";
+export const LOAD = "LOAD";

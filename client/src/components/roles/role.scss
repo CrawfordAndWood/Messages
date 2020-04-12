@@ -20,9 +20,27 @@ table tr:nth-child(even) td {
 }
 
 .role-table-save svg {
+  cursor: pointer;
   color: green;
 }
 
+.role-table-disabled svg {
+  color: grey;
+}
 .role-table-delete svg {
+  cursor: pointer;
   color: red;
+}
+
+.table-sort-icon {
+  cursor: pointer;
+  background-color: gray;
+  border: 0.05em solid gray;
+  border-radius: 2em;
+  float: right;
+}
+
+.role-table-editing svg {
+  cursor: pointer;
+  color: blue;
 }

@@ -8,6 +8,10 @@ import {
   ROLE_ERROR,
   DELETE_ROLE,
   ADD_EMPTY_ROW,
+  SORT_BY_NAME,
+  SEARCH,
+  RESET_SEARCH,
+  LOAD,
 } from "./types";
 
 //Get current users profile
@@ -37,8 +41,6 @@ export const createRole = (formData, edit = false) => async (dispatch) => {
 
     const res = await axios.post("/api/roles", formData, config);
     dispatch({ type: GET_ROLES, payload: res.data });
-    console.log("payloard returned", res.data);
-
     dispatch(setAlert(edit ? "Role Updated" : "Role Created", "success"));
   } catch (error) {
     const errors = error.response.data.errors;
@@ -64,9 +66,11 @@ export const deleteRole = (rowData) => async (dispatch) => {
         "Content-Type": "application/json",
       },
     };
-    const res = await axios.delete(`/api/roles/${rowData.id}`, config);
-    dispatch({ type: GET_ROLES, payload: res.data });
-    dispatch(setAlert("Role Deleted", "success"));
+    if (rowData.id !== "temp") {
+      await axios.delete(`/api/roles/${rowData.id}`, config);
+      dispatch(setAlert("Role Deleted", "success"));
+    }
+    dispatch(getRoles());
   } catch (error) {
     dispatch({
       type: ROLE_ERROR,
@@ -79,6 +83,23 @@ export const deleteRole = (rowData) => async (dispatch) => {
 };
 
 export const addEmptyRole = () => (dispatch) => {
-  const newRole = { _id: 0, name: "" };
+  const newRole = { _id: "temp", name: "" };
   dispatch({ type: ADD_EMPTY_ROW, payload: newRole });
+};
+
+export const sortbyName = () => (dispatch) => {
+  dispatch({ type: SORT_BY_NAME, payload: "name" });
+};
+
+export const search = (searchTerm) => (dispatch) => {
+  dispatch({ type: LOAD });
+  dispatch(getRoles()).then(() =>
+    dispatch({ type: SEARCH, payload: searchTerm.term.toLowerCase() })
+  );
+};
+
+export const resetSearch = () => (dispatch) => {
+  dispatch({ type: LOAD });
+  dispatch(getRoles());
+  dispatch({ type: RESET_SEARCH });
 };
