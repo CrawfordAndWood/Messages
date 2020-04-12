@@ -25,6 +25,7 @@ const RoleItem = ({ role, createRole, deleteRole }) => {
 
   const onSaveRole = (e) => {
     e.preventDefault();
+    if (role.name == rowData.name) return false;
     createRole(rowData, role._id !== 0);
     setRowData({ ...rowData, _id: role._id, editing: false });
   };
