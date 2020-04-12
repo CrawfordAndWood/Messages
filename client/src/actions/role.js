@@ -9,6 +9,9 @@ import {
   DELETE_ROLE,
   ADD_EMPTY_ROW,
   SORT_BY_NAME,
+  SEARCH,
+  RESET_SEARCH,
+  LOAD,
 } from "./types";
 
 //Get current users profile
@@ -38,12 +41,9 @@ export const createRole = (formData, edit = false) => async (dispatch) => {
 
     const res = await axios.post("/api/roles", formData, config);
     dispatch({ type: GET_ROLES, payload: res.data });
-    console.log("payloard returned", res.data);
-
     dispatch(setAlert(edit ? "Role Updated" : "Role Created", "success"));
   } catch (error) {
     const errors = error.response.data.errors;
-    console.log("err", errors);
     if (errors) {
       errors.forEach((error) => dispatch(setAlert(error.msg, "danger")));
     }
@@ -67,7 +67,7 @@ export const deleteRole = (rowData) => async (dispatch) => {
       },
     };
     if (rowData.id !== "temp") {
-      const res = await axios.delete(`/api/roles/${rowData.id}`, config);
+      await axios.delete(`/api/roles/${rowData.id}`, config);
       dispatch(setAlert("Role Deleted", "success"));
     }
     dispatch(getRoles());
@@ -88,13 +88,18 @@ export const addEmptyRole = () => (dispatch) => {
 };
 
 export const sortbyName = () => (dispatch) => {
-  //payload will be defined in action or util as const sortByKey = key => (a, b) => a[key] > b[key] ? 1 : -1 and then const payload = sortByKey(name)
-  //I could need a disctionary for sortorder -1 up 0 null 1 down
-  //below is sort descending function. This should be available to the reducer.
-  //can I keep a dictionary of functions? const sortingFn = -1, 0, 1
-  //There should always be a default sort on a table?
-  // const sortByKey = (key) => (a, b) => (a[key] > b[key] ? 1 : -1);
-  // const sortOrderInstruction = sortByKey("name");
-
   dispatch({ type: SORT_BY_NAME, payload: "name" });
+};
+
+export const search = (searchTerm) => (dispatch) => {
+  dispatch({ type: LOAD });
+  dispatch(getRoles()).then(() =>
+    dispatch({ type: SEARCH, payload: searchTerm.term.toLowerCase() })
+  );
+};
+
+export const resetSearch = () => (dispatch) => {
+  dispatch({ type: LOAD });
+  dispatch(getRoles());
+  dispatch({ type: RESET_SEARCH });
 };

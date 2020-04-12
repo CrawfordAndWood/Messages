@@ -7,7 +7,11 @@ import {
   UPDATE_ROLE,
   ADD_EMPTY_ROW,
   SORT_BY_NAME,
+  SEARCH,
+  RESET_SEARCH,
+  LOAD,
 } from "../actions/types";
+import { JsonWebTokenError } from "jsonwebtoken";
 
 const initialState = {
   role: null,
@@ -17,6 +21,7 @@ const initialState = {
   canAddNewRole: true,
   sortDescending: true,
   sortColumn: "name",
+  searchTerm: "",
 };
 export default function (state = initialState, action) {
   const { type, payload } = action;
@@ -52,6 +57,21 @@ export default function (state = initialState, action) {
         loading: false,
         canAddNewRole: true,
       };
+    case SEARCH:
+      return {
+        ...state,
+        searchTerm: payload,
+        //You shouldn't just auto filter cos you'll have it jump the fuckl about
+        //instead do some results found shit
+        roles: state.roles.filter((r) =>
+          r.name.toLowerCase().includes(payload)
+        ),
+      };
+    case RESET_SEARCH:
+      return {
+        ...state,
+        searchTerm: null,
+      };
     case ROLE_ERROR:
       return {
         ...state,
@@ -67,6 +87,11 @@ export default function (state = initialState, action) {
           .sort(sortTableColumn(payload, !state.sortDescending)),
         sortColumn: payload,
         sortDescending: !state.sortDescending,
+      };
+    case LOAD:
+      return {
+        ...state,
+        loading: true,
       };
     default:
       return state;

@@ -3,7 +3,13 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import Spinner from "../layout/Spinner";
 import RoleItem from "./RoleItem";
-import { getRoles, addEmptyRole, sortbyName } from "../../actions/role";
+import {
+  getRoles,
+  addEmptyRole,
+  sortbyName,
+  search,
+  resetSearch,
+} from "../../actions/role";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPlusCircle,
@@ -16,12 +22,39 @@ const Roles = ({
   getRoles,
   addEmptyRole,
   sortbyName,
-  role: { roles, loading, canAddNewRole, sortDescending },
+  search,
+  resetSearch,
+  role: { roles, loading, canAddNewRole, sortDescending, searchTerm },
 }) => {
+  let searching = false;
+
+  const [searchInput, setsearchInput] = useState({
+    term: searchTerm,
+  });
+  const { term } = searchInput;
   useEffect(() => {
-    console.log("smort", sortDescending);
     getRoles();
   }, []);
+
+  const onSearchChange = (e) => {
+    setsearchInput({
+      ...searchInput,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    search(searchInput);
+  };
+
+  const onReset = () => {
+    setsearchInput({
+      ...searchInput,
+      term: "",
+    });
+    resetSearch();
+  };
 
   return (
     <Fragment>
@@ -29,12 +62,29 @@ const Roles = ({
         <Spinner />
       ) : (
         <Fragment>
+          <div>
+            <form onSubmit={(e) => onSubmit(e)}>
+              <input
+                className="formInput"
+                type="text"
+                placeholder="Search Roles"
+                name="term"
+                value={term}
+                onChange={(e) => onSearchChange(e)}
+              />
+              <button type="submit">Search</button>
+              <button type="button" onClick={() => onReset()}>
+                Reset
+              </button>
+            </form>
+          </div>
           <table className="table">
             <thead>
               <tr>
-                <th onClick={() => sortbyName()}>
+                <th>
                   Name
                   <FontAwesomeIcon
+                    onClick={() => sortbyName()}
                     className="table-sort-icon"
                     icon={
                       sortDescending ? faChevronCircleDown : faChevronCircleUp
@@ -55,7 +105,16 @@ const Roles = ({
             </thead>
             <tbody className="roles">
               {roles.length > 0 ? (
-                roles.map((role) => <RoleItem key={role._id} role={role} />)
+                <Fragment>
+                  {roles.map((role) => (
+                    <RoleItem key={role._id} role={role} />
+                  ))}
+                  <tr>
+                    <td>
+                      <small>Paging</small>
+                    </td>
+                  </tr>
+                </Fragment>
               ) : (
                 <tr>
                   <td>No Roles found...</td>
@@ -76,9 +135,12 @@ Roles.propTypes = {
 
 const mapStateToProps = (state) => ({
   role: state.role,
-  roles: state.roles,
 });
 
-export default connect(mapStateToProps, { getRoles, addEmptyRole, sortbyName })(
-  Roles
-);
+export default connect(mapStateToProps, {
+  getRoles,
+  addEmptyRole,
+  sortbyName,
+  search,
+  resetSearch,
+})(Roles);
