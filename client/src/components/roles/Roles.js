@@ -15,6 +15,7 @@ import {
   faPlusCircle,
   faChevronCircleDown,
   faChevronCircleUp,
+  faSearch,
 } from "@fortawesome/free-solid-svg-icons";
 import "./role.scss";
 
@@ -58,26 +59,33 @@ const Roles = ({
 
   return (
     <Fragment>
+      <table className="search-table">
+        <tr>
+          <td className="search-bar">
+            <input
+              className="searchInput"
+              type="text"
+              placeholder="Search Roles"
+              name="term"
+              value={term}
+              onChange={(e) => onSearchChange(e)}
+            />
+            <FontAwesomeIcon
+              icon={faSearch}
+              size="lg"
+              onClick={(e) => onSubmit(e)}
+            />
+            <a href="#" onClick={() => onReset()}>
+              clear search{" "}
+            </a>
+          </td>
+        </tr>
+      </table>
+
       {loading ? (
         <Spinner />
       ) : (
         <Fragment>
-          <div>
-            <form onSubmit={(e) => onSubmit(e)}>
-              <input
-                className="formInput"
-                type="text"
-                placeholder="Search Roles"
-                name="term"
-                value={term}
-                onChange={(e) => onSearchChange(e)}
-              />
-              <button type="submit">Search</button>
-              <button type="button" onClick={() => onReset()}>
-                Reset
-              </button>
-            </form>
-          </div>
           <table className="table">
             <thead>
               <tr>

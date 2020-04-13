@@ -1,12 +1,8 @@
 import axios from "axios";
 import { setAlert } from "./alert";
 import {
-  GET_ROLE,
   GET_ROLES,
-  ADD_ROLE,
-  UPDATE_ROLE,
   ROLE_ERROR,
-  DELETE_ROLE,
   ADD_EMPTY_ROW,
   SORT_BY_NAME,
   SEARCH,

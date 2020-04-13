@@ -2,6 +2,7 @@
 
 $myColor: rgb(131, 12, 12);
 $myColorLight: rgb(131, 62, 62);
+$mrSuperDarkBlueFeet: rgba(15, 8, 41, 0.884);
 
 $myBlue: rgb(88, 127, 185);
 $myBlueTrim: rgba(206, 203, 236, 0.863);
@@ -10,24 +11,63 @@ $myBlueBackground: rgb(249, 251, 255);
 $titlefont: "Sanchez";
 $secondaryfont: "Seaweed+Script";
 
+html,
+body,
+#root {
+  margin: 0 auto;
+  height: 100%;
+}
+
+.alert {
+  border-radius: 0.25em;
+  color: white;
+  padding: 0.5em;
+  font-size: 1.15em;
+  display: flex;
+  position: fixed;
+  width: 100%;
+  top: 0;
+}
+
+.alert-success {
+  background-color: green;
+  border: 2px solid lightgreen;
+}
+
+.alert-danger {
+  background-color: $myColor;
+  border: 2px solid palevioletred;
+}
+
+.content {
+  margin: 0 auto;
+  padding-top: 2em;
+  padding-bottom: 5em;
+  width: 60%;
+}
+
+.app-container {
+  background-color: $myBlueBackground;
+  font-family: $secondaryfont;
+  min-height: 100%;
+  position: relative;
+  text-align: justify;
+  text-justify: inter-word;
+}
+
+.footer {
+  background-color: $mrSuperDarkBlueFeet;
+  bottom: 0;
+  color: rgb(237, 236, 247);
+  // left: 0;
+  height: 2em;
+  position: absolute;
+  width: 100%;
+}
+
 h2 {
   font-family: $titlefont;
   text-align: center;
-}
-
-.main-body-container {
-  padding: 1em;
-}
-
-.container {
-  background-color: $myBlueBackground;
-  font-family: $secondaryfont;
-  text-align: justify;
-  text-justify: inter-word;
-  padding: 1em;
-  height: inherit;
-  margin: 0 auto;
-  width: 50%;
 }
 
 .paragraph {
@@ -72,26 +112,6 @@ h2 {
 
 .formInput:focus {
   border-color: #333;
-}
-
-.alert {
-  border-radius: 0.25em;
-  color: white;
-  padding: 0.5em;
-  font-size: 1.15em;
-  display: flex;
-  position: absolute;
-  width: 97.5%;
-}
-
-.alert-success {
-  background-color: green;
-  border: 2px solid lightgreen;
-}
-
-.alert-danger {
-  background-color: $myColor;
-  border: 2px solid palevioletred;
 }
 
 p {

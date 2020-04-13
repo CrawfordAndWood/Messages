@@ -32,10 +32,10 @@ const App = () => {
     <Provider store={store}>
       <Router>
         <Fragment>
-          <Navbar />
-          <Alert />
-          <div className="main-body-container">
-            <div className="container">
+          <div className="app-container">
+            <Navbar />
+            <Alert />
+            <div className="content">
               <Route exact path="/" component={Landing} />
               <Switch>
                 <Route exact path="/register" component={Register} />
@@ -55,8 +55,8 @@ const App = () => {
                 <PrivateRoute component={NotFound} />
               </Switch>
             </div>
+            <Footer />
           </div>
-          <Footer />
         </Fragment>
       </Router>
     </Provider>
