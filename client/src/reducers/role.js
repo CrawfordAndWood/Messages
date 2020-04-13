@@ -29,7 +29,7 @@ export default function (state = initialState, action) {
     case ADD_EMPTY_ROW:
       return {
         ...state,
-        roles: [...state.roles, payload],
+        roles: [payload, ...state.roles],
         loading: false,
         canAddNewRole: false,
       };

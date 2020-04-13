@@ -12,9 +12,12 @@ span {
 
 .navbar {
   display: flex;
+  position: fixed;
   background-color: $myColor;
   border-bottom: $myBlueTrim 0.25em solid;
   font-size: 1.25em;
+  width: 100%;
+  height: 2em;
 }
 
 .navbar a {
