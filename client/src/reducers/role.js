@@ -42,6 +42,7 @@ export default function (state = initialState, action) {
         roles: [...state.roles, payload],
         loading: false,
         canAddNewRole: true,
+        searchTerm: null,
       };
     case GET_ROLE:
       return {
