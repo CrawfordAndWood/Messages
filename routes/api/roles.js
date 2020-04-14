@@ -23,6 +23,22 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
+//@route    GET api/role/search
+//@desc     Filter roles
+//@access   Private - eventually only global admin has option
+router.get("/:term", auth, async (req, res) => {
+  try {
+    let searchName = new RegExp(req.params.term, "i");
+    const roles = await Roles.find({
+      name: searchName,
+    });
+    res.json(roles);
+  } catch (err) {
+    console.error(err.messge);
+    res.status(500).send("Server Error");
+  }
+});
+
 //@route    POST api/role/
 //@desc     Add new role
 //@access   Private - eventually only global admin has option

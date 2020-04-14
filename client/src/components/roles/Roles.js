@@ -60,26 +60,31 @@ const Roles = ({
   return (
     <Fragment>
       <table className="search-table">
-        <tr>
-          <td className="search-bar">
-            <input
-              className="searchInput"
-              type="text"
-              placeholder="Search Roles"
-              name="term"
-              value={term}
-              onChange={(e) => onSearchChange(e)}
-            />
-            <FontAwesomeIcon
-              icon={faSearch}
-              size="lg"
-              onClick={(e) => onSubmit(e)}
-            />
-            <a href="#" onClick={() => onReset()}>
-              clear search{" "}
-            </a>
-          </td>
-        </tr>
+        <tbody>
+          <tr>
+            <td className="search-bar">
+              <input
+                autoComplete="off"
+                className="searchInput"
+                type="text"
+                placeholder="Search Roles"
+                name="term"
+                value={term}
+                onChange={(e) => onSearchChange(e)}
+              />
+              <FontAwesomeIcon
+                icon={faSearch}
+                size="lg"
+                onClick={(e) => onSubmit(e)}
+              />
+            </td>
+            <td>
+              <a href="#" onClick={() => onReset()}>
+                clear search{" "}
+              </a>
+            </td>
+          </tr>
+        </tbody>
       </table>
 
       {loading ? (

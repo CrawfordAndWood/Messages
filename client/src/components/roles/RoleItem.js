@@ -34,7 +34,7 @@ const RoleItem = ({ role, createRole, deleteRole }) => {
     <tr>
       <td>
         <input
-          className="formInput"
+          className="roleInput"
           type="text"
           placeholder="Role Name"
           name="name"

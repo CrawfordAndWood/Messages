@@ -87,11 +87,22 @@ export const sortbyName = () => (dispatch) => {
   dispatch({ type: SORT_BY_NAME, payload: "name" });
 };
 
-export const search = (searchTerm) => (dispatch) => {
-  dispatch({ type: LOAD });
-  dispatch(getRoles()).then(() =>
-    dispatch({ type: SEARCH, payload: searchTerm.term.toLowerCase() })
-  );
+export const search = (searchTerm) => async (dispatch) => {
+  try {
+    dispatch({ type: LOAD });
+    dispatch({ type: SEARCH });
+    const res = await axios.get(`/api/roles/${searchTerm.term}`);
+    dispatch({ type: GET_ROLES, payload: res.data });
+  } catch (error) {
+    console.log("error,", error);
+    dispatch({
+      type: ROLE_ERROR,
+      payload: {
+        msg: error.response.statusText,
+        status: error.response.status,
+      },
+    });
+  }
 };
 
 export const resetSearch = () => (dispatch) => {

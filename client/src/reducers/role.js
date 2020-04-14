@@ -22,6 +22,8 @@ const initialState = {
   sortDescending: true,
   sortColumn: "name",
   searchTerm: "",
+  resultPerPage: 10,
+  pageNumber: 0,
 };
 export default function (state = initialState, action) {
   const { type, payload } = action;
@@ -61,11 +63,6 @@ export default function (state = initialState, action) {
       return {
         ...state,
         searchTerm: payload,
-        //You shouldn't just auto filter cos you'll have it jump the fuckl about
-        //instead do some results found shit
-        roles: state.roles.filter((r) =>
-          r.name.toLowerCase().includes(payload)
-        ),
       };
     case RESET_SEARCH:
       return {
