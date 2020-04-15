@@ -66,7 +66,7 @@ const Roles = ({
 
   const onSubmit = (e) => {
     e.preventDefault();
-    search(searchInput, limit, page);
+    search(searchInput, page, limit);
   };
 
   const onReset = () => {

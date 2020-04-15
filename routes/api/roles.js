@@ -6,6 +6,28 @@ const uuid = require("uuid");
 
 const Roles = require("../../models/Roles");
 
+router.get("/count", auth, async (req, res) => {
+  try {
+    console.log("y");
+    const roleCount = await Roles.countDocuments();
+    res.json(roleCount);
+  } catch (err) {
+    console.error(err.messge);
+    res.status(500).send("Server Error");
+  }
+});
+
+router.get("/count/:term", auth, async (req, res) => {
+  try {
+    const sanitisedName = new RegExp(req.params.term, "i");
+    const roleCount = await Roles.countDocuments({ name: sanitisedName });
+    res.json(roleCount);
+  } catch (err) {
+    console.error(err.messge);
+    res.status(500).send("Server Error");
+  }
+});
+
 //@route    GET api/role/
 //@desc     Get role management page
 //@access   Private - eventually only global admin has option
@@ -13,7 +35,8 @@ router.get("/:page/:limit", auth, async (req, res) => {
   try {
     //how do I tell it the limit if it's the last page?
     //if
-    console.log(Number(req.params.page - 1) * Number(req.params.limit));
+    console.log("paging");
+    console.log(req.params);
     const roles = await Roles.find()
       .skip(Number(req.params.page - 1) * Number(req.params.limit))
       .limit(Number(req.params.limit));
@@ -29,6 +52,7 @@ router.get("/:page/:limit", auth, async (req, res) => {
 //@access   Private - eventually only global admin has option
 router.get("/:term/:page/:limit", auth, async (req, res) => {
   try {
+    console.log("searching");
     let searchName = new RegExp(req.params.term, "i");
     const roles = await Roles.find({
       name: searchName,
@@ -36,16 +60,6 @@ router.get("/:term/:page/:limit", auth, async (req, res) => {
       .skip(Number(req.params.page - 1) * Number(req.params.page))
       .limit(Number(req.params.limit));
     res.json(roles);
-  } catch (err) {
-    console.error(err.messge);
-    res.status(500).send("Server Error");
-  }
-});
-
-router.get("/count", auth, async (req, res) => {
-  try {
-    const roleCount = await Roles.countDocuments();
-    res.json(roleCount);
   } catch (err) {
     console.error(err.messge);
     res.status(500).send("Server Error");
