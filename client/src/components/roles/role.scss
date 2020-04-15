@@ -4,15 +4,36 @@ $myBlue: rgb(88, 127, 185);
 }
 
 .roles-paging td {
-  width: 5em;
+  height: 2em;
 }
 
 .roles-paging input {
   width: 2em;
 }
 
-.roles-paging svg {
+.pager-active svg {
+  cursor: pointer;
   color: $myBlue;
+}
+
+.pager-inactive svg {
+  color: grey;
+}
+
+.pager-padder {
+  width: 15%;
+}
+
+.pager {
+  width: 5%;
+}
+
+.pager-counter {
+  width: 20%;
+}
+
+.limit-updater {
+  width: 20%;
 }
 
 .roleInput {

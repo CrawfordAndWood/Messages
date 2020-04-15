@@ -24,3 +24,6 @@ export const RESET_SEARCH = "RESET_SEARCH";
 export const LOAD = "LOAD";
 export const UPDATE_PAGE = "UPDATE_PAGE";
 export const UPDATE_LIMIT = "UPDATE_LIMIT";
+export const ROLE_COUNT = "ROLE_COUNT";
+export const INCREMENT_COUNT = "INCREMENT_COUNT";
+export const DECREMENT_COUNT = "DECREMENT_COUNT";

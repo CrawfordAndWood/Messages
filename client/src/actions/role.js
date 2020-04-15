@@ -10,12 +10,28 @@ import {
   LOAD,
   UPDATE_LIMIT,
   UPDATE_PAGE,
+  ROLE_COUNT,
+  INCREMENT_COUNT,
+  DECREMENT_COUNT,
 } from "./types";
 
+export const countRoles = () => async (dispatch) => {
+  try {
+    const res = await axios.get(`api/roles/count`);
+    dispatch({ type: ROLE_COUNT, payload: res.data });
+  } catch (error) {
+    dispatch({
+      type: ROLE_ERROR,
+      payload: {
+        msg: error.response.statusText,
+        status: error.response.status,
+      },
+    });
+  }
+};
+
 //Get current users profile
-export const getRoles = (page = 1, limit = 10, search = null) => async (
-  dispatch
-) => {
+export const getRoles = (page = 1, limit = 10) => async (dispatch) => {
   try {
     //this needs to take in currentPage and limit
     //if currentpage and limit are not null then
@@ -33,7 +49,12 @@ export const getRoles = (page = 1, limit = 10, search = null) => async (
 };
 
 // Create or update role
-export const createRole = (formData, edit = false) => async (dispatch) => {
+export const createRole = (
+  formData,
+  page = 1,
+  limit = 10,
+  edit = false
+) => async (dispatch) => {
   try {
     const config = {
       headers: {
@@ -41,9 +62,16 @@ export const createRole = (formData, edit = false) => async (dispatch) => {
       },
     };
 
-    const res = await axios.post("/api/roles", formData, config);
-    dispatch({ type: GET_ROLES, payload: res.data });
-    dispatch(setAlert(edit ? "Role Updated" : "Role Created", "success"));
+    const res = await axios.post(
+      `/api/roles/${page}/${limit}`,
+      formData,
+      config
+    );
+    await dispatch({ type: GET_ROLES, payload: res.data });
+    await dispatch(setAlert(edit ? "Role Updated" : "Role Created", "success"));
+    if (!edit) {
+      dispatch({ type: INCREMENT_COUNT });
+    }
   } catch (error) {
     const errors = error.response.data.errors;
     if (errors) {
@@ -71,6 +99,7 @@ export const deleteRole = (rowData) => async (dispatch) => {
     if (rowData.id !== "temp") {
       await axios.delete(`/api/roles/${rowData.id}`, config);
       dispatch(setAlert("Role Deleted", "success"));
+      dispatch({ type: DECREMENT_COUNT });
     }
     dispatch(getRoles());
   } catch (error) {
@@ -95,7 +124,6 @@ export const sortbyName = () => (dispatch) => {
 
 export const search = (searchTerm, limit, page) => async (dispatch) => {
   try {
-    console.log(searchTerm);
     dispatch({ type: LOAD });
     dispatch({ type: SEARCH });
     const res = await axios.get(
@@ -103,7 +131,6 @@ export const search = (searchTerm, limit, page) => async (dispatch) => {
     );
     dispatch({ type: GET_ROLES, payload: res.data });
   } catch (error) {
-    console.log("error,", error);
     dispatch({
       type: ROLE_ERROR,
       payload: {
@@ -122,13 +149,13 @@ export const resetSearch = () => (dispatch) => {
 
 export const updateLimit = (newLimit) => (dispatch) => {
   //set the roles per page
+  dispatch(getRoles(1, newLimit));
   dispatch({ type: UPDATE_LIMIT, payload: newLimit });
   //then we need to get the no.roles we want. It should be the search function
   //dispatch(getRoles(pageNo = ))
 };
 
 export const updatePage = (page, limit) => (dispatch) => {
-  console.log("pageno act", page, limit);
   dispatch(getRoles(page, limit));
   dispatch({ type: UPDATE_PAGE, payload: page });
 };

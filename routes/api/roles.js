@@ -11,7 +11,6 @@ const Roles = require("../../models/Roles");
 //@access   Private - eventually only global admin has option
 router.get("/:page/:limit", auth, async (req, res) => {
   try {
-    console.log("hit api", req.params);
     //how do I tell it the limit if it's the last page?
     //if
     console.log(Number(req.params.page - 1) * Number(req.params.limit));
@@ -43,15 +42,24 @@ router.get("/:term/:page/:limit", auth, async (req, res) => {
   }
 });
 
+router.get("/count", auth, async (req, res) => {
+  try {
+    const roleCount = await Roles.countDocuments();
+    res.json(roleCount);
+  } catch (err) {
+    console.error(err.messge);
+    res.status(500).send("Server Error");
+  }
+});
+
 //@route    POST api/role/
 //@desc     Add new role
 //@access   Private - eventually only global admin has option
 router.post(
-  "/",
+  "/:page/:limit",
   [auth, [check("name", "Name is required").not().isEmpty()]],
   async (req, res) => {
     const errors = validationResult(req);
-    console.log("errors", errors);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
@@ -75,7 +83,9 @@ router.post(
         roleFields.id = uuid.v4();
         let role = new Roles(roleFields);
         await role.save();
-        const roles = await Roles.find();
+        const roles = await Roles.find()
+          .skip(Number(req.params.page - 1) * Number(req.params.page))
+          .limit(Number(req.params.limit));
         return res.json(roles);
       }
 
@@ -90,7 +100,9 @@ router.post(
           }
         );
       }
-      const roles = await Roles.find();
+      const roles = await Roles.find()
+        .skip(Number(req.params.page - 1) * Number(req.params.page))
+        .limit(Number(req.params.limit));
       return res.json(roles);
     } catch (err) {
       console.error("error me", err);

@@ -12,6 +12,9 @@ import {
   LOAD,
   UPDATE_PAGE,
   UPDATE_LIMIT,
+  ROLE_COUNT,
+  INCREMENT_COUNT,
+  DECREMENT_COUNT,
 } from "../actions/types";
 import { JsonWebTokenError } from "jsonwebtoken";
 
@@ -26,6 +29,7 @@ const initialState = {
   searchTerm: "",
   limit: 10,
   page: 1,
+  roleCount: 0,
 };
 export default function (state = initialState, action) {
   const { type, payload } = action;
@@ -61,6 +65,11 @@ export default function (state = initialState, action) {
           .sort(sortTableColumn(state.sortColumn, state.sortDescending)),
         loading: false,
         canAddNewRole: true,
+      };
+    case ROLE_COUNT:
+      return {
+        ...state,
+        roleCount: payload,
       };
     case SEARCH:
       return {
@@ -102,6 +111,16 @@ export default function (state = initialState, action) {
       return {
         ...state,
         page: payload,
+      };
+    case INCREMENT_COUNT:
+      return {
+        ...state,
+        roleCount: state.roleCount + 1,
+      };
+    case DECREMENT_COUNT:
+      return {
+        ...state,
+        roleCount: state.roleCount - 1,
       };
     default:
       return state;

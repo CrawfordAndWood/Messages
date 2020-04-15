@@ -11,6 +11,7 @@ import {
   resetSearch,
   updateLimit,
   updatePage,
+  countRoles,
 } from "../../actions/role";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -33,6 +34,7 @@ const Roles = ({
   resetSearch,
   updateLimit,
   updatePage,
+  countRoles,
   role: {
     roles,
     loading,
@@ -41,15 +43,17 @@ const Roles = ({
     searchTerm,
     limit,
     page,
+    roleCount,
   },
 }) => {
-  let searching = false;
-
   const [searchInput, setsearchInput] = useState({
     term: searchTerm,
+    limit: limit,
+    page: page,
   });
   const { term } = searchInput;
   useEffect(() => {
+    countRoles();
     getRoles();
   }, []);
 
@@ -74,7 +78,7 @@ const Roles = ({
   };
 
   const onSetPage = (location) => {
-    if (location < 1 || location > Math.ceil(roles.length / roles.limit)) {
+    if (location < 1 || location > Math.ceil(roleCount / limit)) {
       return false;
     }
     updatePage(location, limit);
@@ -161,21 +165,50 @@ const Roles = ({
           <table className="table roles-paging">
             <tbody>
               <tr>
-                <td></td>
-                <td onClick={() => onSetPage(1)}>
+                <td className="pager-padder"></td>
+                <td
+                  className={
+                    page === 1 ? "pager pager-inactive" : "pager pager-active"
+                  }
+                  onClick={() => onSetPage(1)}
+                >
                   <FontAwesomeIcon icon={faChevronCircleLeft} />
                 </td>
-                <td onClick={() => onSetPage(page - 1)}>
+                <td
+                  className={
+                    page === 1 ? "pager pager-inactive" : "pager pager-active"
+                  }
+                  onClick={() => onSetPage(page - 1)}
+                >
                   <FontAwesomeIcon icon={faChevronLeft} />
                 </td>
-                <td>1 - 10 of 99</td>
-                <td onClick={() => onSetPage(page + 1)}>
+                <td className="pager-counter">
+                  {page * limit - limit + 1} -{" "}
+                  {page * limit > roleCount ? roleCount : page * limit} of{" "}
+                  {roleCount}
+                </td>
+                <td
+                  className={
+                    page >= Math.ceil(roleCount / limit)
+                      ? "pager pager-inactive"
+                      : "pager pager-active"
+                  }
+                  onClick={() => onSetPage(page + 1)}
+                >
                   <FontAwesomeIcon icon={faChevronRight} />
                 </td>
-                <td onClick={() => onSetPage(Math.ceil(roles.length / limit))}>
+                <td
+                  className={
+                    page >= Math.ceil(roleCount / limit)
+                      ? "pager pager-inactive"
+                      : "pager pager-active"
+                  }
+                  onClick={() => onSetPage(Math.ceil(roleCount / limit))}
+                >
                   <FontAwesomeIcon icon={faChevronCircleRight} />
                 </td>
-                <td>
+                <td className="limit-updater">
+                  <small>Showing:</small>
                   <select
                     id="cars"
                     onChange={(e) => onUpdateLimit(e)}
@@ -184,7 +217,8 @@ const Roles = ({
                     <option value="10">10</option>
                     <option value="20">20</option>
                     <option value="50">50</option>
-                  </select>
+                  </select>{" "}
+                  <small>per page</small>
                 </td>
               </tr>
             </tbody>
@@ -212,4 +246,5 @@ export default connect(mapStateToProps, {
   resetSearch,
   updateLimit,
   updatePage,
+  countRoles,
 })(Roles);
