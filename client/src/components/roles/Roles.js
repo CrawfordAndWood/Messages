@@ -208,7 +208,7 @@ const Roles = ({
                   <FontAwesomeIcon icon={faChevronCircleRight} />
                 </td>
                 <td className="limit-updater">
-                  <small>Showing:</small>
+                  <small>Showing: </small>
                   <select
                     id="cars"
                     onChange={(e) => onUpdateLimit(e)}

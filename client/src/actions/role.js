@@ -130,6 +130,7 @@ export const search = (searchTerm, limit, page) => async (dispatch) => {
       `/api/roles/${searchTerm.term}/${page}/${limit}`
     );
     dispatch({ type: GET_ROLES, payload: res.data });
+    dispatch({ type: ROLE_COUNT, payload: res.data.length });
   } catch (error) {
     dispatch({
       type: ROLE_ERROR,
