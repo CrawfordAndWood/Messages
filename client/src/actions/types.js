@@ -22,3 +22,5 @@ export const SORT_BY_NAME = "SORT_BY_NAME";
 export const SEARCH = "SEARCH";
 export const RESET_SEARCH = "RESET_SEARCH";
 export const LOAD = "LOAD";
+export const UPDATE_PAGE = "UPDATE_PAGE";
+export const UPDATE_LIMIT = "UPDATE_LIMIT";

@@ -8,12 +8,18 @@ import {
   SEARCH,
   RESET_SEARCH,
   LOAD,
+  UPDATE_LIMIT,
+  UPDATE_PAGE,
 } from "./types";
 
 //Get current users profile
-export const getRoles = () => async (dispatch) => {
+export const getRoles = (page = 1, limit = 10, search = null) => async (
+  dispatch
+) => {
   try {
-    const res = await axios.get("api/roles");
+    //this needs to take in currentPage and limit
+    //if currentpage and limit are not null then
+    const res = await axios.get(`api/roles/${page}/${limit}`);
     dispatch({ type: GET_ROLES, payload: res.data });
   } catch (error) {
     dispatch({
@@ -87,11 +93,14 @@ export const sortbyName = () => (dispatch) => {
   dispatch({ type: SORT_BY_NAME, payload: "name" });
 };
 
-export const search = (searchTerm) => async (dispatch) => {
+export const search = (searchTerm, limit, page) => async (dispatch) => {
   try {
+    console.log(searchTerm);
     dispatch({ type: LOAD });
     dispatch({ type: SEARCH });
-    const res = await axios.get(`/api/roles/${searchTerm.term}`);
+    const res = await axios.get(
+      `/api/roles/${searchTerm.term}/${page}/${limit}`
+    );
     dispatch({ type: GET_ROLES, payload: res.data });
   } catch (error) {
     console.log("error,", error);
@@ -109,4 +118,17 @@ export const resetSearch = () => (dispatch) => {
   dispatch({ type: LOAD });
   dispatch(getRoles());
   dispatch({ type: RESET_SEARCH });
+};
+
+export const updateLimit = (newLimit) => (dispatch) => {
+  //set the roles per page
+  dispatch({ type: UPDATE_LIMIT, payload: newLimit });
+  //then we need to get the no.roles we want. It should be the search function
+  //dispatch(getRoles(pageNo = ))
+};
+
+export const updatePage = (page, limit) => (dispatch) => {
+  console.log("pageno act", page, limit);
+  dispatch(getRoles(page, limit));
+  dispatch({ type: UPDATE_PAGE, payload: page });
 };

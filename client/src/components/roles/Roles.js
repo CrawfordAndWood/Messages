@@ -9,6 +9,8 @@ import {
   sortbyName,
   search,
   resetSearch,
+  updateLimit,
+  updatePage,
 } from "../../actions/role";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -16,6 +18,10 @@ import {
   faChevronCircleDown,
   faChevronCircleUp,
   faSearch,
+  faChevronLeft,
+  faChevronRight,
+  faChevronCircleLeft,
+  faChevronCircleRight,
 } from "@fortawesome/free-solid-svg-icons";
 import "./role.scss";
 
@@ -25,7 +31,17 @@ const Roles = ({
   sortbyName,
   search,
   resetSearch,
-  role: { roles, loading, canAddNewRole, sortDescending, searchTerm },
+  updateLimit,
+  updatePage,
+  role: {
+    roles,
+    loading,
+    canAddNewRole,
+    sortDescending,
+    searchTerm,
+    limit,
+    page,
+  },
 }) => {
   let searching = false;
 
@@ -46,7 +62,7 @@ const Roles = ({
 
   const onSubmit = (e) => {
     e.preventDefault();
-    search(searchInput);
+    search(searchInput, limit, page);
   };
 
   const onReset = () => {
@@ -55,6 +71,18 @@ const Roles = ({
       term: "",
     });
     resetSearch();
+  };
+
+  const onSetPage = (location) => {
+    if (location < 1 || location > Math.ceil(roles.length / roles.limit)) {
+      return false;
+    }
+    updatePage(location, limit);
+  };
+
+  const onUpdateLimit = (e) => {
+    e.preventDefault();
+    updateLimit(e.target.value);
   };
 
   return (
@@ -122,17 +150,43 @@ const Roles = ({
                   {roles.map((role) => (
                     <RoleItem key={role._id} role={role} />
                   ))}
-                  <tr>
-                    <td>
-                      <small>Paging</small>
-                    </td>
-                  </tr>
                 </Fragment>
               ) : (
                 <tr>
                   <td>No Roles found...</td>
                 </tr>
               )}
+            </tbody>
+          </table>
+          <table className="table roles-paging">
+            <tbody>
+              <tr>
+                <td></td>
+                <td onClick={() => onSetPage(1)}>
+                  <FontAwesomeIcon icon={faChevronCircleLeft} />
+                </td>
+                <td onClick={() => onSetPage(page - 1)}>
+                  <FontAwesomeIcon icon={faChevronLeft} />
+                </td>
+                <td>1 - 10 of 99</td>
+                <td onClick={() => onSetPage(page + 1)}>
+                  <FontAwesomeIcon icon={faChevronRight} />
+                </td>
+                <td onClick={() => onSetPage(Math.ceil(roles.length / limit))}>
+                  <FontAwesomeIcon icon={faChevronCircleRight} />
+                </td>
+                <td>
+                  <select
+                    id="cars"
+                    onChange={(e) => onUpdateLimit(e)}
+                    selected={limit}
+                  >
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                  </select>
+                </td>
+              </tr>
             </tbody>
           </table>
         </Fragment>
@@ -156,4 +210,6 @@ export default connect(mapStateToProps, {
   sortbyName,
   search,
   resetSearch,
+  updateLimit,
+  updatePage,
 })(Roles);

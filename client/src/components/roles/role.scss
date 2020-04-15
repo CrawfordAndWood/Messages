@@ -1,5 +1,20 @@
 $myBlue: rgb(88, 127, 185);
 
+.roles-paging {
+}
+
+.roles-paging td {
+  width: 5em;
+}
+
+.roles-paging input {
+  width: 2em;
+}
+
+.roles-paging svg {
+  color: $myBlue;
+}
+
 .roleInput {
   padding: 0.2em;
   margin-top: 0.1em;
@@ -12,10 +27,8 @@ $myBlue: rgb(88, 127, 185);
 }
 
 .search-bar {
-  padding-right: 1em;
   padding-left: 1em;
-
-  width: 45%;
+  width: 50%;
   border: 2px solid gray;
   border-radius: 1em;
 }

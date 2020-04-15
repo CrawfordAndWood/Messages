@@ -10,6 +10,8 @@ import {
   SEARCH,
   RESET_SEARCH,
   LOAD,
+  UPDATE_PAGE,
+  UPDATE_LIMIT,
 } from "../actions/types";
 import { JsonWebTokenError } from "jsonwebtoken";
 
@@ -22,8 +24,8 @@ const initialState = {
   sortDescending: true,
   sortColumn: "name",
   searchTerm: "",
-  resultPerPage: 10,
-  pageNumber: 0,
+  limit: 10,
+  page: 1,
 };
 export default function (state = initialState, action) {
   const { type, payload } = action;
@@ -68,7 +70,7 @@ export default function (state = initialState, action) {
     case RESET_SEARCH:
       return {
         ...state,
-        searchTerm: null,
+        searchTerm: "",
       };
     case ROLE_ERROR:
       return {
@@ -90,6 +92,16 @@ export default function (state = initialState, action) {
       return {
         ...state,
         loading: true,
+      };
+    case UPDATE_LIMIT:
+      return {
+        ...state,
+        limit: payload,
+      };
+    case UPDATE_PAGE:
+      return {
+        ...state,
+        page: payload,
       };
     default:
       return state;
