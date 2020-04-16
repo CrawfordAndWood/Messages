@@ -17,10 +17,7 @@ import {
 
 export const countRoles = (searchTerm = "") => async (dispatch) => {
   try {
-    const res =
-      searchTerm === ""
-        ? await axios.get(`api/roles/count`)
-        : await axios.get(`api/roles/count/${searchTerm}`);
+    const res = await axios.get(`api/roles/count/${searchTerm}`);
     dispatch({ type: ROLE_COUNT, payload: res.data });
   } catch (error) {
     dispatch({
@@ -36,8 +33,6 @@ export const countRoles = (searchTerm = "") => async (dispatch) => {
 //Get current users profile
 export const getRoles = (page = 1, limit = 10) => async (dispatch) => {
   try {
-    //this needs to take in currentPage and limit
-    //if currentpage and limit are not null then
     const res = await axios.get(`api/roles/${page}/${limit}`);
     dispatch({ type: GET_ROLES, payload: res.data });
   } catch (error) {
