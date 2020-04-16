@@ -162,67 +162,69 @@ const Roles = ({
               )}
             </tbody>
           </table>
-          <table className="table roles-paging">
-            <tbody>
-              <tr>
-                <td className="pager-padder"></td>
-                <td
-                  className={
-                    page === 1 ? "pager pager-inactive" : "pager pager-active"
-                  }
-                  onClick={() => onSetPage(1)}
-                >
-                  <FontAwesomeIcon icon={faChevronCircleLeft} />
-                </td>
-                <td
-                  className={
-                    page === 1 ? "pager pager-inactive" : "pager pager-active"
-                  }
-                  onClick={() => onSetPage(page - 1)}
-                >
-                  <FontAwesomeIcon icon={faChevronLeft} />
-                </td>
-                <td className="pager-counter">
-                  {page * limit - limit + 1} -{" "}
-                  {page * limit > roleCount ? roleCount : page * limit} of{" "}
-                  {roleCount}
-                </td>
-                <td
-                  className={
-                    page >= Math.ceil(roleCount / limit)
-                      ? "pager pager-inactive"
-                      : "pager pager-active"
-                  }
-                  onClick={() => onSetPage(page + 1)}
-                >
-                  <FontAwesomeIcon icon={faChevronRight} />
-                </td>
-                <td
-                  className={
-                    page >= Math.ceil(roleCount / limit)
-                      ? "pager pager-inactive"
-                      : "pager pager-active"
-                  }
-                  onClick={() => onSetPage(Math.ceil(roleCount / limit))}
-                >
-                  <FontAwesomeIcon icon={faChevronCircleRight} />
-                </td>
-                <td className="limit-updater">
-                  <small>Showing: </small>
-                  <select
-                    id="cars"
-                    onChange={(e) => onUpdateLimit(e)}
-                    selected={limit}
+          {roles.length > 0 && (
+            <table className="table roles-paging">
+              <tbody>
+                <tr>
+                  <td className="pager-padder"></td>
+                  <td
+                    className={
+                      page === 1 ? "pager pager-inactive" : "pager pager-active"
+                    }
+                    onClick={() => onSetPage(1)}
                   >
-                    <option value="10">10</option>
-                    <option value="20">20</option>
-                    <option value="50">50</option>
-                  </select>{" "}
-                  <small>per page</small>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+                    <FontAwesomeIcon icon={faChevronCircleLeft} />
+                  </td>
+                  <td
+                    className={
+                      page === 1 ? "pager pager-inactive" : "pager pager-active"
+                    }
+                    onClick={() => onSetPage(page - 1)}
+                  >
+                    <FontAwesomeIcon icon={faChevronLeft} />
+                  </td>
+                  <td className="pager-counter">
+                    {page * limit - limit + 1} -{" "}
+                    {page * limit > roleCount ? roleCount : page * limit} of{" "}
+                    {roleCount}
+                  </td>
+                  <td
+                    className={
+                      page >= Math.ceil(roleCount / limit)
+                        ? "pager pager-inactive"
+                        : "pager pager-active"
+                    }
+                    onClick={() => onSetPage(page + 1)}
+                  >
+                    <FontAwesomeIcon icon={faChevronRight} />
+                  </td>
+                  <td
+                    className={
+                      page >= Math.ceil(roleCount / limit)
+                        ? "pager pager-inactive"
+                        : "pager pager-active"
+                    }
+                    onClick={() => onSetPage(Math.ceil(roleCount / limit))}
+                  >
+                    <FontAwesomeIcon icon={faChevronCircleRight} />
+                  </td>
+                  <td className="limit-updater">
+                    <small>Showing: </small>
+                    <select
+                      id="cars"
+                      onChange={(e) => onUpdateLimit(e)}
+                      selected={limit}
+                    >
+                      <option value="10">10</option>
+                      <option value="20">20</option>
+                      <option value="50">50</option>
+                    </select>{" "}
+                    <small>per page</small>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          )}
         </Fragment>
       )}
     </Fragment>
