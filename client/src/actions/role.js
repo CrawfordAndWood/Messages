@@ -117,21 +117,22 @@ export const addEmptyRole = () => (dispatch) => {
   dispatch({ type: ADD_EMPTY_ROW, payload: newRole });
 };
 
-export const sortbyName = () => (dispatch) => {
-  dispatch({ type: SORT_BY_NAME, payload: "name" });
+export const sortbyName = (name) => (dispatch) => {
+  dispatch({ type: SORT_BY_NAME, payload: name });
 };
 
 export const search = (searchTerm, page, limit) => async (dispatch) => {
   try {
     dispatch({ type: LOAD });
     dispatch({ type: SEARCH });
+    dispatch({ type: UPDATE_PAGE, payload: 1 });
+
     await dispatch(countRoles(searchTerm.term));
 
     const res = await axios.get(
       `/api/roles/${searchTerm.term}/${page}/${limit}`
     );
     dispatch({ type: GET_ROLES, payload: res.data });
-    dispatch({ type: UPDATE_PAGE, payload: 1 });
   } catch (error) {
     dispatch({
       type: ROLE_ERROR,
@@ -159,6 +160,5 @@ export const updateLimit = (newLimit) => (dispatch) => {
 };
 
 export const updatePage = (page, limit) => (dispatch) => {
-  dispatch(getRoles(page, limit));
   dispatch({ type: UPDATE_PAGE, payload: page });
 };

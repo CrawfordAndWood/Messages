@@ -47,12 +47,11 @@ router.get("/:page/:limit", auth, async (req, res) => {
 //@access   Private - eventually only global admin has option
 router.get("/:term/:page/:limit", auth, async (req, res) => {
   try {
-    console.log("searching");
     let searchName = new RegExp(req.params.term, "i");
     const roles = await Roles.find({
       name: searchName,
     })
-      .skip(Number(req.params.page - 1) * Number(req.params.page))
+      .skip(Number(req.params.page - 1) * Number(req.params.limit))
       .limit(Number(req.params.limit));
     res.json(roles);
   } catch (err) {

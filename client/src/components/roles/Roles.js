@@ -129,7 +129,7 @@ const Roles = ({
                 <th>
                   Name
                   <FontAwesomeIcon
-                    onClick={() => sortbyName()}
+                    onClick={() => sortbyName("name")}
                     className="table-sort-icon"
                     icon={
                       sortDescending ? faChevronCircleDown : faChevronCircleUp
