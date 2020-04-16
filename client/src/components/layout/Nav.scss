@@ -6,20 +6,18 @@ $mybabground: rgba(255, 255, 255, 0.986);
 $myColor: rgb(131, 12, 12);
 $myColorLight: rgb(131, 62, 62);
 
-// body {
-//   background-color: $mybabground;
-// }
-
 span {
   vertical-align: bottom;
 }
 
 .navbar {
   display: flex;
-  background-color: $myColorLight;
-  color: white;
+  position: fixed;
+  background-color: $myColor;
   border-bottom: $myBlueTrim 0.25em solid;
   font-size: 1.25em;
+  width: 100%;
+  height: 2em;
 }
 
 .navbar a {
@@ -35,13 +33,11 @@ span {
 }
 
 .navLink :hover {
-  background-color: $myBlueTrim;
+  background-color: $myColorLight;
   border-radius: 0.02em;
-  color: $myBlue;
 }
 .title :hover {
-  background-color: $myBlueTrim;
-  color: $myBlue;
+  background-color: $myColorLight;
   padding-bottom: 0.2em;
   border-radius: 0.05em;
 }
@@ -63,14 +59,4 @@ $secondaryfont: "Scada";
   font-size: 1.25em;
   padding-right: 4em;
   margin-left: 0.5em;
-}
-
-.footer {
-  background-color: $mrSuperDarkBlueFeet;
-  color: rgb(237, 236, 247);
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  padding: 1em;
 }

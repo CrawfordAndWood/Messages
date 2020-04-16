@@ -6,16 +6,59 @@ const uuid = require("uuid");
 
 const Roles = require("../../models/Roles");
 
-//what are some requirements?
-//only a global admin can create and edit sys roles
-//get - returns all roles in db
+router.get("/count", auth, async (req, res) => {
+  try {
+    console.log("y");
+    const roleCount = await Roles.countDocuments();
+    res.json(roleCount);
+  } catch (err) {
+    console.error(err.messge);
+    res.status(500).send("Server Error");
+  }
+});
+
+router.get("/count/:term", auth, async (req, res) => {
+  try {
+    const sanitisedName = new RegExp(req.params.term, "i");
+    const roleCount = await Roles.countDocuments({ name: sanitisedName });
+    res.json(roleCount);
+  } catch (err) {
+    console.error(err.messge);
+    res.status(500).send("Server Error");
+  }
+});
 
 //@route    GET api/role/
 //@desc     Get role management page
 //@access   Private - eventually only global admin has option
-router.get("/", auth, async (req, res) => {
+router.get("/:page/:limit", auth, async (req, res) => {
   try {
-    const roles = await Roles.find();
+    //how do I tell it the limit if it's the last page?
+    //if
+    console.log("paging");
+    console.log(req.params);
+    const roles = await Roles.find()
+      .skip(Number(req.params.page - 1) * Number(req.params.limit))
+      .limit(Number(req.params.limit));
+    res.json(roles);
+  } catch (err) {
+    console.error(err.messge);
+    res.status(500).send("Server Error");
+  }
+});
+
+//@route    GET api/role/search
+//@desc     Filter roles
+//@access   Private - eventually only global admin has option
+router.get("/:term/:page/:limit", auth, async (req, res) => {
+  try {
+    console.log("searching");
+    let searchName = new RegExp(req.params.term, "i");
+    const roles = await Roles.find({
+      name: searchName,
+    })
+      .skip(Number(req.params.page - 1) * Number(req.params.page))
+      .limit(Number(req.params.limit));
     res.json(roles);
   } catch (err) {
     console.error(err.messge);
@@ -27,11 +70,10 @@ router.get("/", auth, async (req, res) => {
 //@desc     Add new role
 //@access   Private - eventually only global admin has option
 router.post(
-  "/",
+  "/:page/:limit",
   [auth, [check("name", "Name is required").not().isEmpty()]],
   async (req, res) => {
     const errors = validationResult(req);
-    console.log("errors", errors);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
@@ -55,7 +97,9 @@ router.post(
         roleFields.id = uuid.v4();
         let role = new Roles(roleFields);
         await role.save();
-        const roles = await Roles.find();
+        const roles = await Roles.find()
+          .skip(Number(req.params.page - 1) * Number(req.params.page))
+          .limit(Number(req.params.limit));
         return res.json(roles);
       }
 
@@ -70,7 +114,9 @@ router.post(
           }
         );
       }
-      const roles = await Roles.find();
+      const roles = await Roles.find()
+        .skip(Number(req.params.page - 1) * Number(req.params.page))
+        .limit(Number(req.params.limit));
       return res.json(roles);
     } catch (err) {
       console.error("error me", err);

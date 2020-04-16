@@ -9,12 +9,20 @@ import {
   sortbyName,
   search,
   resetSearch,
+  updateLimit,
+  updatePage,
+  countRoles,
 } from "../../actions/role";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPlusCircle,
   faChevronCircleDown,
   faChevronCircleUp,
+  faSearch,
+  faChevronLeft,
+  faChevronRight,
+  faChevronCircleLeft,
+  faChevronCircleRight,
 } from "@fortawesome/free-solid-svg-icons";
 import "./role.scss";
 
@@ -24,15 +32,28 @@ const Roles = ({
   sortbyName,
   search,
   resetSearch,
-  role: { roles, loading, canAddNewRole, sortDescending, searchTerm },
+  updateLimit,
+  updatePage,
+  countRoles,
+  role: {
+    roles,
+    loading,
+    canAddNewRole,
+    sortDescending,
+    searchTerm,
+    limit,
+    page,
+    roleCount,
+  },
 }) => {
-  let searching = false;
-
   const [searchInput, setsearchInput] = useState({
     term: searchTerm,
+    limit: limit,
+    page: page,
   });
   const { term } = searchInput;
   useEffect(() => {
+    countRoles();
     getRoles();
   }, []);
 
@@ -45,7 +66,7 @@ const Roles = ({
 
   const onSubmit = (e) => {
     e.preventDefault();
-    search(searchInput);
+    search(searchInput, page, limit);
   };
 
   const onReset = () => {
@@ -56,28 +77,52 @@ const Roles = ({
     resetSearch();
   };
 
+  const onSetPage = (location) => {
+    if (location < 1 || location > Math.ceil(roleCount / limit)) {
+      return false;
+    }
+    updatePage(location, limit);
+  };
+
+  const onUpdateLimit = (e) => {
+    e.preventDefault();
+    updateLimit(e.target.value);
+  };
+
   return (
     <Fragment>
-      {loading ? (
-        <Spinner />
-      ) : (
-        <Fragment>
-          <div>
-            <form onSubmit={(e) => onSubmit(e)}>
+      <table className="search-table">
+        <tbody>
+          <tr>
+            <td className="search-bar">
               <input
-                className="formInput"
+                autoComplete="off"
+                className="searchInput"
                 type="text"
                 placeholder="Search Roles"
                 name="term"
                 value={term}
                 onChange={(e) => onSearchChange(e)}
               />
-              <button type="submit">Search</button>
-              <button type="button" onClick={() => onReset()}>
-                Reset
-              </button>
-            </form>
-          </div>
+              <FontAwesomeIcon
+                icon={faSearch}
+                size="lg"
+                onClick={(e) => onSubmit(e)}
+              />
+            </td>
+            <td>
+              <a href="#" onClick={() => onReset()}>
+                clear search{" "}
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      {loading ? (
+        <Spinner />
+      ) : (
+        <Fragment>
           <table className="table">
             <thead>
               <tr>
@@ -109,11 +154,6 @@ const Roles = ({
                   {roles.map((role) => (
                     <RoleItem key={role._id} role={role} />
                   ))}
-                  <tr>
-                    <td>
-                      <small>Paging</small>
-                    </td>
-                  </tr>
                 </Fragment>
               ) : (
                 <tr>
@@ -122,6 +162,69 @@ const Roles = ({
               )}
             </tbody>
           </table>
+          {roles.length > 0 && (
+            <table className="table roles-paging">
+              <tbody>
+                <tr>
+                  <td className="pager-padder"></td>
+                  <td
+                    className={
+                      page === 1 ? "pager pager-inactive" : "pager pager-active"
+                    }
+                    onClick={() => onSetPage(1)}
+                  >
+                    <FontAwesomeIcon icon={faChevronCircleLeft} />
+                  </td>
+                  <td
+                    className={
+                      page === 1 ? "pager pager-inactive" : "pager pager-active"
+                    }
+                    onClick={() => onSetPage(page - 1)}
+                  >
+                    <FontAwesomeIcon icon={faChevronLeft} />
+                  </td>
+                  <td className="pager-counter">
+                    {page * limit - limit + 1} -{" "}
+                    {page * limit > roleCount ? roleCount : page * limit} of{" "}
+                    {roleCount}
+                  </td>
+                  <td
+                    className={
+                      page >= Math.ceil(roleCount / limit)
+                        ? "pager pager-inactive"
+                        : "pager pager-active"
+                    }
+                    onClick={() => onSetPage(page + 1)}
+                  >
+                    <FontAwesomeIcon icon={faChevronRight} />
+                  </td>
+                  <td
+                    className={
+                      page >= Math.ceil(roleCount / limit)
+                        ? "pager pager-inactive"
+                        : "pager pager-active"
+                    }
+                    onClick={() => onSetPage(Math.ceil(roleCount / limit))}
+                  >
+                    <FontAwesomeIcon icon={faChevronCircleRight} />
+                  </td>
+                  <td className="limit-updater">
+                    <small>Showing: </small>
+                    <select
+                      id="cars"
+                      onChange={(e) => onUpdateLimit(e)}
+                      selected={limit}
+                    >
+                      <option value="10">10</option>
+                      <option value="20">20</option>
+                      <option value="50">50</option>
+                    </select>{" "}
+                    <small>per page</small>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          )}
         </Fragment>
       )}
     </Fragment>
@@ -143,4 +246,7 @@ export default connect(mapStateToProps, {
   sortbyName,
   search,
   resetSearch,
+  updateLimit,
+  updatePage,
+  countRoles,
 })(Roles);

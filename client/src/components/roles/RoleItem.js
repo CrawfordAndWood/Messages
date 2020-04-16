@@ -11,7 +11,12 @@ import {
 import { connect } from "react-redux";
 import { createRole, deleteRole } from "../../actions/role";
 
-const RoleItem = ({ role, createRole, deleteRole }) => {
+const RoleItem = ({
+  role,
+  createRole,
+  deleteRole,
+  roleRed: { limit, page },
+}) => {
   const [rowData, setRowData] = useState({
     id: role._id,
     name: role.name,
@@ -26,7 +31,7 @@ const RoleItem = ({ role, createRole, deleteRole }) => {
   const onSaveRole = (e) => {
     e.preventDefault();
     if (role.name == rowData.name) return false;
-    createRole(rowData, role._id !== 0);
+    createRole(rowData, page, limit, role._id !== "temp");
     setRowData({ ...rowData, _id: role._id, editing: false });
   };
 
@@ -34,7 +39,7 @@ const RoleItem = ({ role, createRole, deleteRole }) => {
     <tr>
       <td>
         <input
-          className="formInput"
+          className="roleInput"
           type="text"
           placeholder="Role Name"
           name="name"
@@ -63,4 +68,8 @@ RoleItem.propTypes = {
   role: PropTypes.object.isRequired,
 };
 
-export default connect(null, { createRole, deleteRole })(RoleItem);
+const mapStateToProps = (state) => ({
+  roleRed: state.role,
+});
+
+export default connect(mapStateToProps, { createRole, deleteRole })(RoleItem);

@@ -10,6 +10,11 @@ import {
   SEARCH,
   RESET_SEARCH,
   LOAD,
+  UPDATE_PAGE,
+  UPDATE_LIMIT,
+  ROLE_COUNT,
+  INCREMENT_COUNT,
+  DECREMENT_COUNT,
 } from "../actions/types";
 import { JsonWebTokenError } from "jsonwebtoken";
 
@@ -22,6 +27,9 @@ const initialState = {
   sortDescending: true,
   sortColumn: "name",
   searchTerm: "",
+  limit: 10,
+  page: 1,
+  roleCount: 0,
 };
 export default function (state = initialState, action) {
   const { type, payload } = action;
@@ -29,7 +37,7 @@ export default function (state = initialState, action) {
     case ADD_EMPTY_ROW:
       return {
         ...state,
-        roles: [...state.roles, payload],
+        roles: [payload, ...state.roles],
         loading: false,
         canAddNewRole: false,
       };
@@ -40,6 +48,7 @@ export default function (state = initialState, action) {
         roles: [...state.roles, payload],
         loading: false,
         canAddNewRole: true,
+        searchTerm: null,
       };
     case GET_ROLE:
       return {
@@ -57,20 +66,20 @@ export default function (state = initialState, action) {
         loading: false,
         canAddNewRole: true,
       };
+    case ROLE_COUNT:
+      return {
+        ...state,
+        roleCount: payload,
+      };
     case SEARCH:
       return {
         ...state,
         searchTerm: payload,
-        //You shouldn't just auto filter cos you'll have it jump the fuckl about
-        //instead do some results found shit
-        roles: state.roles.filter((r) =>
-          r.name.toLowerCase().includes(payload)
-        ),
       };
     case RESET_SEARCH:
       return {
         ...state,
-        searchTerm: null,
+        searchTerm: "",
       };
     case ROLE_ERROR:
       return {
@@ -92,6 +101,26 @@ export default function (state = initialState, action) {
       return {
         ...state,
         loading: true,
+      };
+    case UPDATE_LIMIT:
+      return {
+        ...state,
+        limit: payload,
+      };
+    case UPDATE_PAGE:
+      return {
+        ...state,
+        page: payload,
+      };
+    case INCREMENT_COUNT:
+      return {
+        ...state,
+        roleCount: state.roleCount + 1,
+      };
+    case DECREMENT_COUNT:
+      return {
+        ...state,
+        roleCount: state.roleCount - 1,
       };
     default:
       return state;
