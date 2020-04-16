@@ -1,9 +1,11 @@
 import React, { Fragment } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 export default () => {
   return (
     <Fragment>
-      <div>Loading</div>
+      <FontAwesomeIcon className="loader" icon={faSpinner} size="lg" spin />
     </Fragment>
   );
 };

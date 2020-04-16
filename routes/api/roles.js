@@ -8,7 +8,6 @@ const Roles = require("../../models/Roles");
 
 router.get("/count", auth, async (req, res) => {
   try {
-    console.log("y");
     const roleCount = await Roles.countDocuments();
     res.json(roleCount);
   } catch (err) {
@@ -33,10 +32,6 @@ router.get("/count/:term", auth, async (req, res) => {
 //@access   Private - eventually only global admin has option
 router.get("/:page/:limit", auth, async (req, res) => {
   try {
-    //how do I tell it the limit if it's the last page?
-    //if
-    console.log("paging");
-    console.log(req.params);
     const roles = await Roles.find()
       .skip(Number(req.params.page - 1) * Number(req.params.limit))
       .limit(Number(req.params.limit));
