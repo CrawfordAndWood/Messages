@@ -29,4 +29,5 @@ export const INCREMENT_COUNT = "INCREMENT_COUNT";
 export const DECREMENT_COUNT = "DECREMENT_COUNT";
 export const TABLE_ERROR = "TABLE_ERROR";
 export const SORT_BY_COLUMN = "SORT_BY_COLUMN";
+export const SORT_BY_NEW_COLUMN = "SORT_BY_NEW_COLUMN";
 export const ITEM_COUNT = "ITEM_COUNT";

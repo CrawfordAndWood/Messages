@@ -1,29 +1,32 @@
+/*
+This class is for common table actions. It will be injected into each individual action class
+These actions are not passed into components. They are passed into other action classes.
+Instead, those functions are passed into the component by the parent.  
+*/
 import axios from "axios";
 import { setAlert } from "./alert";
 import {
-  GET_ROLES,
-  ROLE_ERROR,
+  ITEM_ERROR,
   ADD_EMPTY_ROW,
-  SORT_BY_NAME,
   SEARCH,
   RESET_SEARCH,
   LOAD,
   UPDATE_LIMIT,
   UPDATE_PAGE,
-  ROLE_COUNT,
   ITEM_COUNT,
   INCREMENT_COUNT,
   DECREMENT_COUNT,
+  SORT_BY_COLUMN,
+  SORT_BY_NEW_COLUMN,
 } from "./types";
 
-export const countRoles = (searchTerm = "") => async (dispatch) => {
+export const countItems = (route, search = "") => async (dispatch) => {
   try {
-    const res = await axios.get(`api/roles/count/${searchTerm}`);
-    //dispatch({ type: ROLE_COUNT, payload: res.data });
+    const res = await axios.get(`api/${route}/count/${search}`);
     dispatch({ type: ITEM_COUNT, payload: res.data });
   } catch (error) {
     dispatch({
-      type: ROLE_ERROR,
+      type: VIEW_ERROR,
       payload: {
         msg: error.response.statusText,
         status: error.response.status,
@@ -32,14 +35,16 @@ export const countRoles = (searchTerm = "") => async (dispatch) => {
   }
 };
 
-//Get current users profile
-export const getRoles = (page = 1, limit = 10) => async (dispatch) => {
+export const getItems = (route, search = "", page = 1, limit = 10) => async (
+  dispatch
+) => {
   try {
-    const res = await axios.get(`api/roles/${page}/${limit}`);
-    dispatch({ type: GET_ROLES, payload: res.data });
+    const res = await axios.get(`api/${route}/${search}/${page}/${limit}`);
+    await dispatch(countItems(route, search));
+    dispatch({ type: GET_ITEMS, payload: res.data });
   } catch (error) {
     dispatch({
-      type: ROLE_ERROR,
+      type: VIEW_ERROR,
       payload: {
         msg: error.response.statusText,
         status: error.response.status,
@@ -48,9 +53,10 @@ export const getRoles = (page = 1, limit = 10) => async (dispatch) => {
   }
 };
 
-// Create or update role
-export const createRole = (
+// Create or update item
+export const createItem = (
   formData,
+  route,
   page = 1,
   limit = 10,
   edit = false
@@ -63,12 +69,12 @@ export const createRole = (
     };
 
     const res = await axios.post(
-      `/api/roles/${page}/${limit}`,
+      `/api/${route}/${page}/${limit}`,
       formData,
       config
     );
-    await dispatch({ type: GET_ROLES, payload: res.data });
-    await dispatch(setAlert(edit ? "Role Updated" : "Role Created", "success"));
+    await dispatch({ type: GET_ITEMS, payload: res.data });
+    await dispatch(setAlert(edit ? "Item Updated" : "Item Created", "success"));
     if (!edit) {
       dispatch({ type: INCREMENT_COUNT });
     }
@@ -79,7 +85,7 @@ export const createRole = (
     }
 
     dispatch({
-      type: ROLE_ERROR,
+      type: VIEW_ERROR,
       payload: {
         msg: error.response.statusText,
         status: error.response.status,
@@ -89,7 +95,7 @@ export const createRole = (
 };
 
 //Delete a Role
-export const deleteRole = (rowData) => async (dispatch) => {
+export const deleteItem = (route, rowData) => async (dispatch) => {
   try {
     const config = {
       headers: {
@@ -97,8 +103,8 @@ export const deleteRole = (rowData) => async (dispatch) => {
       },
     };
     if (rowData.id !== "temp") {
-      await axios.delete(`/api/roles/${rowData.id}`, config);
-      dispatch(setAlert("Role Deleted", "success"));
+      await axios.delete(`/api/${route}/${rowData.id}`, config);
+      dispatch(setAlert("Item Deleted", "success"));
       dispatch({ type: DECREMENT_COUNT });
     }
     dispatch(updateLimit(10));
@@ -113,30 +119,30 @@ export const deleteRole = (rowData) => async (dispatch) => {
   }
 };
 
-export const addEmptyRole = () => (dispatch) => {
-  const newRole = { _id: "temp", name: "" };
-  dispatch({ type: ADD_EMPTY_ROW, payload: newRole });
+export const addEmptyItem = (item) => (dispatch) => {
+  dispatch({ type: ADD_EMPTY_ROW, payload: item });
 };
 
-export const sortbyName = (name) => (dispatch) => {
-  dispatch({ type: SORT_BY_NAME, payload: name });
+export const sort = (name, sortColumn) => (dispatch) => {
+  const dispatchFn = name === sortColumn ? SORT_BY_COLUMN : SORT_BY_NEW_COLUMN;
+  dispatch({ type: dispatchFn, payload: name });
 };
 
-export const search = (searchTerm, page, limit) => async (dispatch) => {
+export const search = (route, searchTerm, page, limit) => async (dispatch) => {
   try {
     dispatch({ type: LOAD });
     dispatch({ type: SEARCH });
     dispatch({ type: UPDATE_PAGE, payload: 1 });
 
-    await dispatch(countRoles(searchTerm.term));
+    await dispatch(countItems(searchTerm.term));
 
     const res = await axios.get(
-      `/api/roles/${searchTerm.term}/${page}/${limit}`
+      `/api/${route}/${searchTerm.term}/${page}/${limit}`
     );
-    dispatch({ type: GET_ROLES, payload: res.data });
+    dispatch({ type: GET_ITEMS, payload: res.data });
   } catch (error) {
     dispatch({
-      type: ROLE_ERROR,
+      type: ITEM_ERROR,
       payload: {
         msg: error.response.statusText,
         status: error.response.status,
@@ -147,13 +153,13 @@ export const search = (searchTerm, page, limit) => async (dispatch) => {
 
 export const resetSearch = () => (dispatch) => {
   dispatch({ type: LOAD });
-  dispatch(countRoles());
+  dispatch(countItems());
   dispatch(updateLimit(10));
   dispatch({ type: RESET_SEARCH });
 };
 
 export const updateLimit = (newLimit) => (dispatch) => {
-  dispatch(getRoles(1, newLimit));
+  dispatch(getItems(1, newLimit));
   dispatch({ type: UPDATE_PAGE, payload: 1 });
   dispatch({ type: UPDATE_LIMIT, payload: newLimit });
 };

@@ -11,7 +11,12 @@ import {
 import { connect } from "react-redux";
 import { createRole, deleteRole } from "../../actions/role";
 
-const RoleItem = ({ role, createRole, deleteRole, view: { limit, page } }) => {
+const RoleItem = ({
+  role,
+  createRole,
+  deleteRole,
+  roleRed: { limit, page },
+}) => {
   const [rowData, setRowData] = useState({
     id: role._id,
     name: role.name,
@@ -31,7 +36,7 @@ const RoleItem = ({ role, createRole, deleteRole, view: { limit, page } }) => {
   };
 
   return (
-    <tr key={role._id}>
+    <tr>
       <td>
         <input
           className="roleInput"
@@ -64,7 +69,7 @@ RoleItem.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-  view: state.view,
+  roleRed: state.role,
 });
 
 export default connect(mapStateToProps, { createRole, deleteRole })(RoleItem);

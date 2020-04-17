@@ -3,12 +3,12 @@ import alert from "./alert";
 import auth from "./auth";
 import profile from "./profile";
 import role from "./role";
-import table from "./table";
+import view from "./view";
 
 export default combineReducers({
   alert,
   auth,
   profile,
   role,
-  table,
+  view,
 });

@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import Spinner from "../layout/Spinner";
 import RoleItem from "./RoleItem";
+//import SortColumn from "../table/SortColumn";
 import {
   getRoles,
   addEmptyRole,
@@ -238,6 +239,7 @@ Roles.propTypes = {
 
 const mapStateToProps = (state) => ({
   role: state.role,
+  table: state.table,
 });
 
 export default connect(mapStateToProps, {

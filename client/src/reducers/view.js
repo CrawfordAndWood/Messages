@@ -2,7 +2,11 @@ import { sortTableColumn } from "../utils/tableFunctions";
 import {
   TABLE_ERROR,
   ADD_EMPTY_ROW,
+  EDIT_ROW,
+  ADD_ITEM,
+  DELETE_ITEM,
   SORT_BY_COLUMN,
+  SORT_BY_NEW_COLUMN,
   SEARCH,
   RESET_SEARCH,
   LOAD,
@@ -17,7 +21,7 @@ const initialState = {
   canAddNewRow: true,
   error: {},
   itemCount: 0,
-  items: [],
+  data: {},
   limit: 10,
   loading: true,
   page: 1,
@@ -59,8 +63,18 @@ export default function (state = initialState, action) {
       return {
         ...state,
         loading: false,
-        sortColumn: payload,
+        items: state.items
+          .slice()
+          .sort(sortTableColumn(payload, !state.sortDescending)),
         sortDescending: !state.sortDescending,
+      };
+    case SORT_BY_NEW_COLUMN:
+      return {
+        ...state,
+        loading: false,
+        items: state.items.slice().sort(sortTableColumn(payload, true)),
+        sortDescending: true,
+        sortColumn: payload,
       };
     case LOAD:
       return {
