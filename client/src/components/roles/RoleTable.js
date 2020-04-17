@@ -6,37 +6,11 @@ import RoleItem from "./RoleItem";
 import SortColumn from "../table/SortColumn";
 import Pagination from "../table/Pagination";
 import Search from "../table/Search";
-import { getRoles } from "../../actions/role";
-import { sort } from "../../actions/view";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import "./role.scss";
 
-const Roles = ({
-  search,
-  resetSearch,
-  updateLimit,
-  updatePage,
-  countRoles,
-  role: {
-    roles,
-    loading,
-    canAddNewRole,
-    sortDescending,
-    searchTerm,
-    limit,
-    page,
-    roleCount,
-  },
-  table: { items },
-}) => {
-  const [searchInput, setsearchInput] = useState({
-    term: searchTerm,
-    limit: limit,
-    page: page,
-  });
-
-  const { term } = searchInput;
+const Roles = ({ table: { items, loading, canAddNewItem } }) => {
   useEffect(() => {
     getItems("roles");
   }, []);
@@ -44,7 +18,6 @@ const Roles = ({
   return (
     <Fragment>
       <Search />
-
       {loading ? (
         <Spinner />
       ) : (
@@ -68,10 +41,10 @@ const Roles = ({
               </tr>
             </thead>
             <tbody className="roles">
-              {roles.length > 0 ? (
+              {items.length > 0 ? (
                 <Fragment>
-                  {roles.map((role) => (
-                    <RoleItem key={role._id} role={role} />
+                  {items.map((item) => (
+                    <RoleItem key={item._id} role={item} />
                   ))}
                 </Fragment>
               ) : (
@@ -94,11 +67,10 @@ Roles.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-  role: state.role,
-  table: state.table,
+  view: state.view,
 });
 
 export default connect(mapStateToProps, {
   getItems,
-  addEmptyRole,
+  addEmptyItem,
 })(Roles);
