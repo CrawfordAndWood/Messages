@@ -1,5 +1,6 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, { Fragment, useEffect } from "react";
 import PropTypes from "prop-types";
+import { getData, addEmptyItem } from "../../actions/view";
 import { connect } from "react-redux";
 import Spinner from "../layout/Spinner";
 import RoleItem from "./RoleItem";
@@ -10,14 +11,18 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import "./role.scss";
 
-const Roles = ({ table: { items, loading, canAddNewItem } }) => {
+const RoleTable = ({
+  getData,
+  addEmptyItem,
+  view: { data, loading, canAddNewRow },
+}) => {
   useEffect(() => {
-    getItems("roles");
+    getData("roles");
   }, []);
 
   return (
     <Fragment>
-      <Search />
+      <Search route="roles" />
       {loading ? (
         <Spinner />
       ) : (
@@ -27,13 +32,13 @@ const Roles = ({ table: { items, loading, canAddNewItem } }) => {
               <tr>
                 <th>
                   Name
-                  <SortColumn />
+                  <SortColumn name={"name"} />
                 </th>
                 <th
                   className={
-                    canAddNewRole ? "role-table-save" : "role-table-disabled"
+                    canAddNewRow ? "role-table-save" : "role-table-disabled"
                   }
-                  onClick={() => (canAddNewItem ? addEmptyItem() : null)}
+                  onClick={() => (canAddNewRow ? addEmptyItem() : null)}
                 >
                   <FontAwesomeIcon icon={faPlusCircle} size="lg" />
                 </th>
@@ -41,10 +46,10 @@ const Roles = ({ table: { items, loading, canAddNewItem } }) => {
               </tr>
             </thead>
             <tbody className="roles">
-              {items.length > 0 ? (
+              {data.length > 0 ? (
                 <Fragment>
-                  {items.map((item) => (
-                    <RoleItem key={item._id} role={item} />
+                  {data.map((role) => (
+                    <RoleItem key={role._id} role={role} />
                   ))}
                 </Fragment>
               ) : (
@@ -61,16 +66,11 @@ const Roles = ({ table: { items, loading, canAddNewItem } }) => {
   );
 };
 
-Roles.propTypes = {
-  getRoles: PropTypes.func.isRequired,
-  role: PropTypes.object.isRequired,
-};
-
 const mapStateToProps = (state) => ({
   view: state.view,
 });
 
 export default connect(mapStateToProps, {
-  getItems,
+  getData,
   addEmptyItem,
-})(Roles);
+})(RoleTable);

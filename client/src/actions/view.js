@@ -6,7 +6,7 @@ Instead, those functions are passed into the component by the parent.
 import axios from "axios";
 import { setAlert } from "./alert";
 import {
-  ITEM_ERROR,
+  VIEW_ERROR,
   ADD_EMPTY_ROW,
   SEARCH,
   RESET_SEARCH,
@@ -18,11 +18,13 @@ import {
   DECREMENT_COUNT,
   SORT_BY_COLUMN,
   SORT_BY_NEW_COLUMN,
+  GET_DATA,
 } from "./types";
 
 export const countItems = (route, search = "") => async (dispatch) => {
   try {
     const res = await axios.get(`api/${route}/count/${search}`);
+    console.log("counted", res.data);
     dispatch({ type: ITEM_COUNT, payload: res.data });
   } catch (error) {
     dispatch({
@@ -35,14 +37,24 @@ export const countItems = (route, search = "") => async (dispatch) => {
   }
 };
 
-export const getItems = (route, search = "", page = 1, limit = 10) => async (
+export const getData = (route, search = "", page = 1, limit = 10) => async (
   dispatch
 ) => {
+  //TODO factor out params into single options object.
   try {
-    const res = await axios.get(`api/${route}/${search}/${page}/${limit}`);
+    console.log("getData", route, search, page, limit);
+    if (route === null) return false;
+    dispatch({ type: LOAD });
+    dispatch({ type: SEARCH });
+    dispatch({ type: UPDATE_PAGE, payload: 1 });
     await dispatch(countItems(route, search));
-    dispatch({ type: GET_ITEMS, payload: res.data });
+    console.log("after count");
+    const res = await axios.get(`/api/${route}/${search}/${page}/${limit}`);
+    console.log("res", res.data);
+    dispatch({ type: GET_DATA, payload: res.data });
   } catch (error) {
+    console.log("cerrors", error);
+
     dispatch({
       type: VIEW_ERROR,
       payload: {
@@ -53,7 +65,7 @@ export const getItems = (route, search = "", page = 1, limit = 10) => async (
   }
 };
 
-// Create or update item
+// Create or update item.
 export const createItem = (
   formData,
   route,
@@ -73,7 +85,7 @@ export const createItem = (
       formData,
       config
     );
-    await dispatch({ type: GET_ITEMS, payload: res.data });
+    await dispatch({ type: GET_DATA, payload: res.data });
     await dispatch(setAlert(edit ? "Item Updated" : "Item Created", "success"));
     if (!edit) {
       dispatch({ type: INCREMENT_COUNT });
@@ -83,7 +95,6 @@ export const createItem = (
     if (errors) {
       errors.forEach((error) => dispatch(setAlert(error.msg, "danger")));
     }
-
     dispatch({
       type: VIEW_ERROR,
       payload: {
@@ -95,7 +106,9 @@ export const createItem = (
 };
 
 //Delete a Role
-export const deleteItem = (route, rowData) => async (dispatch) => {
+export const deleteItem = (route, search, page, limit, rowData) => async (
+  dispatch
+) => {
   try {
     const config = {
       headers: {
@@ -107,10 +120,10 @@ export const deleteItem = (route, rowData) => async (dispatch) => {
       dispatch(setAlert("Item Deleted", "success"));
       dispatch({ type: DECREMENT_COUNT });
     }
-    dispatch(updateLimit(10));
+    dispatch(getData(route, search, page, limit));
   } catch (error) {
     dispatch({
-      type: ROLE_ERROR,
+      type: VIEW_ERROR,
       payload: {
         msg: error.response.statusText,
         status: error.response.status,
@@ -128,42 +141,18 @@ export const sort = (name, sortColumn) => (dispatch) => {
   dispatch({ type: dispatchFn, payload: name });
 };
 
-export const search = (route, searchTerm, page, limit) => async (dispatch) => {
-  try {
-    dispatch({ type: LOAD });
-    dispatch({ type: SEARCH });
-    dispatch({ type: UPDATE_PAGE, payload: 1 });
-
-    await dispatch(countItems(searchTerm.term));
-
-    const res = await axios.get(
-      `/api/${route}/${searchTerm.term}/${page}/${limit}`
-    );
-    dispatch({ type: GET_ITEMS, payload: res.data });
-  } catch (error) {
-    dispatch({
-      type: ITEM_ERROR,
-      payload: {
-        msg: error.response.statusText,
-        status: error.response.status,
-      },
-    });
-  }
-};
-
-export const resetSearch = () => (dispatch) => {
-  dispatch({ type: LOAD });
-  dispatch(countItems());
-  dispatch(updateLimit(10));
+export const resetSearch = (route, limit) => (dispatch) => {
+  dispatch(getData(route, "", "", limit));
   dispatch({ type: RESET_SEARCH });
 };
 
-export const updateLimit = (newLimit) => (dispatch) => {
-  dispatch(getItems(1, newLimit));
+export const updateLimit = (route, search, newLimit) => (dispatch) => {
+  dispatch(getData(route, search, 1, newLimit));
   dispatch({ type: UPDATE_PAGE, payload: 1 });
   dispatch({ type: UPDATE_LIMIT, payload: newLimit });
 };
 
-export const updatePage = (page) => (dispatch) => {
+export const updatePage = (route, search, page, limit) => (dispatch) => {
+  dispatch(getData(route, search, page, limit));
   dispatch({ type: UPDATE_PAGE, payload: page });
 };

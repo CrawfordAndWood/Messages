@@ -1,6 +1,19 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
+import { connect } from "react-redux";
+import { getData, resetSearch } from "../../actions/view";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
-export const Search = () => {
+export const Search = ({
+  getData,
+  resetSearch,
+  view: { route, search, page, limit },
+}) => {
+  const [searchInput, setsearchInput] = useState({
+    term: search,
+  });
+  const { term } = searchInput;
+
   const onSearchChange = (e) => {
     setsearchInput({
       ...searchInput,
@@ -10,7 +23,7 @@ export const Search = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    search(searchInput, page, limit);
+    getData(route, searchInput.term, page, limit);
   };
 
   const onReset = () => {
@@ -18,7 +31,7 @@ export const Search = () => {
       ...searchInput,
       term: "",
     });
-    resetSearch();
+    resetSearch(route, limit);
   };
 
   return (
@@ -53,3 +66,12 @@ export const Search = () => {
     </Fragment>
   );
 };
+
+const mapStateToProps = (state) => ({
+  view: state.view,
+});
+
+export default connect(mapStateToProps, {
+  getData,
+  resetSearch,
+})(Search);

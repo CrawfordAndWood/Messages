@@ -1,0 +1,145 @@
+$myBlue: royalblue;
+
+.items-paging {
+}
+
+.items-paging td {
+  height: 2em;
+}
+
+.items-paging input {
+  width: 2em;
+}
+
+.pager-active svg {
+  cursor: pointer;
+  color: $myBlue;
+}
+
+.pager-inactive svg {
+  color: grey;
+}
+
+.pager-padder {
+  width: 15%;
+}
+
+.pager {
+  width: 5%;
+}
+
+.pager-counter {
+  width: 20%;
+}
+
+.limit-updater {
+  width: 20%;
+}
+
+.itemInput {
+  padding: 0.2em;
+  margin-top: 0.1em;
+  margin-bottom: 0.1em;
+  border: none;
+  -webkit-border-radius: 1px;
+  border-radius: 1em;
+  width: 80%;
+  font-size: 1em;
+}
+
+.search-bar {
+  padding-left: 1em;
+  width: 50%;
+  border: 2px solid gray;
+  border-radius: 1em;
+}
+
+.searchInput {
+  width: 65%;
+  border: none;
+  border-radius: 5px;
+  padding-left: 2em;
+  padding-right: 1em;
+  height: 2em;
+}
+
+tr:nth-child(odd) .itemInput {
+  background-color: snow;
+}
+
+tr:nth-child(even) .itemInput {
+  background-color: rgba(233, 231, 231, 0.911);
+}
+
+// .search-table {
+//   width: 100%;
+// }
+
+.search-table a {
+  padding-left: 1em;
+  color: blue;
+  text-decoration: underline;
+}
+
+.search-form {
+  padding: 1em;
+  display: flex;
+}
+
+.search-bar input {
+  border: none;
+}
+
+.search-bar svg {
+  cursor: pointer;
+  color: $myBlue;
+}
+
+.table {
+  width: 80%;
+  border: 1px solid lightslategray;
+  border-radius: 0.1px;
+  font-size: large;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  text-align: center;
+}
+
+.table td {
+  padding: 0;
+  border: 1px solid lightgray;
+  border-radius: 0.1px;
+}
+
+table tr:nth-child(odd) td {
+  color: rgb(46, 46, 46);
+  background-color: snow;
+}
+table tr:nth-child(even) td {
+  background-color: rgba(233, 231, 231, 0.911);
+}
+
+.item-table-save svg {
+  cursor: pointer;
+  color: green;
+}
+
+.item-table-disabled svg {
+  color: grey;
+}
+.item-table-delete svg {
+  cursor: pointer;
+  color: red;
+}
+
+.table-sort-icon {
+  cursor: pointer;
+  background-color: gray;
+  border: 0.05em solid gray;
+  border-radius: 2em;
+  float: right;
+}
+
+.item-table-editing svg {
+  cursor: pointer;
+  color: blue;
+}

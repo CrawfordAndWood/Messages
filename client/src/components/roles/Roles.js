@@ -234,7 +234,6 @@ const Roles = ({
 
 Roles.propTypes = {
   getRoles: PropTypes.func.isRequired,
-  role: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({

@@ -8,6 +8,7 @@ const Roles = require("../../models/Roles");
 
 router.get("/count", auth, async (req, res) => {
   try {
+    console.log("counting");
     const roleCount = await Roles.countDocuments();
     res.json(roleCount);
   } catch (err) {
@@ -18,6 +19,7 @@ router.get("/count", auth, async (req, res) => {
 
 router.get("/count/:term", auth, async (req, res) => {
   try {
+    console.log("counting");
     const sanitisedName = new RegExp(req.params.term, "i");
     const roleCount = await Roles.countDocuments({ name: sanitisedName });
     res.json(roleCount);
@@ -64,7 +66,7 @@ router.get("/:term/:page/:limit", auth, async (req, res) => {
 //@desc     Add new role
 //@access   Private - eventually only global admin has option
 router.post(
-  "/:page/:limit",
+  "/:term/:page/:limit",
   [auth, [check("name", "Name is required").not().isEmpty()]],
   async (req, res) => {
     const errors = validationResult(req);
@@ -78,6 +80,7 @@ router.post(
     roleFields.name = name;
 
     try {
+      let searchName = new RegExp(req.params.term, "i");
       //check if name exists
       let role = await Roles.findOne({ name: name });
       if (role) {
@@ -91,7 +94,7 @@ router.post(
         roleFields.id = uuid.v4();
         let role = new Roles(roleFields);
         await role.save();
-        const roles = await Roles.find()
+        const roles = await Roles.find({ name: searchName })
           .skip(Number(req.params.page - 1) * Number(req.params.page))
           .limit(Number(req.params.limit));
         return res.json(roles);
@@ -108,12 +111,11 @@ router.post(
           }
         );
       }
-      const roles = await Roles.find()
+      const roles = await Roles.find({ name: searchName })
         .skip(Number(req.params.page - 1) * Number(req.params.page))
         .limit(Number(req.params.limit));
       return res.json(roles);
     } catch (err) {
-      console.error("error me", err);
       res.status(500).send("Server error");
     }
   }
@@ -127,8 +129,7 @@ router.delete("/:id", auth, async (req, res) => {
     //remove role
     const { id } = req.params;
     await Roles.findOneAndRemove({ _id: id });
-    const roles = await Roles.find();
-    return res.json(roles);
+    return res.json(true);
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");

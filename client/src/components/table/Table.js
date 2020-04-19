@@ -12,7 +12,7 @@ import {
   updateLimit,
   updatePage,
   countItems,
-} from "../../actions/table";
+} from "../../actions/view";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPlusCircle,

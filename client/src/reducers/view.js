@@ -1,10 +1,11 @@
 import { sortTableColumn } from "../utils/tableFunctions";
 import {
-  TABLE_ERROR,
+  VIEW_ERROR,
   ADD_EMPTY_ROW,
   EDIT_ROW,
   ADD_ITEM,
   DELETE_ITEM,
+  GET_DATA,
   SORT_BY_COLUMN,
   SORT_BY_NEW_COLUMN,
   SEARCH,
@@ -25,7 +26,8 @@ const initialState = {
   limit: 10,
   loading: true,
   page: 1,
-  searchTerm: "",
+  route: "",
+  search: "",
   sortDescending: true,
   sortColumn: "",
 };
@@ -38,7 +40,24 @@ export default function (state = initialState, action) {
         loading: false,
         canAddNewRow: false,
       };
+    case GET_DATA:
+      return {
+        ...state,
+        data: payload,
+        loading: false,
+        canAddNewRole: true,
+      };
+    // case GET_DATA:
+    //   return {
+    //     ...state,
+    //     roles: payload
+    //       .slice()
+    //       .sort(sortTableColumn(state.sortColumn, state.sortDescending)),
+    //     loading: false,
+    //     canAddNewRole: true,
+    //   };
     case ITEM_COUNT:
+      console.log("updating item count", payload);
       return {
         ...state,
         itemCount: payload,
@@ -46,14 +65,14 @@ export default function (state = initialState, action) {
     case SEARCH:
       return {
         ...state,
-        searchTerm: payload,
+        search: payload,
       };
     case RESET_SEARCH:
       return {
         ...state,
-        searchTerm: "",
+        search: "",
       };
-    case TABLE_ERROR:
+    case VIEW_ERROR:
       return {
         ...state,
         error: payload,
@@ -63,7 +82,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         loading: false,
-        items: state.items
+        data: state.items
           .slice()
           .sort(sortTableColumn(payload, !state.sortDescending)),
         sortDescending: !state.sortDescending,

@@ -1,5 +1,6 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { updatePage, updateLimit } from "../../actions/view";
 import {
   faChevronLeft,
   faChevronRight,
@@ -8,17 +9,21 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { connect } from "react-redux";
 
-export const Pagination = () => {
+export const Pagination = ({
+  updatePage,
+  updateLimit,
+  view: { route, term, page, itemCount, limit },
+}) => {
   const onSetPage = (location) => {
     if (location < 1 || location > Math.ceil(itemCount / limit)) {
       return false;
     }
-    updatePage(location, limit);
+    updatePage(route, term, location, limit);
   };
 
   const onUpdateLimit = (e) => {
     e.preventDefault();
-    updateLimit(e.target.value);
+    updateLimit(route, term, e.target.value);
   };
 
   return (
@@ -84,3 +89,12 @@ export const Pagination = () => {
     </table>
   );
 };
+
+const mapStateToProps = (state) => ({
+  view: state.view,
+});
+
+export default connect(mapStateToProps, {
+  updatePage,
+  updateLimit,
+})(Pagination);

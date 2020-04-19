@@ -16,9 +16,11 @@ import {
   DECREMENT_COUNT,
 } from "./types";
 
+let route = "roles";
+
 export const countRoles = (searchTerm = "") => async (dispatch) => {
   try {
-    const res = await axios.get(`api/roles/count/${searchTerm}`);
+    const res = await axios.get(`api/${route}/count/${searchTerm}`);
     //dispatch({ type: ROLE_COUNT, payload: res.data });
     dispatch({ type: ITEM_COUNT, payload: res.data });
   } catch (error) {
@@ -35,7 +37,7 @@ export const countRoles = (searchTerm = "") => async (dispatch) => {
 //Get current users profile
 export const getRoles = (page = 1, limit = 10) => async (dispatch) => {
   try {
-    const res = await axios.get(`api/roles/${page}/${limit}`);
+    const res = await axios.get(`api/${route}/${page}/${limit}`);
     dispatch({ type: GET_ROLES, payload: res.data });
   } catch (error) {
     dispatch({
@@ -158,6 +160,7 @@ export const updateLimit = (newLimit) => (dispatch) => {
   dispatch({ type: UPDATE_LIMIT, payload: newLimit });
 };
 
-export const updatePage = (page) => (dispatch) => {
+export const updatePage = (page, limit) => (dispatch) => {
+  dispatch(getRoles(page, limit));
   dispatch({ type: UPDATE_PAGE, payload: page });
 };
