@@ -16,6 +16,8 @@ import {
   ITEM_COUNT,
   INCREMENT_COUNT,
   DECREMENT_COUNT,
+  SET_ROUTE,
+  SET_SORT_COLUMN,
 } from "../actions/types";
 
 const initialState = {
@@ -37,13 +39,16 @@ export default function (state = initialState, action) {
     case ADD_EMPTY_ROW:
       return {
         ...state,
+        data: [payload, ...state.data],
         loading: false,
         canAddNewRow: false,
       };
     case GET_DATA:
       return {
         ...state,
-        data: payload,
+        data: payload
+          .slice()
+          .sort(sortTableColumn(state.sortColumn, state.sortDescending)),
         loading: false,
         canAddNewRole: true,
       };
@@ -72,17 +77,27 @@ export default function (state = initialState, action) {
         ...state,
         search: "",
       };
+    case SET_ROUTE:
+      return {
+        ...state,
+        route: payload,
+      };
     case VIEW_ERROR:
       return {
         ...state,
         error: payload,
         loading: false,
       };
+    case SET_SORT_COLUMN:
+      return {
+        ...state,
+        sortColumn: payload,
+      };
     case SORT_BY_COLUMN:
       return {
         ...state,
         loading: false,
-        data: state.items
+        data: state.data
           .slice()
           .sort(sortTableColumn(payload, !state.sortDescending)),
         sortDescending: !state.sortDescending,
@@ -91,7 +106,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         loading: false,
-        items: state.items.slice().sort(sortTableColumn(payload, true)),
+        data: state.data.slice().sort(sortTableColumn(payload, true)),
         sortDescending: true,
         sortColumn: payload,
       };

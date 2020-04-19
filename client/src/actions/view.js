@@ -19,6 +19,8 @@ import {
   SORT_BY_COLUMN,
   SORT_BY_NEW_COLUMN,
   GET_DATA,
+  SET_ROUTE,
+  SET_SORT_COLUMN,
 } from "./types";
 
 export const countItems = (route, search = "") => async (dispatch) => {
@@ -42,16 +44,15 @@ export const getData = (route, search = "", page = 1, limit = 10) => async (
 ) => {
   //TODO factor out params into single options object.
   try {
-    console.log("getData", route, search, page, limit);
     if (route === null) return false;
     dispatch({ type: LOAD });
     dispatch({ type: SEARCH });
     dispatch({ type: UPDATE_PAGE, payload: 1 });
+
     await dispatch(countItems(route, search));
-    console.log("after count");
     const res = await axios.get(`/api/${route}/${search}/${page}/${limit}`);
-    console.log("res", res.data);
     dispatch({ type: GET_DATA, payload: res.data });
+    dispatch({ type: SET_ROUTE, payload: route });
   } catch (error) {
     console.log("cerrors", error);
 
@@ -142,7 +143,7 @@ export const sort = (name, sortColumn) => (dispatch) => {
 };
 
 export const resetSearch = (route, limit) => (dispatch) => {
-  dispatch(getData(route, "", "", limit));
+  dispatch(getData(route, "", 1, limit));
   dispatch({ type: RESET_SEARCH });
 };
 
@@ -155,4 +156,8 @@ export const updateLimit = (route, search, newLimit) => (dispatch) => {
 export const updatePage = (route, search, page, limit) => (dispatch) => {
   dispatch(getData(route, search, page, limit));
   dispatch({ type: UPDATE_PAGE, payload: page });
+};
+
+export const setDefaultColumn = (name) => (dispatch) => {
+  dispatch({ type: SET_SORT_COLUMN, payload: name });
 };

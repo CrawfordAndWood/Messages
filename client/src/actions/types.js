@@ -32,3 +32,5 @@ export const SORT_BY_COLUMN = "SORT_BY_COLUMN";
 export const SORT_BY_NEW_COLUMN = "SORT_BY_NEW_COLUMN";
 export const ITEM_COUNT = "ITEM_COUNT";
 export const GET_DATA = "GET_DATA";
+export const SET_ROUTE = "SET_ROUTE";
+export const SET_SORT_COLUMN = "SET_SORT_COLUMN";

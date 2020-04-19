@@ -1,6 +1,5 @@
 import React, { Fragment, useEffect } from "react";
-import PropTypes from "prop-types";
-import { getData, addEmptyItem } from "../../actions/view";
+import { getData, addEmptyItem, setDefaultColumn } from "../../actions/view";
 import { connect } from "react-redux";
 import Spinner from "../layout/Spinner";
 import RoleItem from "./RoleItem";
@@ -14,10 +13,12 @@ import "./role.scss";
 const RoleTable = ({
   getData,
   addEmptyItem,
+  setDefaultColumn,
   view: { data, loading, canAddNewRow },
 }) => {
   useEffect(() => {
     getData("roles");
+    setDefaultColumn("name");
   }, []);
 
   return (
@@ -38,7 +39,11 @@ const RoleTable = ({
                   className={
                     canAddNewRow ? "role-table-save" : "role-table-disabled"
                   }
-                  onClick={() => (canAddNewRow ? addEmptyItem() : null)}
+                  onClick={() =>
+                    canAddNewRow
+                      ? addEmptyItem({ _Id: "temp", name: "" })
+                      : null
+                  }
                 >
                   <FontAwesomeIcon icon={faPlusCircle} size="lg" />
                 </th>
@@ -73,4 +78,5 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps, {
   getData,
   addEmptyItem,
+  setDefaultColumn,
 })(RoleTable);
