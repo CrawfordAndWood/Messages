@@ -2,8 +2,6 @@ import React, { Fragment, useEffect } from "react";
 import { getData, addEmptyItem, setDefaultColumn } from "../../actions/view";
 import { connect } from "react-redux";
 import Spinner from "../layout/Spinner";
-// import RoleItem from "./RoleItem";
-
 import SortColumn from "../table/SortColumn";
 import Pagination from "../table/Pagination";
 import Search from "../table/Search";

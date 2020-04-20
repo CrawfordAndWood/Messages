@@ -25,6 +25,7 @@ const initialState = {
   error: {},
   itemCount: 0,
   data: {},
+  tableData: {},
   limit: 10,
   loading: true,
   page: 1,

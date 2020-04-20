@@ -47,7 +47,7 @@ export const getData = (route, search = "", page = 1, limit = 10) => async (
     if (route === null) return false;
     dispatch({ type: LOAD });
     dispatch({ type: SEARCH, payload: search });
-    dispatch({ type: UPDATE_PAGE, payload: page });
+    dispatch({ type: UPDATE_PAGE, payload: 1 });
 
     await dispatch(countItems(route, search));
     const res = await axios.get(`/api/${route}/${search}/${page}/${limit}`);
@@ -108,6 +108,8 @@ export const deleteItem = (route, search, page, limit, rowData) => async (
         "Content-Type": "application/json",
       },
     };
+    console.log(route, search, page, limit, rowData);
+    console.log(rowData.id);
     if (rowData.id !== "temp") {
       await axios.delete(`/api/${route}/${rowData.id}`, config);
       dispatch(setAlert("Item Deleted", "success"));
@@ -139,9 +141,8 @@ export const resetSearch = (route, limit) => (dispatch) => {
   dispatch({ type: RESET_SEARCH });
 };
 
-export const updateLimit = (route, search, newLimit) => async (dispatch) => {
-  console.log("updating limit", route, search, newLimit);
-  await dispatch(getData(route, search, 1, newLimit));
+export const updateLimit = (route, search, newLimit) => (dispatch) => {
+  dispatch(getData(route, search, 1, newLimit));
   dispatch({ type: UPDATE_PAGE, payload: 1 });
   dispatch({ type: UPDATE_LIMIT, payload: newLimit });
 };

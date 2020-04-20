@@ -69,8 +69,10 @@ export const createRole = (
       formData,
       config
     );
+    dispatch({ type: UPDATE_LIMIT, payload: limit });
     await dispatch({ type: GET_ROLES, payload: res.data });
     await dispatch(setAlert(edit ? "Role Updated" : "Role Created", "success"));
+
     if (!edit) {
       dispatch({ type: INCREMENT_COUNT });
     }

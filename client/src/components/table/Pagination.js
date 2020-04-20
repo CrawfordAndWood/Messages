@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { updatePage, updateLimit } from "../../actions/view";
 import {
@@ -12,19 +12,17 @@ import { connect } from "react-redux";
 export const Pagination = ({
   updatePage,
   updateLimit,
-  view: { route, term, page, itemCount, limit },
+  view: { route, search, page, itemCount, limit },
 }) => {
   const onSetPage = (location) => {
     if (location < 1 || location > Math.ceil(itemCount / limit)) {
       return false;
     }
-    updatePage(route, term, location, limit);
+    updatePage(route, search, location, limit);
   };
 
   const onUpdateLimit = (e) => {
-    console.log("updating", e.target.value, limit);
-    e.preventDefault();
-    updateLimit(route, term, e.target.value);
+    updateLimit(route, search, e.target.value);
   };
 
   return (
@@ -74,11 +72,7 @@ export const Pagination = ({
           </td>
           <td className="limit-updater">
             <small>Showing: </small>
-            <select
-              id="cars"
-              onChange={(e) => onUpdateLimit(e)}
-              selected={limit}
-            >
+            <select onChange={(e) => onUpdateLimit(e)} defaultValue={limit}>
               <option value="10">10</option>
               <option value="20">20</option>
               <option value="50">50</option>

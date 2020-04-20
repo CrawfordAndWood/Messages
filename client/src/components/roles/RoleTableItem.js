@@ -60,7 +60,10 @@ const RoleTableItem = ({
           icon={editing || name === "" ? faSave : faCheckCircle}
         />
       </td>
-      <td className="item-table-delete" onClick={() => deleteItem(rowData)}>
+      <td
+        className="item-table-delete"
+        onClick={() => deleteItem(route, search, page, limit, rowData)}
+      >
         <FontAwesomeIcon icon={faTrash} />
       </td>
     </tr>
