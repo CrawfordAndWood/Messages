@@ -22,6 +22,7 @@ export const Pagination = ({
   };
 
   const onUpdateLimit = (e) => {
+    console.log("updating", e.target.value, limit);
     e.preventDefault();
     updateLimit(route, term, e.target.value);
   };
@@ -74,7 +75,7 @@ export const Pagination = ({
           <td className="limit-updater">
             <small>Showing: </small>
             <select
-              id="limit-select"
+              id="cars"
               onChange={(e) => onUpdateLimit(e)}
               selected={limit}
             >

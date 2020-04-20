@@ -67,7 +67,7 @@ router.get("/:term/:page/:limit", auth, async (req, res) => {
 //@desc     Add new role
 //@access   Private - eventually only global admin has option
 router.post(
-  "/:term/:page/:limit",
+  "/",
   [auth, [check("name", "Name is required").not().isEmpty()]],
   async (req, res) => {
     const errors = validationResult(req);
@@ -75,14 +75,14 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { id, name } = req.body;
+    const { id, name, term, page, limit } = req.body;
     //Build role
     //APRIL 20 TODO - all requests should have the paging stuff in the body so it can have just one route
     const roleFields = {};
     roleFields.name = name;
 
     try {
-      let searchName = new RegExp(req.params.term, "i");
+      let searchName = new RegExp(term, "i");
       //check if name exists
       let role = await Roles.findOne({ name: name });
       if (role) {
@@ -97,8 +97,8 @@ router.post(
         let role = new Roles(roleFields);
         await role.save();
         const roles = await Roles.find({ name: searchName })
-          .skip(Number(req.params.page - 1) * Number(req.params.page))
-          .limit(Number(req.params.limit));
+          .skip(Number(page - 1) * Number(limit))
+          .limit(Number(limit));
         return res.json(roles);
       }
 
@@ -114,8 +114,8 @@ router.post(
         );
       }
       const roles = await Roles.find({ name: searchName })
-        .skip(Number(req.params.page - 1) * Number(req.params.page))
-        .limit(Number(req.params.limit));
+        .skip(Number(page - 1) * Number(limit))
+        .limit(Number(limit));
       return res.json(roles);
     } catch (err) {
       res.status(500).send("Server error");

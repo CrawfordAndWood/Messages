@@ -21,6 +21,9 @@ const RoleTableItem = ({
     id: role._id,
     name: role.name,
     editing: false,
+    term: search,
+    limit: limit,
+    page: page,
   });
   const { name, id, editing } = rowData;
 
@@ -31,7 +34,7 @@ const RoleTableItem = ({
   const onSaveRole = (e) => {
     e.preventDefault();
     if (role.name == rowData.name) return false;
-    createItem(rowData, route, search, page, limit, role._id !== "temp");
+    createItem(rowData, route, role._id !== "temp");
     setRowData({ ...rowData, _id: role._id, editing: false });
   };
 
