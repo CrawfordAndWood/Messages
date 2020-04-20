@@ -44,7 +44,7 @@ export const Search = ({
                 autoComplete="off"
                 className="searchInput"
                 type="text"
-                placeholder="Search Roles"
+                placeholder="Search..."
                 name="term"
                 value={term}
                 onChange={(e) => onSearchChange(e)}

@@ -37,7 +37,8 @@ router.get("/:page/:limit", auth, async (req, res) => {
   try {
     const roles = await Roles.find()
       .skip(Number(req.params.page - 1) * Number(req.params.limit))
-      .limit(Number(req.params.limit));
+      .limit(Number(req.params.limit))
+      .sort({ name: 1 });
     res.json(roles);
   } catch (err) {
     console.error(err.messge);
@@ -55,7 +56,8 @@ router.get("/:term/:page/:limit", auth, async (req, res) => {
       name: searchName,
     })
       .skip(Number(req.params.page - 1) * Number(req.params.limit))
-      .limit(Number(req.params.limit));
+      .limit(Number(req.params.limit))
+      .sort({ name: 1 });
     res.json(roles);
   } catch (err) {
     console.error(err.messge);
@@ -115,7 +117,8 @@ router.post(
       }
       const roles = await Roles.find({ name: searchName })
         .skip(Number(page - 1) * Number(limit))
-        .limit(Number(limit));
+        .limit(Number(limit))
+        .sort({ name: 1 });
       return res.json(roles);
     } catch (err) {
       res.status(500).send("Server error");

@@ -5,8 +5,66 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const config = require("config");
 const { check, validationResult } = require("express-validator/check");
+const auth = require("../../middleware/auth");
+const uuid = require("uuid");
 
 const User = require("../../models/User");
+
+router.get("/count", auth, async (req, res) => {
+  try {
+    const userCount = await User.countDocuments();
+    res.json(userCount);
+  } catch (err) {
+    console.error(err.messge);
+
+    res.status(500).send("Server Error");
+  }
+});
+
+router.get("/count/:term", auth, async (req, res) => {
+  try {
+    const sanitisedName = new RegExp(req.params.term, "i");
+    const userCount = await User.countDocuments({ name: sanitisedName });
+    res.json(userCount);
+  } catch (err) {
+    res.status(500).send("Server Error");
+  }
+});
+
+//@route    GET api/users/
+//@desc     Get user management page
+//@access   Private - eventually only global admin has option
+router.get("/:page/:limit", auth, async (req, res) => {
+  try {
+    const users = await User.find()
+      .skip(Number(req.params.page - 1) * Number(req.params.limit))
+      .limit(Number(req.params.limit))
+      .sort({ name: 1 });
+    res.json(users);
+  } catch (err) {
+    console.error(err.messge);
+    res.status(500).send("Server Error");
+  }
+});
+
+//@route    GET api/user/search
+//@desc     Filter user
+//@access   Private - eventually only global admin has option
+router.get("/:term/:page/:limit", auth, async (req, res) => {
+  try {
+    let searchName = new RegExp(req.params.term, "i");
+    const users = await User.find({
+      name: searchName,
+    })
+      .skip(Number(req.params.page - 1) * Number(req.params.limit))
+      .limit(Number(req.params.limit))
+      .sort({ name: 1 });
+    res.json(users);
+  } catch (err) {
+    console.error(err.messge);
+    res.status(500).send("Server Error");
+  }
+});
 
 //@route    POST api/users
 //@desc     Test route
@@ -14,17 +72,14 @@ const User = require("../../models/User");
 router.post(
   "/",
   [
-    check("name", "Name is required")
-      .not()
-      .isEmpty(),
+    check("name", "Name is required").not().isEmpty(),
     check("email", "Please include a valid email").isEmail(),
-    check("postcode", "Postcode is required")
-      .not()
-      .isEmpty(),
-    check(
-      "password",
-      "Please enter a password with 6 or more characters"
-    ).isLength({ min: 6 })
+    //check("postcode", "Postcode is required").not().isEmpty(),
+    // check(
+    //   "password",
+    //   "Please enter a password with 6 or more characters"
+    //)
+    //.isLength({ min: 6 }),
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -45,7 +100,7 @@ router.post(
       const avatar = gravatar.url(email, {
         s: "200",
         r: "pg",
-        d: "mm"
+        d: "mm",
       });
 
       user = new User({
@@ -53,7 +108,7 @@ router.post(
         email,
         postcode,
         avatar,
-        password
+        password,
       });
 
       const salt = await bcrypt.genSalt(10);
@@ -63,8 +118,8 @@ router.post(
       await user.save();
       const payload = {
         user: {
-          id: user.id
-        }
+          id: user.id,
+        },
       };
 
       jwt.sign(

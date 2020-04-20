@@ -54,8 +54,6 @@ export const getData = (route, search = "", page = 1, limit = 10) => async (
     dispatch({ type: GET_DATA, payload: res.data });
     dispatch({ type: SET_ROUTE, payload: route });
   } catch (error) {
-    console.log("cerrors", error);
-
     dispatch({
       type: VIEW_ERROR,
       payload: {
@@ -108,8 +106,6 @@ export const deleteItem = (route, search, page, limit, rowData) => async (
         "Content-Type": "application/json",
       },
     };
-    console.log(route, search, page, limit, rowData);
-    console.log(rowData.id);
     if (rowData.id !== "temp") {
       await axios.delete(`/api/${route}/${rowData.id}`, config);
       dispatch(setAlert("Item Deleted", "success"));
