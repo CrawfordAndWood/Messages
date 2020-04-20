@@ -1,34 +1,38 @@
 import { sortTableColumn } from "../utils/tableFunctions";
 import {
-  ADD_ROLE,
-  ROLE_ERROR,
-  GET_ROLE,
-  GET_ROLES,
-  UPDATE_ROLE,
+  VIEW_ERROR,
   ADD_EMPTY_ROW,
-  SORT_BY_NAME,
+  EDIT_ROW,
+  ADD_ITEM,
+  DELETE_ITEM,
+  GET_DATA,
+  SORT_BY_COLUMN,
+  SORT_BY_NEW_COLUMN,
   SEARCH,
   RESET_SEARCH,
   LOAD,
   UPDATE_PAGE,
   UPDATE_LIMIT,
-  ROLE_COUNT,
+  ITEM_COUNT,
   INCREMENT_COUNT,
   DECREMENT_COUNT,
+  SET_ROUTE,
+  SET_SORT_COLUMN,
 } from "../actions/types";
 
 const initialState = {
-  role: null,
-  roles: [],
-  loading: true,
+  canAddNewRow: true,
   error: {},
-  canAddNewRole: true,
-  sortDescending: true,
-  sortColumn: "name",
-  searchTerm: "",
+  itemCount: 0,
+  data: {},
+  tableData: {},
   limit: 10,
+  loading: true,
   page: 1,
-  roleCount: 0,
+  route: "",
+  search: "",
+  sortDescending: true,
+  sortColumn: "",
 };
 export default function (state = initialState, action) {
   const { type, payload } = action;
@@ -36,65 +40,76 @@ export default function (state = initialState, action) {
     case ADD_EMPTY_ROW:
       return {
         ...state,
-        roles: [payload, ...state.roles],
+        data: [payload, ...state.data],
         loading: false,
-        canAddNewRole: false,
+        canAddNewRow: false,
       };
-    case ADD_ROLE:
-    case UPDATE_ROLE:
+    case GET_DATA:
       return {
         ...state,
-        roles: [...state.roles, payload],
-        loading: false,
-        canAddNewRole: true,
-        searchTerm: null,
-      };
-    case GET_ROLE:
-      return {
-        ...state,
-        role: payload,
-        loading: false,
-        canAddNewRole: true,
-      };
-    case GET_ROLES:
-      return {
-        ...state,
-        roles: payload
+        data: payload
           .slice()
           .sort(sortTableColumn(state.sortColumn, state.sortDescending)),
         loading: false,
-        canAddNewRole: true,
+        canAddNewRow: true,
       };
-    case ROLE_COUNT:
+    // case GET_DATA:
+    //   return {
+    //     ...state,
+    //     roles: payload
+    //       .slice()
+    //       .sort(sortTableColumn(state.sortColumn, state.sortDescending)),
+    //     loading: false,
+    //     canAddNewRole: true,
+    //   };
+    case ITEM_COUNT:
       return {
         ...state,
-        roleCount: payload,
+        itemCount: payload,
       };
     case SEARCH:
       return {
         ...state,
-        searchTerm: payload,
+        search: payload,
       };
     case RESET_SEARCH:
       return {
         ...state,
-        searchTerm: "",
+        search: "",
+        canAddNewRole: true,
       };
-    case ROLE_ERROR:
+    case SET_ROUTE:
+      return {
+        ...state,
+        route: payload,
+      };
+    case VIEW_ERROR:
       return {
         ...state,
         error: payload,
         loading: false,
       };
-    case SORT_BY_NAME:
+    case SET_SORT_COLUMN:
+      return {
+        ...state,
+        sortColumn: payload,
+      };
+    case SORT_BY_COLUMN:
       return {
         ...state,
         loading: false,
-        roles: state.roles
+        data: state.data
           .slice()
           .sort(sortTableColumn(payload, !state.sortDescending)),
-        sortColumn: payload,
         sortDescending: !state.sortDescending,
+      };
+    case SORT_BY_NEW_COLUMN:
+      return {
+        ...state,
+        loading: false,
+        data: state.data.slice().sort(sortTableColumn(payload, true)),
+        sortDescending: true,
+        sortColumn: payload,
       };
     case LOAD:
       return {
@@ -114,12 +129,12 @@ export default function (state = initialState, action) {
     case INCREMENT_COUNT:
       return {
         ...state,
-        roleCount: state.roleCount + 1,
+        itemCount: state.itemCount + 1,
       };
     case DECREMENT_COUNT:
       return {
         ...state,
-        roleCount: state.roleCount - 1,
+        itemCount: state.itemCount - 1,
       };
     default:
       return state;

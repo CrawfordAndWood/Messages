@@ -1,13 +1,13 @@
 $myBlue: royalblue;
 
-.roles-paging {
+.items-paging {
 }
 
-.roles-paging td {
+.items-paging td {
   height: 2em;
 }
 
-.roles-paging input {
+.items-paging input {
   width: 2em;
 }
 
@@ -36,7 +36,7 @@ $myBlue: royalblue;
   width: 20%;
 }
 
-.roleInput {
+.itemInput {
   padding: 0.2em;
   margin-top: 0.1em;
   margin-bottom: 0.1em;
@@ -63,11 +63,11 @@ $myBlue: royalblue;
   height: 2em;
 }
 
-tr:nth-child(odd) .roleInput {
+tr:nth-child(odd) .itemInput {
   background-color: snow;
 }
 
-tr:nth-child(even) .roleInput {
+tr:nth-child(even) .itemInput {
   background-color: rgba(233, 231, 231, 0.911);
 }
 
@@ -118,15 +118,15 @@ table tr:nth-child(even) td {
   background-color: rgba(233, 231, 231, 0.911);
 }
 
-.role-table-save svg {
+.item-table-save svg {
   cursor: pointer;
   color: green;
 }
 
-.role-table-disabled svg {
+.item-table-disabled svg {
   color: grey;
 }
-.role-table-delete svg {
+.item-table-delete svg {
   cursor: pointer;
   color: red;
 }
@@ -139,7 +139,7 @@ table tr:nth-child(even) td {
   float: right;
 }
 
-.role-table-editing svg {
+.item-table-editing svg {
   cursor: pointer;
   color: blue;
 }

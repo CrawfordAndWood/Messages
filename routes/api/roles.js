@@ -8,17 +8,19 @@ const Roles = require("../../models/Roles");
 
 router.get("/count", auth, async (req, res) => {
   try {
-    console.log("y");
+    console.log("counting");
     const roleCount = await Roles.countDocuments();
     res.json(roleCount);
   } catch (err) {
     console.error(err.messge);
+
     res.status(500).send("Server Error");
   }
 });
 
 router.get("/count/:term", auth, async (req, res) => {
   try {
+    console.log("counting");
     const sanitisedName = new RegExp(req.params.term, "i");
     const roleCount = await Roles.countDocuments({ name: sanitisedName });
     res.json(roleCount);
@@ -33,10 +35,6 @@ router.get("/count/:term", auth, async (req, res) => {
 //@access   Private - eventually only global admin has option
 router.get("/:page/:limit", auth, async (req, res) => {
   try {
-    //how do I tell it the limit if it's the last page?
-    //if
-    console.log("paging");
-    console.log(req.params);
     const roles = await Roles.find()
       .skip(Number(req.params.page - 1) * Number(req.params.limit))
       .limit(Number(req.params.limit));
@@ -52,12 +50,11 @@ router.get("/:page/:limit", auth, async (req, res) => {
 //@access   Private - eventually only global admin has option
 router.get("/:term/:page/:limit", auth, async (req, res) => {
   try {
-    console.log("searching");
     let searchName = new RegExp(req.params.term, "i");
     const roles = await Roles.find({
       name: searchName,
     })
-      .skip(Number(req.params.page - 1) * Number(req.params.page))
+      .skip(Number(req.params.page - 1) * Number(req.params.limit))
       .limit(Number(req.params.limit));
     res.json(roles);
   } catch (err) {
@@ -70,7 +67,7 @@ router.get("/:term/:page/:limit", auth, async (req, res) => {
 //@desc     Add new role
 //@access   Private - eventually only global admin has option
 router.post(
-  "/:page/:limit",
+  "/",
   [auth, [check("name", "Name is required").not().isEmpty()]],
   async (req, res) => {
     const errors = validationResult(req);
@@ -78,12 +75,14 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { id, name } = req.body;
+    const { id, name, term, page, limit } = req.body;
     //Build role
+    //APRIL 20 TODO - all requests should have the paging stuff in the body so it can have just one route
     const roleFields = {};
     roleFields.name = name;
 
     try {
+      let searchName = new RegExp(term, "i");
       //check if name exists
       let role = await Roles.findOne({ name: name });
       if (role) {
@@ -97,9 +96,9 @@ router.post(
         roleFields.id = uuid.v4();
         let role = new Roles(roleFields);
         await role.save();
-        const roles = await Roles.find()
-          .skip(Number(req.params.page - 1) * Number(req.params.page))
-          .limit(Number(req.params.limit));
+        const roles = await Roles.find({ name: searchName })
+          .skip(Number(page - 1) * Number(limit))
+          .limit(Number(limit));
         return res.json(roles);
       }
 
@@ -114,12 +113,11 @@ router.post(
           }
         );
       }
-      const roles = await Roles.find()
-        .skip(Number(req.params.page - 1) * Number(req.params.page))
-        .limit(Number(req.params.limit));
+      const roles = await Roles.find({ name: searchName })
+        .skip(Number(page - 1) * Number(limit))
+        .limit(Number(limit));
       return res.json(roles);
     } catch (err) {
-      console.error("error me", err);
       res.status(500).send("Server error");
     }
   }
@@ -133,8 +131,7 @@ router.delete("/:id", auth, async (req, res) => {
     //remove role
     const { id } = req.params;
     await Roles.findOneAndRemove({ _id: id });
-    const roles = await Roles.find();
-    return res.json(roles);
+    return res.json(true);
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");

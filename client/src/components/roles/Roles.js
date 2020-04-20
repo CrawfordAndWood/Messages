@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import Spinner from "../layout/Spinner";
 import RoleItem from "./RoleItem";
+//import SortColumn from "../table/SortColumn";
 import {
   getRoles,
   addEmptyRole,
@@ -129,7 +130,7 @@ const Roles = ({
                 <th>
                   Name
                   <FontAwesomeIcon
-                    onClick={() => sortbyName()}
+                    onClick={() => sortbyName("name")}
                     className="table-sort-icon"
                     icon={
                       sortDescending ? faChevronCircleDown : faChevronCircleUp
@@ -233,11 +234,11 @@ const Roles = ({
 
 Roles.propTypes = {
   getRoles: PropTypes.func.isRequired,
-  role: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   role: state.role,
+  table: state.table,
 });
 
 export default connect(mapStateToProps, {

@@ -1,10 +1,17 @@
 @import url("https://fonts.googleapis.com/css?family=Saira+Semi+Condensed|Sanchez|Satisfy|Scada|Scheherazade|Seaweed+Script|Zilla+Slab&display=swap");
-$myBlue: rgba(65, 115, 189, 0.89);
+$myBlue: royalBlue;
 $myBlueTrim: rgba(203, 218, 236, 0.863);
 $mrSuperDarkBlueFeet: rgba(15, 8, 41, 0.884);
 $mybabground: rgba(255, 255, 255, 0.986);
 $myColor: rgb(131, 12, 12);
 $myColorLight: rgb(131, 62, 62);
+
+.loader {
+  color: royalblue;
+  margin-left: 50%;
+  margin-right: 50%;
+  margin-top: 5em;
+}
 
 span {
   vertical-align: bottom;

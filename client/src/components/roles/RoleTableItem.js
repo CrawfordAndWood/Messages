@@ -1,6 +1,7 @@
 import React, { Fragment, useState } from "react";
 import PropTypes from "prop-types";
 import "./role.scss";
+import "../table/table.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCheckCircle,
@@ -8,13 +9,21 @@ import {
   faSave,
 } from "@fortawesome/free-solid-svg-icons";
 import { connect } from "react-redux";
-import { createRole, deleteRole } from "../../actions/role";
+import { createItem, deleteItem } from "../../actions/view";
 
-const RoleItem = ({ role, createRole, deleteRole, view: { limit, page } }) => {
+const RoleTableItem = ({
+  role,
+  createItem,
+  deleteItem,
+  view: { search, route, limit, page },
+}) => {
   const [rowData, setRowData] = useState({
     id: role._id,
     name: role.name,
     editing: false,
+    term: search,
+    limit: limit,
+    page: page,
   });
   const { name, id, editing } = rowData;
 
@@ -25,7 +34,7 @@ const RoleItem = ({ role, createRole, deleteRole, view: { limit, page } }) => {
   const onSaveRole = (e) => {
     e.preventDefault();
     if (role.name == rowData.name) return false;
-    createRole(rowData, page, limit, role._id !== "temp");
+    createItem(rowData, route, role._id !== "temp");
     setRowData({ ...rowData, _id: role._id, editing: false });
   };
 
@@ -43,7 +52,7 @@ const RoleItem = ({ role, createRole, deleteRole, view: { limit, page } }) => {
       </td>
       <td
         className={
-          editing || name === "" ? "role-table-editing" : "role-table-save"
+          editing || name === "" ? "item-table-editing" : "item-table-save"
         }
         onClick={(e) => onSaveRole(e)}
       >
@@ -51,19 +60,20 @@ const RoleItem = ({ role, createRole, deleteRole, view: { limit, page } }) => {
           icon={editing || name === "" ? faSave : faCheckCircle}
         />
       </td>
-      <td className="role-table-delete" onClick={() => deleteRole(rowData)}>
+      <td
+        className="item-table-delete"
+        onClick={() => deleteItem(route, search, page, limit, rowData)}
+      >
         <FontAwesomeIcon icon={faTrash} />
       </td>
     </tr>
   );
 };
 
-RoleItem.propTypes = {
-  role: PropTypes.object.isRequired,
-};
-
 const mapStateToProps = (state) => ({
   view: state.view,
 });
 
-export default connect(mapStateToProps, { createRole, deleteRole })(RoleItem);
+export default connect(mapStateToProps, { createItem, deleteItem })(
+  RoleTableItem
+);
