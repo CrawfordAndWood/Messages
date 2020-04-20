@@ -50,7 +50,7 @@ export default function (state = initialState, action) {
           .slice()
           .sort(sortTableColumn(state.sortColumn, state.sortDescending)),
         loading: false,
-        canAddNewRole: true,
+        canAddNewRow: true,
       };
     // case GET_DATA:
     //   return {
@@ -62,7 +62,6 @@ export default function (state = initialState, action) {
     //     canAddNewRole: true,
     //   };
     case ITEM_COUNT:
-      console.log("updating item count", payload);
       return {
         ...state,
         itemCount: payload,
@@ -76,6 +75,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         search: "",
+        canAddNewRole: true,
       };
     case SET_ROUTE:
       return {

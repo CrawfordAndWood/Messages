@@ -2,13 +2,15 @@ import React, { Fragment, useEffect } from "react";
 import { getData, addEmptyItem, setDefaultColumn } from "../../actions/view";
 import { connect } from "react-redux";
 import Spinner from "../layout/Spinner";
-import RoleItem from "./RoleItem";
+// import RoleItem from "./RoleItem";
+
 import SortColumn from "../table/SortColumn";
 import Pagination from "../table/Pagination";
 import Search from "../table/Search";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import "./role.scss";
+import RoleTableItem from "./RoleTableItem";
 
 const RoleTable = ({
   getData,
@@ -41,7 +43,7 @@ const RoleTable = ({
                   }
                   onClick={() =>
                     canAddNewRow
-                      ? addEmptyItem({ _Id: "temp", name: "" })
+                      ? addEmptyItem({ _id: "temp", name: "" })
                       : null
                   }
                 >
@@ -54,7 +56,7 @@ const RoleTable = ({
               {data.length > 0 ? (
                 <Fragment>
                   {data.map((role) => (
-                    <RoleItem key={role._id} role={role} />
+                    <RoleTableItem key={role._id} role={role} />
                   ))}
                 </Fragment>
               ) : (

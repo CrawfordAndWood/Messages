@@ -1,6 +1,7 @@
 import React, { Fragment, useState } from "react";
 import PropTypes from "prop-types";
 import "./role.scss";
+import "../table/table.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCheckCircle,
@@ -14,7 +15,7 @@ const RoleTableItem = ({
   role,
   createItem,
   deleteItem,
-  view: { limit, page },
+  view: { search, route, limit, page },
 }) => {
   const [rowData, setRowData] = useState({
     id: role._id,
@@ -30,7 +31,7 @@ const RoleTableItem = ({
   const onSaveRole = (e) => {
     e.preventDefault();
     if (role.name == rowData.name) return false;
-    createItem(rowData, page, limit, role._id !== "temp");
+    createItem(rowData, route, search, page, limit, role._id !== "temp");
     setRowData({ ...rowData, _id: role._id, editing: false });
   };
 
@@ -61,10 +62,6 @@ const RoleTableItem = ({
       </td>
     </tr>
   );
-};
-
-RoleItem.propTypes = {
-  role: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({

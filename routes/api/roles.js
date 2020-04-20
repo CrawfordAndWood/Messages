@@ -13,6 +13,7 @@ router.get("/count", auth, async (req, res) => {
     res.json(roleCount);
   } catch (err) {
     console.error(err.messge);
+
     res.status(500).send("Server Error");
   }
 });
@@ -76,6 +77,7 @@ router.post(
 
     const { id, name } = req.body;
     //Build role
+    //APRIL 20 TODO - all requests should have the paging stuff in the body so it can have just one route
     const roleFields = {};
     roleFields.name = name;
 

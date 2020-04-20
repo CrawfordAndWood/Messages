@@ -46,7 +46,7 @@ export const getData = (route, search = "", page = 1, limit = 10) => async (
   try {
     if (route === null) return false;
     dispatch({ type: LOAD });
-    dispatch({ type: SEARCH });
+    dispatch({ type: SEARCH, payload: search });
     dispatch({ type: UPDATE_PAGE, payload: 1 });
 
     await dispatch(countItems(route, search));
@@ -70,6 +70,7 @@ export const getData = (route, search = "", page = 1, limit = 10) => async (
 export const createItem = (
   formData,
   route,
+  search = "",
   page = 1,
   limit = 10,
   edit = false
@@ -80,9 +81,9 @@ export const createItem = (
         "Content-Type": "application/json",
       },
     };
-
+    console.log("firing off", route, search, page, limit, edit);
     const res = await axios.post(
-      `/api/${route}/${page}/${limit}`,
+      `/api/${route}/${search}/${page}/${limit}`,
       formData,
       config
     );
