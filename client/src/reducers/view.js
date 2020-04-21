@@ -47,9 +47,7 @@ export default function (state = initialState, action) {
     case GET_DATA:
       return {
         ...state,
-        data: payload
-          .slice()
-          .sort(sortTableColumn(state.sortColumn, state.sortDescending)),
+        data: payload,
         loading: false,
         canAddNewRow: true,
       };

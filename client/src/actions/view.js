@@ -51,13 +51,14 @@ export const getData = (route, search = "", page = 1, limit = 10) => async (
 
     await dispatch(countItems(route, search));
     const res = await axios.get(`/api/${route}/${search}/${page}/${limit}`);
+    console.log(res.data);
     dispatch({ type: GET_DATA, payload: res.data });
     dispatch({ type: SET_ROUTE, payload: route });
   } catch (error) {
     dispatch({
       type: VIEW_ERROR,
       payload: {
-        msg: error.response.statusText,
+        msg: error.response,
         status: error.response.status,
       },
     });
@@ -74,7 +75,7 @@ export const createItem = (formData, route, edit = false) => async (
         "Content-Type": "application/json",
       },
     };
-    console.log("firing off", edit);
+    console.log("firing off", formData);
     const res = await axios.post(`/api/${route}`, formData, config);
     await dispatch({ type: GET_DATA, payload: res.data });
     await dispatch(setAlert(edit ? "Item Updated" : "Item Created", "success"));

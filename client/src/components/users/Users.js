@@ -17,24 +17,20 @@ const Users = ({
   view: { data, loading, canAddNewRow },
 }) => {
   useEffect(() => {
-    getData("users");
+    getData("users/user-management");
     setDefaultColumn("name");
   }, []);
 
   return (
     <Fragment>
-      <Search route="users" />
+      <Search route="users/user-management" />
       {loading ? (
         <Spinner />
       ) : (
         <Fragment>
-          <table className="table">
+          <table className="table user-management-table">
             <thead>
               <tr>
-                {/* <th>
-                  Postcode
-                  <SortColumn name={"postcode"} />
-                </th> */}
                 <th>
                   Email
                   <SortColumn name={"email"} />
@@ -43,13 +39,23 @@ const Users = ({
                   Name
                   <SortColumn name={"name"} />
                 </th>
+                <th>
+                  Postcode
+                  <SortColumn name={"postcode"} />
+                </th>
+                <th>Role</th>
                 <th
                   className={
                     canAddNewRow ? "user-table-save" : "user-table-disabled"
                   }
                   onClick={() =>
                     canAddNewRow
-                      ? addEmptyItem({ _id: "temp", name: "" })
+                      ? addEmptyItem({
+                          _id: "temp",
+                          postcode: "",
+                          email: "",
+                          name: "",
+                        })
                       : null
                   }
                 >
@@ -59,10 +65,10 @@ const Users = ({
               </tr>
             </thead>
             <tbody className="users">
-              {data.length > 0 ? (
+              {data.users.length > 0 ? (
                 <Fragment>
-                  {data.map((user) => (
-                    <UserItems key={user._id} user={user} />
+                  {data.users.map((user) => (
+                    <UserItems key={user._id} user={user} roles={data.roles} />
                   ))}
                 </Fragment>
               ) : (

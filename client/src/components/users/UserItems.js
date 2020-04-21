@@ -15,19 +15,21 @@ const UserItems = ({
   user,
   createItem,
   deleteItem,
+  roles,
   view: { search, route, limit, page },
 }) => {
   const [rowData, setRowData] = useState({
     id: user._id,
-    //postcode: user.postcode,
+    postcode: user.postcode,
     email: user.email,
     name: user.name,
+    role: user.role,
     editing: false,
     term: search,
     limit: limit,
     page: page,
   });
-  const { email, postcode, name, id, editing } = rowData;
+  const { email, postcode, name, role, id, editing } = rowData;
 
   const onChange = (e) => {
     setRowData({ ...rowData, [e.target.name]: e.target.value, editing: true });
@@ -35,23 +37,23 @@ const UserItems = ({
 
   const onSaveUser = (e) => {
     e.preventDefault();
-    if (user.name == rowData.name) return false;
+    console.log("save edit2");
+
+    if (
+      user.name == rowData.name &&
+      user.email == rowData.email &&
+      user.postcode === rowData.postcode &&
+      user.role === rowData.role
+    )
+      return false;
+    console.log("save edit3");
+
     createItem(rowData, route, user._id !== "temp");
     setRowData({ ...rowData, _id: user._id, editing: false });
   };
 
   return (
     <tr key={user._id}>
-      {/* <td>
-        <input
-          className="userInput"
-          type="text"
-          placeholder="Postcode"
-          name="postcode"
-          value={postcode}
-          onChange={(e) => onChange(e)}
-        />
-      </td> */}
       <td>
         <input
           className="userInput"
@@ -71,6 +73,27 @@ const UserItems = ({
           value={name}
           onChange={(e) => onChange(e)}
         />
+      </td>
+      <td>
+        <input
+          className="userInput"
+          type="text"
+          placeholder="Postcode"
+          name="postcode"
+          value={postcode === null ? "" : postcode}
+          onChange={(e) => onChange(e)}
+        />
+      </td>
+      <td>
+        {" "}
+        <select onChange={(e) => onChange(e)} defaultValue={""}>
+          {roles.map((role) => (
+            <option key={role._id}>{role.name}</option>
+          ))}
+          {/* <option value="roleid1">Global Admin</option>
+          <option value="roleid2">Group Admin</option>
+          <option value="roleid3">Project Admin</option> */}
+        </select>{" "}
       </td>
       <td
         className={
