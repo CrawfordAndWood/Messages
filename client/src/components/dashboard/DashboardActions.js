@@ -22,11 +22,6 @@ const DashboardActions = () => {
           <FontAwesomeIcon icon={faAddressCard} size="lg" />
         </div>
       </Link>
-
-      <div className="action-item" data-tip="Add New User" data-type="success">
-        <FontAwesomeIcon icon={faUserPlus} size="lg" />
-        <Link to="/add-new-user"></Link>
-      </div>
       <Link to="/roles">
         <div
           className="action-item"

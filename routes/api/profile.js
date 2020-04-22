@@ -62,8 +62,6 @@ router.post(
       }
 
       profile = new Profile(profileFields);
-      console.log(profileFields);
-      console.log(profile);
 
       await profile.save();
       res.json(profile);
@@ -92,7 +90,6 @@ router.get("/", async (req, res) => {
 //@access Public
 router.get("/user/:user_id", async (req, res) => {
   try {
-    console.log("finding user", req.params.user_id);
     const profile = await Profile.findOne({
       user: req.params.user_id,
     }).populate("user", ["name", "avatar"]);
