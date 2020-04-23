@@ -23,15 +23,16 @@ const UserItems = ({
     postcode: user.postcode,
     email: user.email,
     name: user.name,
-    role: user.role,
+    roleId: user.role,
     editing: false,
     term: search,
     limit: limit,
     page: page,
   });
-  const { email, postcode, name, role, id, editing } = rowData;
+  const { email, postcode, name, roleId, id, editing } = rowData;
 
   const onChange = (e) => {
+    console.log(rowData, e.target.name, e.target.value);
     setRowData({ ...rowData, [e.target.name]: e.target.value, editing: true });
   };
 
@@ -43,9 +44,10 @@ const UserItems = ({
       user.name == rowData.name &&
       user.email == rowData.email &&
       user.postcode === rowData.postcode &&
-      user.role === rowData.role
-    )
+      user.role === rowData.roleId
+    ) {
       return false;
+    }
     console.log("save edit3");
 
     createItem(rowData, route, user._id !== "temp");
@@ -86,13 +88,20 @@ const UserItems = ({
       </td>
       <td>
         {" "}
-        <select onChange={(e) => onChange(e)} defaultValue={""}>
+        <select
+          onChange={(e) => onChange(e)}
+          name="roleId"
+          defaultValue={user.role}
+        >
           {roles.map((role) => (
-            <option key={role._id}>{role.name}</option>
+            <option
+              className="role-asignment-option"
+              key={role._id}
+              value={role._id}
+            >
+              {role.name}
+            </option>
           ))}
-          {/* <option value="roleid1">Global Admin</option>
-          <option value="roleid2">Group Admin</option>
-          <option value="roleid3">Project Admin</option> */}
         </select>{" "}
       </td>
       <td

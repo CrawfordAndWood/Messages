@@ -1,59 +1,61 @@
 import { sortTableColumn } from "../utils/tableFunctions";
 import {
-  ADD_ROLE,
-  GET_ROLE,
-  GET_ROLES,
-  UPDATE_ROLE,
-  DELETE_ROLE,
+  ADD_EMPTY_USER,
+  GET_USER,
+  GET_USERS,
+  UPDATE_USER,
+  SORT,
 } from "../actions/types";
 
 const initialState = {
-  role: null,
-  roles: [],
-  loading: true,
-  error: {},
-  canAddNewRole: true,
+  user: null,
+  users: [],
+  sortColumn: "",
   sortDescending: true,
-  sortColumn: "name",
-  searchTerm: "",
-  limit: 10,
-  page: 1,
-  roleCount: 0,
 };
 export default function (state = initialState, action) {
   const { type, payload } = action;
   switch (type) {
-    case ADD_EMPTY_ROW:
+    case ADD_EMPTY_USER:
       return {
         ...state,
-        roles: [payload, ...state.roles],
+        users: [payload, ...state.data],
         loading: false,
-        canAddNewRole: false,
+        canAddNewRow: false,
       };
-    case ADD_ROLE:
-    case UPDATE_ROLE:
+    case UPDATE_USER:
       return {
         ...state,
-        roles: [...state.roles, payload],
+        users: [...state.users, payload],
         loading: false,
         canAddNewRole: true,
         searchTerm: null,
       };
-    case GET_ROLE:
+    case GET_USER:
       return {
         ...state,
-        role: payload,
+        user: payload,
         loading: false,
         canAddNewRole: true,
       };
-    case GET_ROLES:
+    case GET_USERS:
       return {
         ...state,
-        roles: payload
+        users: payload
           .slice()
           .sort(sortTableColumn(state.sortColumn, state.sortDescending)),
         loading: false,
         canAddNewRole: true,
+      };
+    case SORT:
+      return {
+        ...state,
+        loading: false,
+        users: state.users
+          .slice()
+          .sort(sortTableColumn(payload, !state.sortDescending)),
+        sortColumn: payload,
+        sortDescending: !state.sortDescending,
       };
     default:
       return state;

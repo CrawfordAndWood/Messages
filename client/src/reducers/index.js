@@ -4,6 +4,7 @@ import auth from "./auth";
 import profile from "./profile";
 import role from "./role";
 import view from "./view";
+import user from "./user";
 
 export default combineReducers({
   alert,
@@ -11,4 +12,5 @@ export default combineReducers({
   profile,
   role,
   view,
+  user,
 });

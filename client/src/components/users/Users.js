@@ -1,6 +1,7 @@
 import React, { Fragment, useEffect } from "react";
 import "./users.scss";
 import { getData, addEmptyItem, setDefaultColumn } from "../../actions/view";
+import { getUsers, addEmptyUser } from "../../actions/user";
 import { connect } from "react-redux";
 import Spinner from "../layout/Spinner";
 import SortColumn from "../table/SortColumn";
@@ -11,14 +12,13 @@ import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import UserItems from "./UserItems";
 
 const Users = ({
-  getData,
-  addEmptyItem,
-  setDefaultColumn,
-  view: { data, loading, canAddNewRow },
+  getUsers,
+  addEmptyUser,
+  view: { loading, canAddNewRow },
+  user: { users },
 }) => {
   useEffect(() => {
-    getData("users/user-management");
-    setDefaultColumn("name");
+    getUsers();
   }, []);
 
   return (
@@ -48,16 +48,7 @@ const Users = ({
                   className={
                     canAddNewRow ? "user-table-save" : "user-table-disabled"
                   }
-                  onClick={() =>
-                    canAddNewRow
-                      ? addEmptyItem({
-                          _id: "temp",
-                          postcode: "",
-                          email: "",
-                          name: "",
-                        })
-                      : null
-                  }
+                  onClick={() => (canAddNewRow ? addEmptyUser() : null)}
                 >
                   <FontAwesomeIcon icon={faPlusCircle} size="lg" />
                 </th>
@@ -65,10 +56,10 @@ const Users = ({
               </tr>
             </thead>
             <tbody className="users">
-              {data.users.length > 0 ? (
+              {users !== undefined ? (
                 <Fragment>
-                  {data.users.map((user) => (
-                    <UserItems key={user._id} user={user} roles={data.roles} />
+                  {users.map((user) => (
+                    <UserItems key={user._id} user={user} />
                   ))}
                 </Fragment>
               ) : (
@@ -87,10 +78,10 @@ const Users = ({
 
 const mapStateToProps = (state) => ({
   view: state.view,
+  user: state.user,
 });
 
 export default connect(mapStateToProps, {
-  getData,
-  addEmptyItem,
-  setDefaultColumn,
+  getUsers,
+  addEmptyUser,
 })(Users);

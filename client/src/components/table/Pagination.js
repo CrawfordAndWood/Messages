@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { updatePage, updateLimit } from "../../actions/view";
 import {
   faChevronLeft,
   faChevronRight,
@@ -10,19 +9,19 @@ import {
 import { connect } from "react-redux";
 
 export const Pagination = ({
-  updatePage,
-  updateLimit,
+  updatePageFn,
+  updateLimitFn,
   view: { route, search, page, itemCount, limit },
 }) => {
   const onSetPage = (location) => {
     if (location < 1 || location > Math.ceil(itemCount / limit)) {
       return false;
     }
-    updatePage(route, search, location, limit);
+    updatePageFn(route, search, location, limit);
   };
 
   const onUpdateLimit = (e) => {
-    updateLimit(route, search, e.target.value);
+    updateLimitFn(route, search, e.target.value);
   };
 
   return (
@@ -89,7 +88,4 @@ const mapStateToProps = (state) => ({
   view: state.view,
 });
 
-export default connect(mapStateToProps, {
-  updatePage,
-  updateLimit,
-})(Pagination);
+export default connect(mapStateToProps, {})(Pagination);

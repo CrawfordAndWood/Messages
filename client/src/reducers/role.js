@@ -1,46 +1,28 @@
 import { sortTableColumn } from "../utils/tableFunctions";
 import {
-  ADD_ROLE,
-  ROLE_ERROR,
+  ADD_EMPTY_ROLE,
   GET_ROLE,
   GET_ROLES,
   UPDATE_ROLE,
-  ADD_EMPTY_ROW,
-  SORT_BY_NAME,
-  SEARCH,
-  RESET_SEARCH,
-  LOAD,
-  UPDATE_PAGE,
-  UPDATE_LIMIT,
-  ROLE_COUNT,
-  INCREMENT_COUNT,
-  DECREMENT_COUNT,
+  SORT,
 } from "../actions/types";
 
 const initialState = {
   role: null,
   roles: [],
-  loading: true,
-  error: {},
-  canAddNewRole: true,
+  sortColumn: "",
   sortDescending: true,
-  sortColumn: "name",
-  searchTerm: "",
-  limit: 10,
-  page: 1,
-  roleCount: 0,
 };
 export default function (state = initialState, action) {
   const { type, payload } = action;
   switch (type) {
-    case ADD_EMPTY_ROW:
+    case ADD_EMPTY_ROLE:
       return {
         ...state,
-        roles: [payload, ...state.roles],
+        data: [payload, ...state.data],
         loading: false,
-        canAddNewRole: false,
+        canAddNewRow: false,
       };
-    case ADD_ROLE:
     case UPDATE_ROLE:
       return {
         ...state,
@@ -65,28 +47,8 @@ export default function (state = initialState, action) {
         loading: false,
         canAddNewRole: true,
       };
-    case ROLE_COUNT:
-      return {
-        ...state,
-        roleCount: payload,
-      };
-    case SEARCH:
-      return {
-        ...state,
-        searchTerm: payload,
-      };
-    case RESET_SEARCH:
-      return {
-        ...state,
-        searchTerm: "",
-      };
-    case ROLE_ERROR:
-      return {
-        ...state,
-        error: payload,
-        loading: false,
-      };
-    case SORT_BY_NAME:
+
+    case SORT:
       return {
         ...state,
         loading: false,
@@ -95,31 +57,6 @@ export default function (state = initialState, action) {
           .sort(sortTableColumn(payload, !state.sortDescending)),
         sortColumn: payload,
         sortDescending: !state.sortDescending,
-      };
-    case LOAD:
-      return {
-        ...state,
-        loading: true,
-      };
-    case UPDATE_LIMIT:
-      return {
-        ...state,
-        limit: payload,
-      };
-    case UPDATE_PAGE:
-      return {
-        ...state,
-        page: payload,
-      };
-    case INCREMENT_COUNT:
-      return {
-        ...state,
-        roleCount: state.roleCount + 1,
-      };
-    case DECREMENT_COUNT:
-      return {
-        ...state,
-        roleCount: state.roleCount - 1,
       };
     default:
       return state;

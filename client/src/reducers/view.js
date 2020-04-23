@@ -40,26 +40,15 @@ export default function (state = initialState, action) {
     case ADD_EMPTY_ROW:
       return {
         ...state,
-        data: [payload, ...state.data],
         loading: false,
         canAddNewRow: false,
       };
     case GET_DATA:
       return {
         ...state,
-        data: payload,
         loading: false,
         canAddNewRow: true,
       };
-    // case GET_DATA:
-    //   return {
-    //     ...state,
-    //     roles: payload
-    //       .slice()
-    //       .sort(sortTableColumn(state.sortColumn, state.sortDescending)),
-    //     loading: false,
-    //     canAddNewRole: true,
-    //   };
     case ITEM_COUNT:
       return {
         ...state,

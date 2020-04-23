@@ -13,7 +13,6 @@ import NotFound from "./components/layout/NotFound";
 import PrivateRoute from "./components/routing/PrivateRoute";
 import Roles from "./components/roles/Roles";
 import Users from "./components/users/Users";
-import RoleTable from "./components/roles/RoleTable";
 //redux
 import { Provider } from "react-redux";
 import store from "./store";
@@ -53,8 +52,7 @@ const App = () => {
                   path="/edit-profile"
                   component={EditProfile}
                 />
-                {/* <PrivateRoute exact path="/roles" component={Roles} /> */}
-                <PrivateRoute exact path="/roles" component={RoleTable} />
+                <PrivateRoute exact path="/roles" component={Roles} />
                 <PrivateRoute exact path="/users" component={Users} />
                 <PrivateRoute component={NotFound} />
               </Switch>

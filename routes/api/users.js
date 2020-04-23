@@ -86,8 +86,8 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
     console.log("saving user");
-    let { id, email, name, postcode, password, term, page, limit } = req.body;
-    const userFields = { id, email, name, postcode, password };
+    let { id, email, name, postcode, roleId, term, page, limit } = req.body;
+    const userFields = { id, email, name, role: roleId, postcode };
 
     try {
       let searchName = new RegExp(term, "i");
@@ -117,12 +117,14 @@ router.post(
         const users = await User.find({ name: searchName })
           .skip(Number(page - 1) * Number(limit))
           .limit(Number(limit));
-        return res.json(users);
+        const roles = await Roles.find();
+        const response = { users, roles };
+        res.json(response);
       }
 
       let user = await User.findOne({ _id: id });
       if (user) {
-        console.log("saving edited user");
+        console.log("saving edited user", userFields);
         user = await User.findOneAndUpdate(
           { _id: id },
           { $set: userFields },
@@ -135,7 +137,9 @@ router.post(
         .skip(Number(page - 1) * Number(limit))
         .limit(Number(limit))
         .sort({ name: 1 });
-      return res.json(users);
+      const roles = await Roles.find();
+      const response = { users, roles };
+      res.json(response);
 
       //check updated user
     } catch (err) {

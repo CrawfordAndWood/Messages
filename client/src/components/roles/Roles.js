@@ -1,125 +1,37 @@
-import React, { Fragment, useState, useEffect } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import Spinner from "../layout/Spinner";
-import RoleItem from "./RoleItem";
-//import SortColumn from "../table/SortColumn";
+import React, { Fragment, useEffect } from "react";
+import { setDefaultColumn } from "../../actions/view";
 import {
   getRoles,
   addEmptyRole,
-  sortbyName,
-  search,
-  resetSearch,
-  updateLimit,
+  sort,
   updatePage,
-  countRoles,
+  updateLimit,
 } from "../../actions/role";
+import { connect } from "react-redux";
+import Spinner from "../layout/Spinner";
+import SortColumn from "../table/SortColumn";
+import Pagination from "../table/Pagination";
+import Search from "../table/Search";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faPlusCircle,
-  faChevronCircleDown,
-  faChevronCircleUp,
-  faSearch,
-  faChevronLeft,
-  faChevronRight,
-  faChevronCircleLeft,
-  faChevronCircleRight,
-} from "@fortawesome/free-solid-svg-icons";
+import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import "./role.scss";
+import RoleItem from "./RoleItem";
 
 const Roles = ({
   getRoles,
   addEmptyRole,
-  sortbyName,
-  search,
-  resetSearch,
-  updateLimit,
   updatePage,
-  countRoles,
-  role: {
-    roles,
-    loading,
-    canAddNewRole,
-    sortDescending,
-    searchTerm,
-    limit,
-    page,
-    roleCount,
-  },
+  updateLimit,
+  view: { loading, canAddNewRow },
+  role: { roles, sortDescending },
 }) => {
-  const [searchInput, setsearchInput] = useState({
-    term: searchTerm,
-    limit: limit,
-    page: page,
-  });
-  const { term } = searchInput;
   useEffect(() => {
-    countRoles();
     getRoles();
   }, []);
 
-  const onSearchChange = (e) => {
-    setsearchInput({
-      ...searchInput,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const onSubmit = (e) => {
-    e.preventDefault();
-    search(searchInput, page, limit);
-  };
-
-  const onReset = () => {
-    setsearchInput({
-      ...searchInput,
-      term: "",
-    });
-    resetSearch();
-  };
-
-  const onSetPage = (location) => {
-    if (location < 1 || location > Math.ceil(roleCount / limit)) {
-      return false;
-    }
-    updatePage(location, limit);
-  };
-
-  const onUpdateLimit = (e) => {
-    e.preventDefault();
-    updateLimit(e.target.value);
-  };
-
   return (
     <Fragment>
-      <table className="search-table">
-        <tbody>
-          <tr>
-            <td className="search-bar">
-              <input
-                autoComplete="off"
-                className="searchInput"
-                type="text"
-                placeholder="Search Roles"
-                name="term"
-                value={term}
-                onChange={(e) => onSearchChange(e)}
-              />
-              <FontAwesomeIcon
-                icon={faSearch}
-                size="lg"
-                onClick={(e) => onSubmit(e)}
-              />
-            </td>
-            <td>
-              <a href="#" onClick={() => onReset()}>
-                clear search{" "}
-              </a>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-
+      <Search route="roles" />
       {loading ? (
         <Spinner />
       ) : (
@@ -129,20 +41,17 @@ const Roles = ({
               <tr>
                 <th>
                   Name
-                  <FontAwesomeIcon
-                    onClick={() => sortbyName("name")}
-                    className="table-sort-icon"
-                    icon={
-                      sortDescending ? faChevronCircleDown : faChevronCircleUp
-                    }
-                    size="lg"
+                  <SortColumn
+                    name={"name"}
+                    sort={sort}
+                    sortDescending={sortDescending}
                   />
                 </th>
                 <th
                   className={
-                    canAddNewRole ? "role-table-save" : "role-table-disabled"
+                    canAddNewRow ? "role-table-save" : "role-table-disabled"
                   }
-                  onClick={() => (canAddNewRole ? addEmptyRole() : null)}
+                  onClick={() => (canAddNewRow ? addEmptyRole() : null)}
                 >
                   <FontAwesomeIcon icon={faPlusCircle} size="lg" />
                 </th>
@@ -163,91 +72,22 @@ const Roles = ({
               )}
             </tbody>
           </table>
-          {roles.length > 0 && (
-            <table className="table roles-paging">
-              <tbody>
-                <tr>
-                  <td className="pager-padder"></td>
-                  <td
-                    className={
-                      page === 1 ? "pager pager-inactive" : "pager pager-active"
-                    }
-                    onClick={() => onSetPage(1)}
-                  >
-                    <FontAwesomeIcon icon={faChevronCircleLeft} />
-                  </td>
-                  <td
-                    className={
-                      page === 1 ? "pager pager-inactive" : "pager pager-active"
-                    }
-                    onClick={() => onSetPage(page - 1)}
-                  >
-                    <FontAwesomeIcon icon={faChevronLeft} />
-                  </td>
-                  <td className="pager-counter">
-                    {page * limit - limit + 1} -{" "}
-                    {page * limit > roleCount ? roleCount : page * limit} of{" "}
-                    {roleCount}
-                  </td>
-                  <td
-                    className={
-                      page >= Math.ceil(roleCount / limit)
-                        ? "pager pager-inactive"
-                        : "pager pager-active"
-                    }
-                    onClick={() => onSetPage(page + 1)}
-                  >
-                    <FontAwesomeIcon icon={faChevronRight} />
-                  </td>
-                  <td
-                    className={
-                      page >= Math.ceil(roleCount / limit)
-                        ? "pager pager-inactive"
-                        : "pager pager-active"
-                    }
-                    onClick={() => onSetPage(Math.ceil(roleCount / limit))}
-                  >
-                    <FontAwesomeIcon icon={faChevronCircleRight} />
-                  </td>
-                  <td className="limit-updater">
-                    <small>Showing: </small>
-                    <select
-                      id="cars"
-                      onChange={(e) => onUpdateLimit(e)}
-                      selected={limit}
-                    >
-                      <option value="10">10</option>
-                      <option value="20">20</option>
-                      <option value="50">50</option>
-                    </select>{" "}
-                    <small>per page</small>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          )}
+          <Pagination updatePageFn={updatePage} updateLimitFn={updateLimit} />
         </Fragment>
       )}
     </Fragment>
   );
 };
 
-Roles.propTypes = {
-  getRoles: PropTypes.func.isRequired,
-};
-
 const mapStateToProps = (state) => ({
+  view: state.view,
   role: state.role,
-  table: state.table,
 });
 
 export default connect(mapStateToProps, {
   getRoles,
   addEmptyRole,
-  sortbyName,
-  search,
-  resetSearch,
-  updateLimit,
   updatePage,
-  countRoles,
+  updateLimit,
+  setDefaultColumn,
 })(Roles);

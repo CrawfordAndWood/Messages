@@ -18,15 +18,15 @@ import {
   DECREMENT_COUNT,
   SORT_BY_COLUMN,
   SORT_BY_NEW_COLUMN,
-  GET_DATA,
-  SET_ROUTE,
   SET_SORT_COLUMN,
+  GET_USERS,
+  GET_DATA,
+  ADD_EMPTY_USER,
 } from "./types";
 
-export const countItems = (route, search = "") => async (dispatch) => {
+export const countUsers = (search = "") => async (dispatch) => {
   try {
-    const res = await axios.get(`api/${route}/count/${search}`);
-    console.log("counted", res.data);
+    const res = await axios.get(`api/users/count/${search}`);
     dispatch({ type: ITEM_COUNT, payload: res.data });
   } catch (error) {
     dispatch({
@@ -39,19 +39,17 @@ export const countItems = (route, search = "") => async (dispatch) => {
   }
 };
 
-export const getData = (route, search = "", page = 1, limit = 10) => async (
+export const getUsers = (search = "", page = 1, limit = 10) => async (
   dispatch
 ) => {
   //TODO factor out params into single options object.
   try {
-    if (route === null) return false;
     dispatch({ type: LOAD });
     dispatch({ type: SEARCH, payload: search });
     dispatch({ type: UPDATE_PAGE, payload: 1 });
-    dispatch(countItems(route, search));
-    const res = await axios.get(`/api/${route}/${search}/${page}/${limit}`);
-    dispatch({ type: GET_DATA, payload: res.data });
-    dispatch({ type: SET_ROUTE, payload: route });
+    dispatch(countUsers(search));
+    const res = await axios.get(`/api/users/${search}/${page}/${limit}`);
+    dispatch({ type: GET_USERS, payload: res.data });
   } catch (error) {
     dispatch({
       type: VIEW_ERROR,
@@ -64,18 +62,17 @@ export const getData = (route, search = "", page = 1, limit = 10) => async (
 };
 
 // Create or update item.
-export const createItem = (formData, route, edit = false) => async (
-  dispatch
-) => {
+export const createUser = (formData, edit = false) => async (dispatch) => {
   try {
     const config = {
       headers: {
         "Content-Type": "application/json",
       },
     };
-    const res = await axios.post(`/api/${route}`, formData, config);
-    await dispatch({ type: GET_DATA, payload: res.data });
-    await dispatch(setAlert(edit ? "Item Updated" : "Item Created", "success"));
+    const res = await axios.post(`/api/users`, formData, config);
+    dispatch({ type: GET_USERS, payload: res.data });
+    dispatch({ type: GET_DATA });
+    dispatch(setAlert(edit ? "User Updated" : "User Created", "success"));
     if (!edit) {
       dispatch({ type: INCREMENT_COUNT });
     }
@@ -95,7 +92,7 @@ export const createItem = (formData, route, edit = false) => async (
 };
 
 //Delete a Role
-export const deleteItem = (route, search, page, limit, rowData) => async (
+export const deleteUser = (search, page, limit, rowData) => async (
   dispatch
 ) => {
   try {
@@ -105,11 +102,11 @@ export const deleteItem = (route, search, page, limit, rowData) => async (
       },
     };
     if (rowData.id !== "temp") {
-      await axios.delete(`/api/${route}/${rowData.id}`, config);
-      dispatch(setAlert("Item Deleted", "success"));
+      await axios.delete(`/api/users/${rowData.id}`, config);
+      dispatch(setAlert("User Deleted", "success"));
       dispatch({ type: DECREMENT_COUNT });
     }
-    dispatch(getData(route, search, page, limit));
+    dispatch(getUsers(search, page, limit));
   } catch (error) {
     dispatch({
       type: VIEW_ERROR,
@@ -121,11 +118,16 @@ export const deleteItem = (route, search, page, limit, rowData) => async (
   }
 };
 
-export const addEmptyItem = (item) => (dispatch) => {
-  dispatch({ type: ADD_EMPTY_ROW, payload: item });
+export const addEmptyUser = () => (dispatch) => {
+  const newUser = {
+    _id: "temp",
+    postcode: "",
+    email: "",
+    name: "",
+    roleId: "",
+  };
+  dispatch({ type: ADD_EMPTY_USER, payload: newUser });
 };
-
-export const addNewRow = (item) => (dispatch) => {};
 
 export const sort = (name, sortColumn) => (dispatch) => {
   const dispatchFn = name === sortColumn ? SORT_BY_COLUMN : SORT_BY_NEW_COLUMN;
@@ -133,18 +135,18 @@ export const sort = (name, sortColumn) => (dispatch) => {
 };
 
 export const resetSearch = (route, limit) => (dispatch) => {
-  dispatch(getData(route, "", 1, limit));
+  dispatch(getUsers("", 1, limit));
   dispatch({ type: RESET_SEARCH });
 };
 
 export const updateLimit = (route, search, newLimit) => (dispatch) => {
-  dispatch(getData(route, search, 1, newLimit));
+  dispatch(getUsers(search, 1, newLimit));
   dispatch({ type: UPDATE_PAGE, payload: 1 });
   dispatch({ type: UPDATE_LIMIT, payload: newLimit });
 };
 
 export const updatePage = (route, search, page, limit) => (dispatch) => {
-  dispatch(getData(route, search, page, limit));
+  dispatch(getUsers(route, search, page, limit));
   dispatch({ type: UPDATE_PAGE, payload: page });
 };
 
