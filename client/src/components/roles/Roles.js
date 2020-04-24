@@ -4,6 +4,7 @@ import {
   getRoles,
   addEmptyRole,
   sort,
+  resetSearch,
   updatePage,
   updateLimit,
 } from "../../actions/role";
@@ -21,9 +22,11 @@ const Roles = ({
   getRoles,
   addEmptyRole,
   updatePage,
+  sort,
+  resetSearch,
   updateLimit,
-  view: { loading, canAddNewRow },
-  role: { roles, sortDescending },
+  view: { canAddNewRow },
+  role: { loading, roles, sortDescending },
 }) => {
   useEffect(() => {
     getRoles();
@@ -31,7 +34,7 @@ const Roles = ({
 
   return (
     <Fragment>
-      <Search route="roles" />
+      <Search searchFn={getRoles} resetFn={resetSearch} />
       {loading ? (
         <Spinner />
       ) : (
@@ -42,8 +45,8 @@ const Roles = ({
                 <th>
                   Name
                   <SortColumn
-                    name={"name"}
-                    sort={sort}
+                    sortFn={sort}
+                    columnName={"name"}
                     sortDescending={sortDescending}
                   />
                 </th>
@@ -87,6 +90,8 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps, {
   getRoles,
   addEmptyRole,
+  sort,
+  resetSearch,
   updatePage,
   updateLimit,
   setDefaultColumn,

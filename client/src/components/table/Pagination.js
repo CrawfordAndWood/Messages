@@ -11,17 +11,17 @@ import { connect } from "react-redux";
 export const Pagination = ({
   updatePageFn,
   updateLimitFn,
-  view: { route, search, page, itemCount, limit },
+  view: { search, page, itemCount, limit },
 }) => {
   const onSetPage = (location) => {
     if (location < 1 || location > Math.ceil(itemCount / limit)) {
       return false;
     }
-    updatePageFn(route, search, location, limit);
+    updatePageFn(search, location, limit);
   };
 
   const onUpdateLimit = (e) => {
-    updateLimitFn(route, search, e.target.value);
+    updateLimitFn(search, e.target.value);
   };
 
   return (

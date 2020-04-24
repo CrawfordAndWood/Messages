@@ -38,9 +38,15 @@ export const getRoles = (search = "", page = 1, limit = 10) => async (
   dispatch
 ) => {
   try {
+    dispatch({ type: LOAD });
+    dispatch({ type: SEARCH, payload: search });
+    dispatch({ type: GET_DATA });
+    dispatch(countRoles(search));
+    console.log(search, page, limit);
     const res = await axios.get(`api/roles/${search}/${page}/${limit}`);
     dispatch({ type: GET_ROLES, payload: res.data });
-    dispatch({ type: GET_DATA });
+    dispatch({ type: UPDATE_LIMIT, payload: limit });
+    dispatch({ type: UPDATE_PAGE, payload: page });
   } catch (error) {
     dispatch({
       type: ROLE_ERROR,
@@ -113,52 +119,32 @@ export const deleteRole = (search, page, limit, rowData) => async (
 };
 
 export const addEmptyRole = () => (dispatch) => {
+  console.log("adding role");
   const newRole = { _id: "temp", name: "" };
   dispatch({ type: ADD_EMPTY_ROLE, payload: newRole });
   dispatch({ type: ADD_EMPTY_ROW });
 };
 
-export const sort = (name) => (dispatch) => {
-  dispatch({ type: SORT, payload: name });
-};
-
-export const search = (searchTerm, page, limit) => async (dispatch) => {
-  try {
-    dispatch({ type: LOAD });
-    dispatch({ type: SEARCH });
-    dispatch({ type: UPDATE_PAGE, payload: 1 });
-
-    await dispatch(countRoles(searchTerm.term));
-
-    const res = await axios.get(
-      `/api/roles/${searchTerm.term}/${page}/${limit}`
-    );
-    dispatch({ type: GET_ROLES, payload: res.data });
-  } catch (error) {
-    dispatch({
-      type: ROLE_ERROR,
-      payload: {
-        msg: error.response.statusText,
-        status: error.response.status,
-      },
-    });
-  }
+export const sort = () => (dispatch) => {
+  console.log("sorting");
+  //const dispatchFn = name === sortColumn ? SORT_BY_COLUMN : SORT_BY_NEW_COLUMN;
+  dispatch({ type: SORT });
 };
 
 export const resetSearch = () => (dispatch) => {
   dispatch({ type: LOAD });
-  dispatch(countRoles());
-  dispatch(updateLimit(10));
+  dispatch(getRoles("", 1, 10));
   dispatch({ type: RESET_SEARCH });
+  dispatch({ type: UPDATE_PAGE, payload: 1 });
 };
 
-export const updateLimit = (newLimit) => (dispatch) => {
-  dispatch(getRoles(1, newLimit));
+export const updateLimit = (search, newLimit) => (dispatch) => {
+  dispatch(getRoles(search, 1, newLimit));
   dispatch({ type: UPDATE_PAGE, payload: 1 });
   dispatch({ type: UPDATE_LIMIT, payload: newLimit });
 };
 
-export const updatePage = (page, limit) => (dispatch) => {
-  dispatch(getRoles(page, limit));
+export const updatePage = (search, page, limit) => (dispatch) => {
+  dispatch(getRoles(search, page, limit));
   dispatch({ type: UPDATE_PAGE, payload: page });
 };

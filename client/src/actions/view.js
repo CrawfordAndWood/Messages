@@ -134,6 +134,7 @@ export const sort = (name, sortColumn) => (dispatch) => {
 
 export const resetSearch = (route, limit) => (dispatch) => {
   dispatch(getData(route, "", 1, limit));
+  dispatch({ type: UPDATE_PAGE, payload: 1 });
   dispatch({ type: RESET_SEARCH });
 };
 

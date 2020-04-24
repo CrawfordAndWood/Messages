@@ -19,7 +19,7 @@ export default function (state = initialState, action) {
     case ADD_EMPTY_USER:
       return {
         ...state,
-        users: [payload, ...state.data],
+        users: [payload, ...state.users],
         loading: false,
         canAddNewRow: false,
       };

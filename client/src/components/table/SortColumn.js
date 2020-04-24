@@ -8,13 +8,13 @@ import {
 
 export const SortColumn = ({
   columnName,
-  sort,
+  sortFn,
   sortDescending,
   view: { sortColumn },
 }) => {
   return (
     <FontAwesomeIcon
-      onClick={() => sort(columnName, sortColumn)}
+      onClick={() => sortFn(columnName, sortColumn)}
       className="table-sort-icon"
       icon={sortDescending ? faChevronCircleDown : faChevronCircleUp}
       size="lg"

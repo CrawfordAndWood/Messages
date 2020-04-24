@@ -8,7 +8,6 @@ const Roles = require("../../models/Roles");
 
 router.get("/count", auth, async (req, res) => {
   try {
-    console.log("counting");
     const roleCount = await Roles.countDocuments();
     res.json(roleCount);
   } catch (err) {
@@ -20,7 +19,6 @@ router.get("/count", auth, async (req, res) => {
 
 router.get("/count/:term", auth, async (req, res) => {
   try {
-    console.log("counting");
     const sanitisedName = new RegExp(req.params.term, "i");
     const roleCount = await Roles.countDocuments({ name: sanitisedName });
     res.json(roleCount);

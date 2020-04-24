@@ -5,6 +5,7 @@ import {
   GET_ROLES,
   UPDATE_ROLE,
   SORT,
+  LOAD,
 } from "../actions/types";
 
 const initialState = {
@@ -12,6 +13,7 @@ const initialState = {
   roles: [],
   sortColumn: "",
   sortDescending: true,
+  loading: true,
 };
 export default function (state = initialState, action) {
   const { type, payload } = action;
@@ -19,7 +21,7 @@ export default function (state = initialState, action) {
     case ADD_EMPTY_ROLE:
       return {
         ...state,
-        data: [payload, ...state.data],
+        roles: [payload, ...state.roles],
         loading: false,
         canAddNewRow: false,
       };
@@ -37,6 +39,11 @@ export default function (state = initialState, action) {
         role: payload,
         loading: false,
         canAddNewRole: true,
+      };
+    case LOAD:
+      return {
+        ...state,
+        loading: true,
       };
     case GET_ROLES:
       return {
