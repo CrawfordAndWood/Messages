@@ -34,15 +34,19 @@ export const countRoles = (searchTerm = "") => async (dispatch) => {
 };
 
 //Get current users profile
-export const getRoles = (search = "", page = 1, limit = 10) => async (
-  dispatch
-) => {
+export const getRoles = (
+  search = "",
+  page = 1,
+  limit = 10,
+  count = true
+) => async (dispatch) => {
   try {
     dispatch({ type: LOAD });
     dispatch({ type: SEARCH, payload: search });
     dispatch({ type: GET_DATA });
-    dispatch(countRoles(search));
-    console.log(search, page, limit);
+    if (count) {
+      dispatch(countRoles(search));
+    }
     const res = await axios.get(`api/roles/${search}/${page}/${limit}`);
     dispatch({ type: GET_ROLES, payload: res.data });
     dispatch({ type: UPDATE_LIMIT, payload: limit });
@@ -119,14 +123,12 @@ export const deleteRole = (search, page, limit, rowData) => async (
 };
 
 export const addEmptyRole = () => (dispatch) => {
-  console.log("adding role");
   const newRole = { _id: "temp", name: "" };
   dispatch({ type: ADD_EMPTY_ROLE, payload: newRole });
   dispatch({ type: ADD_EMPTY_ROW });
 };
 
 export const sort = () => (dispatch) => {
-  console.log("sorting");
   //const dispatchFn = name === sortColumn ? SORT_BY_COLUMN : SORT_BY_NEW_COLUMN;
   dispatch({ type: SORT });
 };

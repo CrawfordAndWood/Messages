@@ -2,9 +2,6 @@ import { sortTableColumn } from "../utils/tableFunctions";
 import {
   VIEW_ERROR,
   ADD_EMPTY_ROW,
-  EDIT_ROW,
-  ADD_ITEM,
-  DELETE_ITEM,
   GET_DATA,
   SORT_BY_COLUMN,
   SORT_BY_NEW_COLUMN,
@@ -77,6 +74,7 @@ export default function (state = initialState, action) {
         loading: false,
       };
     case SET_SORT_COLUMN:
+      console.log("setting sort col", payload);
       return {
         ...state,
         sortColumn: payload,

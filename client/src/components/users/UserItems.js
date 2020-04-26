@@ -10,12 +10,15 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { connect } from "react-redux";
 import { createItem, deleteItem } from "../../actions/view";
+import { adminCreateUser, deleteUser } from "../../actions/user";
+import Spinner from "../layout/Spinner";
 
 const UserItems = ({
   user,
-  createItem,
-  deleteItem,
+  adminCreateUser,
+  deleteUser,
   roles,
+  role: { rolesLoading },
   view: { search, route, limit, page },
 }) => {
   const [rowData, setRowData] = useState({
@@ -32,13 +35,10 @@ const UserItems = ({
   const { email, postcode, name, roleId, id, editing } = rowData;
 
   const onChange = (e) => {
-    console.log(rowData, e.target.name, e.target.value);
     setRowData({ ...rowData, [e.target.name]: e.target.value, editing: true });
   };
-
   const onSaveUser = (e) => {
     e.preventDefault();
-    console.log("save edit2");
 
     if (
       user.name == rowData.name &&
@@ -48,9 +48,7 @@ const UserItems = ({
     ) {
       return false;
     }
-    console.log("save edit3");
-
-    createItem(rowData, route, user._id !== "temp");
+    adminCreateUser(rowData, user._id !== "temp");
     setRowData({ ...rowData, _id: user._id, editing: false });
   };
 
@@ -87,22 +85,24 @@ const UserItems = ({
         />
       </td>
       <td>
-        {" "}
-        <select
-          onChange={(e) => onChange(e)}
-          name="roleId"
-          defaultValue={user.role}
-        >
-          {roles.map((role) => (
-            <option
-              className="role-asignment-option"
-              key={role._id}
-              value={role._id}
-            >
-              {role.name}
-            </option>
-          ))}
-        </select>{" "}
+        {
+          <select
+            onChange={(e) => onChange(e)}
+            name="roleId"
+            defaultValue={user.role}
+          >
+            {user.role === undefined ? <option></option> : ""}
+            {roles.map((role) => (
+              <option
+                className="role-asignment-option"
+                key={role._id}
+                value={role._id}
+              >
+                {role.name}
+              </option>
+            ))}
+          </select>
+        }
       </td>
       <td
         className={
@@ -116,7 +116,7 @@ const UserItems = ({
       </td>
       <td
         className="item-table-delete"
-        onClick={() => deleteItem(route, search, page, limit, rowData)}
+        onClick={() => deleteUser(search, page, limit, rowData)}
       >
         <FontAwesomeIcon icon={faTrash} />
       </td>
@@ -126,6 +126,9 @@ const UserItems = ({
 
 const mapStateToProps = (state) => ({
   view: state.view,
+  role: state.role,
 });
 
-export default connect(mapStateToProps, { createItem, deleteItem })(UserItems);
+export default connect(mapStateToProps, { adminCreateUser, deleteUser })(
+  UserItems
+);

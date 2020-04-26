@@ -26,7 +26,7 @@ const Roles = ({
   resetSearch,
   updateLimit,
   view: { canAddNewRow },
-  role: { loading, roles, sortDescending },
+  role: { rolesLoading, roles, sortDescending },
 }) => {
   useEffect(() => {
     getRoles();
@@ -35,7 +35,7 @@ const Roles = ({
   return (
     <Fragment>
       <Search searchFn={getRoles} resetFn={resetSearch} />
-      {loading ? (
+      {rolesLoading ? (
         <Spinner />
       ) : (
         <Fragment>
@@ -46,8 +46,8 @@ const Roles = ({
                   Name
                   <SortColumn
                     sortFn={sort}
-                    columnName={"name"}
                     sortDescending={sortDescending}
+                    columnName={"name"}
                   />
                 </th>
                 <th

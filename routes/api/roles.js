@@ -56,6 +56,7 @@ router.get("/:term/:page/:limit", auth, async (req, res) => {
       .skip(Number(req.params.page - 1) * Number(req.params.limit))
       .limit(Number(req.params.limit))
       .sort({ name: 1 });
+    console.log(roles);
     res.json(roles);
   } catch (err) {
     console.error(err.messge);

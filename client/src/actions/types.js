@@ -32,6 +32,9 @@ export const GET_USER = "GET_USER";
 export const GET_USERS = "GET_USERS";
 export const DELETE_USER = "DELETE_USER";
 export const USER_ERROR = "USER_ERROR";
+export const ADMIN_CREATE_USER = "ADMIN_CREATE_USER";
+export const SORT_BY_USER = "SORT_BY_USER";
+export const SORT_BY_NEW_USER = "SORT_BY_NEW_USER";
 
 //View
 export const ADD_EMPTY_ROW = "ADD_EMPTY_ROW";

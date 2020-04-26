@@ -13,7 +13,7 @@ const initialState = {
   roles: [],
   sortColumn: "",
   sortDescending: true,
-  loading: true,
+  rolesLoading: true,
 };
 export default function (state = initialState, action) {
   const { type, payload } = action;
@@ -22,14 +22,14 @@ export default function (state = initialState, action) {
       return {
         ...state,
         roles: [payload, ...state.roles],
-        loading: false,
+        rolesLoading: false,
         canAddNewRow: false,
       };
     case UPDATE_ROLE:
       return {
         ...state,
         roles: [...state.roles, payload],
-        loading: false,
+        rolesLoading: false,
         canAddNewRole: true,
         searchTerm: null,
       };
@@ -37,13 +37,13 @@ export default function (state = initialState, action) {
       return {
         ...state,
         role: payload,
-        loading: false,
+        rolesLoading: false,
         canAddNewRole: true,
       };
     case LOAD:
       return {
         ...state,
-        loading: true,
+        rolesLoading: true,
       };
     case GET_ROLES:
       return {
@@ -51,14 +51,14 @@ export default function (state = initialState, action) {
         roles: payload
           .slice()
           .sort(sortTableColumn(state.sortColumn, state.sortDescending)),
-        loading: false,
+        rolesLoading: false,
         canAddNewRole: true,
       };
 
     case SORT:
       return {
         ...state,
-        loading: false,
+        rolesLoading: false,
         roles: state.roles
           .slice()
           .sort(sortTableColumn(payload, !state.sortDescending)),

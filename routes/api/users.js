@@ -24,8 +24,11 @@ router.get("/user-management/count", auth, async (req, res) => {
 
 router.get("/user-management/count/:term", auth, async (req, res) => {
   try {
-    const sanitisedName = new RegExp(req.params.term, "i");
-    const userCount = await User.countDocuments({ name: sanitisedName });
+    const term = new RegExp(req.params.term, "i");
+    const userCount = await User.countDocuments({
+      $or: [{ name: term }, { email: term }, { postcode: term }],
+    });
+
     res.json(userCount);
   } catch (err) {
     res.status(500).send("Server Error");
@@ -41,10 +44,7 @@ router.get("/user-management/:page/:limit", auth, async (req, res) => {
       .skip(Number(req.params.page - 1) * Number(req.params.limit))
       .limit(Number(req.params.limit))
       .sort({ name: 1 });
-    //res.json(users);
-    const roles = await Roles.find();
-    const response = { users, roles };
-    res.json(response);
+    res.json(users);
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");
@@ -56,19 +56,16 @@ router.get("/user-management/:page/:limit", auth, async (req, res) => {
 //@access   Private - eventually only global admin has option
 router.get("/user-management/:term/:page/:limit", auth, async (req, res) => {
   try {
-    let searchName = new RegExp(req.params.term, "i");
+    const term = new RegExp(req.params.term, "i");
     const users = await User.find({
-      name: searchName,
+      $or: [{ name: term }, { email: term }, { postcode: term }],
     })
       .skip(Number(req.params.page - 1) * Number(req.params.limit))
-      .limit(Number(req.params.limit))
-      .sort({ name: 1 });
-    // res.json(users);
-    const roles = await Roles.find();
-    const response = { users, roles };
-    console.log("res", response);
-    res.json(response);
+      .limit(Number(req.params.limit));
+
+    res.json(users);
   } catch (err) {
+    console.log(err.message);
     console.error(err.messge);
     res.status(500).send("Server Error");
   }
@@ -117,9 +114,7 @@ router.post(
         const users = await User.find({ name: searchName })
           .skip(Number(page - 1) * Number(limit))
           .limit(Number(limit));
-        const roles = await Roles.find();
-        const response = { users, roles };
-        res.json(response);
+        return res.json(users);
       }
 
       let user = await User.findOne({ _id: id });
@@ -137,9 +132,7 @@ router.post(
         .skip(Number(page - 1) * Number(limit))
         .limit(Number(limit))
         .sort({ name: 1 });
-      const roles = await Roles.find();
-      const response = { users, roles };
-      res.json(response);
+      return res.json(users);
 
       //check updated user
     } catch (err) {

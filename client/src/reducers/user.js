@@ -5,6 +5,9 @@ import {
   GET_USERS,
   UPDATE_USER,
   SORT,
+  LOAD,
+  SORT_BY_USER,
+  SORT_BY_NEW_USER,
 } from "../actions/types";
 
 const initialState = {
@@ -12,6 +15,7 @@ const initialState = {
   users: [],
   sortColumn: "",
   sortDescending: true,
+  loading: true,
 };
 export default function (state = initialState, action) {
   const { type, payload } = action;
@@ -28,7 +32,7 @@ export default function (state = initialState, action) {
         ...state,
         users: [...state.users, payload],
         loading: false,
-        canAddNewRole: true,
+        canAddNewUSer: true,
         searchTerm: null,
       };
     case GET_USER:
@@ -36,7 +40,7 @@ export default function (state = initialState, action) {
         ...state,
         user: payload,
         loading: false,
-        canAddNewRole: true,
+        canAddNewUser: true,
       };
     case GET_USERS:
       return {
@@ -45,7 +49,12 @@ export default function (state = initialState, action) {
           .slice()
           .sort(sortTableColumn(state.sortColumn, state.sortDescending)),
         loading: false,
-        canAddNewRole: true,
+        canAddNewUser: true,
+      };
+    case LOAD:
+      return {
+        ...state,
+        loading: true,
       };
     case SORT:
       return {
@@ -56,6 +65,23 @@ export default function (state = initialState, action) {
           .sort(sortTableColumn(payload, !state.sortDescending)),
         sortColumn: payload,
         sortDescending: !state.sortDescending,
+      };
+    case SORT_BY_USER:
+      return {
+        ...state,
+        loading: false,
+        users: state.users
+          .slice()
+          .sort(sortTableColumn(payload, !state.sortDescending)),
+        sortDescending: !state.sortDescending,
+      };
+    case SORT_BY_NEW_USER:
+      return {
+        ...state,
+        loading: false,
+        users: state.users.slice().sort(sortTableColumn(payload, true)),
+        sortDescending: true,
+        sortColumn: payload,
       };
     default:
       return state;

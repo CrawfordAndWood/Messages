@@ -5,6 +5,7 @@ Instead, those functions are passed into the component by the parent.
 */
 import axios from "axios";
 import { setAlert } from "./alert";
+import { getRoles } from "./role";
 import {
   VIEW_ERROR,
   ADD_EMPTY_ROW,
@@ -22,11 +23,13 @@ import {
   GET_USERS,
   GET_DATA,
   ADD_EMPTY_USER,
+  SORT_BY_USER,
+  SORT_BY_NEW_USER,
 } from "./types";
 
 export const countUsers = (search = "") => async (dispatch) => {
   try {
-    const res = await axios.get(`api/users/count/${search}`);
+    const res = await axios.get(`api/users/user-management/count/${search}`);
     dispatch({ type: ITEM_COUNT, payload: res.data });
   } catch (error) {
     dispatch({
@@ -46,15 +49,52 @@ export const getUsers = (search = "", page = 1, limit = 10) => async (
   try {
     dispatch({ type: LOAD });
     dispatch({ type: SEARCH, payload: search });
-    dispatch({ type: UPDATE_PAGE, payload: 1 });
     dispatch(countUsers(search));
-    const res = await axios.get(`/api/users/${search}/${page}/${limit}`);
+    const res = await axios.get(
+      `/api/users/user-management/${search}/${page}/${limit}`
+    );
     dispatch({ type: GET_USERS, payload: res.data });
+    dispatch({ type: UPDATE_LIMIT, payload: limit });
+    dispatch({ type: UPDATE_PAGE, payload: page });
   } catch (error) {
+    console.log(error);
     dispatch({
       type: VIEW_ERROR,
       payload: {
         msg: error.response,
+        status: error.response.status,
+      },
+    });
+  }
+};
+
+export const adminCreateUser = (formData, edit = false) => async (dispatch) => {
+  try {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    const res = await axios.post(
+      `/api/users/user-management`,
+      formData,
+      config
+    );
+    dispatch({ type: GET_USERS, payload: res.data });
+    dispatch({ type: GET_DATA });
+    dispatch(setAlert(edit ? "User Updated" : "User Created", "success"));
+    if (!edit) {
+      dispatch({ type: INCREMENT_COUNT });
+    }
+  } catch (error) {
+    const errors = error.response.data.errors;
+    if (errors) {
+      errors.forEach((error) => dispatch(setAlert(error.msg, "danger")));
+    }
+    dispatch({
+      type: VIEW_ERROR,
+      payload: {
+        msg: error.response.statusText,
         status: error.response.status,
       },
     });
@@ -102,7 +142,7 @@ export const deleteUser = (search, page, limit, rowData) => async (
       },
     };
     if (rowData.id !== "temp") {
-      await axios.delete(`/api/users/${rowData.id}`, config);
+      await axios.delete(`/api/users/user-management/${rowData.id}`, config);
       dispatch(setAlert("User Deleted", "success"));
       dispatch({ type: DECREMENT_COUNT });
     }
@@ -127,26 +167,29 @@ export const addEmptyUser = () => (dispatch) => {
     roleId: "",
   };
   dispatch({ type: ADD_EMPTY_USER, payload: newUser });
+  dispatch({ type: ADD_EMPTY_ROW });
 };
 
 export const sort = (name, sortColumn) => (dispatch) => {
-  const dispatchFn = name === sortColumn ? SORT_BY_COLUMN : SORT_BY_NEW_COLUMN;
+  console.log(name, sortColumn);
+  const dispatchFn = name === sortColumn ? SORT_BY_USER : SORT_BY_NEW_USER;
   dispatch({ type: dispatchFn, payload: name });
+  dispatch({ type: SET_SORT_COLUMN, payload: name });
 };
 
-export const resetSearch = (route, limit) => (dispatch) => {
+export const resetSearch = (limit) => (dispatch) => {
   dispatch(getUsers("", 1, limit));
   dispatch({ type: RESET_SEARCH });
 };
 
-export const updateLimit = (route, search, newLimit) => (dispatch) => {
+export const updateLimit = (search, newLimit) => (dispatch) => {
   dispatch(getUsers(search, 1, newLimit));
   dispatch({ type: UPDATE_PAGE, payload: 1 });
   dispatch({ type: UPDATE_LIMIT, payload: newLimit });
 };
 
-export const updatePage = (route, search, page, limit) => (dispatch) => {
-  dispatch(getUsers(route, search, page, limit));
+export const updatePage = (search, page, limit) => (dispatch) => {
+  dispatch(getUsers(search, page, limit));
   dispatch({ type: UPDATE_PAGE, payload: page });
 };
 

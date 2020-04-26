@@ -1,7 +1,14 @@
 import React, { Fragment, useEffect } from "react";
 import "./users.scss";
 import { getData, addEmptyItem, setDefaultColumn } from "../../actions/view";
-import { getUsers, addEmptyUser } from "../../actions/user";
+import {
+  getUsers,
+  addEmptyUser,
+  resetSearch,
+  sort,
+  updatePage,
+  updateLimit,
+} from "../../actions/user";
 import { connect } from "react-redux";
 import Spinner from "../layout/Spinner";
 import SortColumn from "../table/SortColumn";
@@ -10,20 +17,27 @@ import Search from "../table/Search";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import UserItems from "./UserItems";
+import { getRoles } from "../../actions/role";
 
 const Users = ({
+  getRoles,
   getUsers,
   addEmptyUser,
-  view: { loading, canAddNewRow },
-  user: { users },
+  resetSearch,
+  sort,
+  updatePage,
+  updateLimit,
+  view: { canAddNewRow },
+  user: { loading, users, sortDescending },
+  role: { rolesLoading, roles },
 }) => {
   useEffect(() => {
+    getRoles("", 1, 100, false);
     getUsers();
   }, []);
-
   return (
     <Fragment>
-      <Search route="users/user-management" />
+      <Search searchFn={getUsers} resetFn={resetSearch} />
       {loading ? (
         <Spinner />
       ) : (
@@ -33,15 +47,27 @@ const Users = ({
               <tr>
                 <th>
                   Email
-                  <SortColumn name={"email"} />
+                  <SortColumn
+                    columnName={"email"}
+                    sortFn={sort}
+                    sortDescending={sortDescending}
+                  />
                 </th>
                 <th>
                   Name
-                  <SortColumn name={"name"} />
+                  <SortColumn
+                    columnName={"name"}
+                    sortFn={sort}
+                    sortDescending={sortDescending}
+                  />
                 </th>
                 <th>
                   Postcode
-                  <SortColumn name={"postcode"} />
+                  <SortColumn
+                    columnName={"postcode"}
+                    sortFn={sort}
+                    sortDescending={sortDescending}
+                  />
                 </th>
                 <th>Role</th>
                 <th
@@ -59,7 +85,7 @@ const Users = ({
               {users !== undefined ? (
                 <Fragment>
                   {users.map((user) => (
-                    <UserItems key={user._id} user={user} />
+                    <UserItems key={user._id} user={user} roles={roles} />
                   ))}
                 </Fragment>
               ) : (
@@ -69,7 +95,7 @@ const Users = ({
               )}
             </tbody>
           </table>
-          <Pagination />
+          <Pagination updatePageFn={updatePage} updateLimitFn={updateLimit} />
         </Fragment>
       )}
     </Fragment>
@@ -79,9 +105,15 @@ const Users = ({
 const mapStateToProps = (state) => ({
   view: state.view,
   user: state.user,
+  role: state.role,
 });
 
 export default connect(mapStateToProps, {
+  getRoles,
   getUsers,
   addEmptyUser,
+  resetSearch,
+  sort,
+  updatePage,
+  updateLimit,
 })(Users);
