@@ -42,6 +42,7 @@ const Roles = ({
           <table className="table">
             <thead>
               <tr>
+                <th> </th>
                 <th>
                   Name
                   <SortColumn
@@ -64,8 +65,8 @@ const Roles = ({
             <tbody className="roles">
               {roles.length > 0 ? (
                 <Fragment>
-                  {roles.map((role) => (
-                    <RoleItem key={role._id} role={role} />
+                  {roles.map((role, i) => (
+                    <RoleItem key={role._id} role={role} num={i + 1} />
                   ))}
                 </Fragment>
               ) : (

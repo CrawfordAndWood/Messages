@@ -12,6 +12,7 @@ import { createItem, deleteItem } from "../../actions/view";
 import { createRole, deleteRole } from "../../actions/role";
 
 const RoleItem = ({
+  num,
   role,
   createRole,
   deleteRole,
@@ -40,6 +41,7 @@ const RoleItem = ({
 
   return (
     <tr key={role._id}>
+      <td>{num}</td>
       <td>
         <input
           className="roleInput"

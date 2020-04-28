@@ -7,9 +7,8 @@ const config = require("config");
 const { check, validationResult } = require("express-validator/check");
 const auth = require("../../middleware/auth");
 const uuid = require("uuid");
-
+const EmailService = require("../../services/EmailService");
 const User = require("../../models/User");
-const Roles = require("../../models/Roles");
 
 router.get("/user-management/count", auth, async (req, res) => {
   try {
@@ -82,7 +81,6 @@ router.post(
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    console.log("saving user");
     let { id, email, name, postcode, roleId, term, page, limit } = req.body;
     const userFields = { id, email, name, role: roleId, postcode };
 
@@ -98,7 +96,10 @@ router.post(
         }
 
         userFields.id = uuid.v4();
-        let password = uuid.v4().slice(0, 7);
+        let password = uuid.v4().slice(0, 8);
+
+        //email password
+
         const salt = await bcrypt.genSalt(10);
         userFields.password = await bcrypt.hash(password, salt);
 
@@ -111,6 +112,17 @@ router.post(
         user = new User(userFields);
 
         await user.save();
+
+        const templateFields = {
+          name: name,
+          email: email,
+          password: password,
+          selectedTemplate: "NEW_ACCOUNT_MESSAGE",
+        };
+
+        let emailService = new EmailService(templateFields);
+        emailService.sendEmail();
+
         const users = await User.find({ name: searchName })
           .skip(Number(page - 1) * Number(limit))
           .limit(Number(limit));
@@ -136,6 +148,7 @@ router.post(
 
       //check updated user
     } catch (err) {
+      console.log(err.message);
       res.status(500).send("Server error");
     }
   }
