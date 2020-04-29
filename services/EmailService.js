@@ -20,12 +20,11 @@ EmailService.prototype.sendEmail = async function () {
     subject: "Sending Email using Node.js",
     html: this.fields.message,
   };
-  console.log("opts", mailOptions);
   transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
       console.log(error);
     } else {
-      console.log("Email sent but shouldn't be: " + info.response);
+      console.log("Email sent: " + info.response);
     }
   });
 };

@@ -1,9 +1,11 @@
+const https = require("https");
 const EmailService = require("../services/EmailService");
 const User = require("../models/User");
 const gravatar = require("gravatar");
 const bcrypt = require("bcryptjs");
 const uuid = require("uuid");
 function UserService() {}
+const Verifier = require("email-verifier");
 
 /*Count Users */
 UserService.prototype.countUsers = async function (term = null) {
@@ -40,6 +42,12 @@ UserService.prototype.getUsers = async function (params) {
 
 /*Create User*/
 UserService.prototype.createUser = async function (newUserRequestArgs) {
+  //verify email
+  const emailVerificationUrl = `https://emailverification.whoisxmlapi.com/api/v1?apiKey=at_mjYA2Go5hGm9iaiqkcdy0MhSJSgY5&emailAddress=${newUserRequestArgs.email}`;
+
+  const emailIsValid = https.get(emailVerificationUrl);
+  console.log("is email valid?", emailIsValid);
+
   let user = await User.findOne({ email: newUserRequestArgs.email });
   if (user) {
     user.Status = "FAILED";
@@ -83,35 +91,57 @@ UserService.prototype.createUser = async function (newUserRequestArgs) {
 
 /*Update User*/
 UserService.prototype.updateUser = async function (updatedUserArgs) {
-  let { id, email, name, postcode, roleId } = updatedUserArgs;
-  const userFields = { id, email, name, role: roleId, postcode };
+  try {
+    let isValidEmail = true;
+    let verifier = new Verifier("at_mjYA2Go5hGm9iaiqkcdy0MhSJSgY5");
+    await verifier.verify(updatedUserArgs.email, (err, data) => {
+      if (err) throw err;
+      if (data.smtpCheck === "false") {
+        console.log("result is false", data.smtpCheck === "false");
+        isValidEmail = false;
+      }
+    });
 
-  let userWithEmail = await User.findOne({ email: email });
-  if (userWithEmail && userWithEmail._id != id) {
+    if (!isValidEmail) {
+      let response = {
+        Status: "FAILED",
+        Message: updatedUserArgs.email + " is not a valid email address",
+      };
+      return response;
+    }
+
+    let { id, email, name, postcode, roleId } = updatedUserArgs;
+    const userFields = { id, email, name, role: roleId, postcode };
+
+    let userWithEmail = await User.findOne({ email: email });
+    if (userWithEmail && userWithEmail._id != id) {
+      let response = {
+        Status: "FAILED",
+        Message: email + " already exists and is assigned to another user",
+      };
+      return response;
+    }
+
+    let user = await User.findOne({ _id: id });
+    if (user) {
+      user = await User.findOneAndUpdate(
+        { _id: id },
+        { $set: userFields },
+        {
+          new: true,
+        }
+      );
+    }
+
     let response = {
-      Status: "FAILED",
-      Message: email + " already exists and is assigned to another user",
+      Status: "SUCCESS",
+      Message: name + " has been updated",
+      User: user,
     };
     return response;
+  } catch (error) {
+    console.log(error);
   }
-
-  let user = await User.findOne({ _id: id });
-  if (user) {
-    user = await User.findOneAndUpdate(
-      { _id: id },
-      { $set: userFields },
-      {
-        new: true,
-      }
-    );
-  }
-
-  let response = {
-    Status: "SUCCESS",
-    Message: name + " has been updated",
-    User: user,
-  };
-  return response;
 };
 
 /*Create Or Update User*/
