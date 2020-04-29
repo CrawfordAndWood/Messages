@@ -26,7 +26,6 @@ import {
   SORT_BY_USER,
   SORT_BY_NEW_USER,
 } from "./types";
-import user from "../reducers/user";
 
 export const countUsers = (search = "") => async (dispatch) => {
   try {

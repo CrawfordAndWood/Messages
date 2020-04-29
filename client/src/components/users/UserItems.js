@@ -57,7 +57,7 @@ const UserItems = ({
       <td>
         <input
           className="userInput"
-          type="text"
+          type="email"
           placeholder="Email"
           name="email"
           value={email}

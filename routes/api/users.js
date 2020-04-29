@@ -58,7 +58,14 @@ router.get("/user-management/:term/:page/:limit", auth, async (req, res) => {
 //@access   Private - eventually only global admin has option
 router.post(
   "/user-management",
-  [auth, [check("name", "Name is required").not().isEmpty()]],
+  [
+    auth,
+    [
+      check("name", "Name is required").not().isEmpty(),
+      check("email", "Please include a valid email").isEmail(),
+      check("postcode", "Postcode is required").not().isEmpty(),
+    ],
+  ],
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

@@ -45,8 +45,6 @@ UserService.prototype.createUser = async function (newUserRequestArgs) {
   if (user) {
     user.Status = "FAILED";
     user.Message = "A User with the same email already exists";
-    console.log("user should be found", newUserRequestArgs.email);
-
     return user;
   }
   let { id, email, name, postcode, roleId } = newUserRequestArgs;
@@ -79,6 +77,7 @@ UserService.prototype.createUser = async function (newUserRequestArgs) {
   let response = {
     Status: "SUCCESS",
     Message: name + " has been created and a welcome email sent",
+    User: user,
   };
   return response;
 };
@@ -88,9 +87,17 @@ UserService.prototype.updateUser = async function (updatedUserArgs) {
   let { id, email, name, postcode, roleId } = updatedUserArgs;
   const userFields = { id, email, name, role: roleId, postcode };
 
+  let userWithEmail = await User.findOne({ email: email });
+  if (userWithEmail && userWithEmail._id != id) {
+    let response = {
+      Status: "FAILED",
+      Message: email + " already exists and is assigned to another user",
+    };
+    return response;
+  }
+
   let user = await User.findOne({ _id: id });
   if (user) {
-    //let invalidEmail = await User.findOneAndDelete({})
     user = await User.findOneAndUpdate(
       { _id: id },
       { $set: userFields },
@@ -100,7 +107,11 @@ UserService.prototype.updateUser = async function (updatedUserArgs) {
     );
   }
 
-  let response = { Status: "SUCCESS", Message: name + " has been updated" };
+  let response = {
+    Status: "SUCCESS",
+    Message: name + " has been updated",
+    User: user,
+  };
   return response;
 };
 
