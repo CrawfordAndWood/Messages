@@ -16,7 +16,11 @@ export const SortColumn = ({
     <FontAwesomeIcon
       onClick={() => sortFn(columnName, sortColumn)}
       className="table-sort-icon"
-      icon={sortDescending ? faChevronCircleDown : faChevronCircleUp}
+      icon={
+        sortDescending && columnName === sortColumn
+          ? faChevronCircleDown
+          : faChevronCircleUp
+      }
       size="lg"
     />
   );

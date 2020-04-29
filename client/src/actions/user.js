@@ -26,6 +26,7 @@ import {
   SORT_BY_USER,
   SORT_BY_NEW_USER,
 } from "./types";
+import user from "../reducers/user";
 
 export const countUsers = (search = "") => async (dispatch) => {
   try {
@@ -53,9 +54,11 @@ export const getUsers = (search = "", page = 1, limit = 10) => async (
     const res = await axios.get(
       `/api/users/user-management/${search}/${page}/${limit}`
     );
+    console.log(res.data);
     dispatch({ type: GET_USERS, payload: res.data });
     dispatch({ type: UPDATE_LIMIT, payload: limit });
     dispatch({ type: UPDATE_PAGE, payload: page });
+    dispatch({ type: GET_DATA });
   } catch (error) {
     console.log(error);
     dispatch({
@@ -80,11 +83,12 @@ export const adminCreateUser = (formData, edit = false) => async (dispatch) => {
       formData,
       config
     );
-    dispatch({ type: GET_USERS, payload: res.data });
-    dispatch({ type: GET_DATA });
-    dispatch(setAlert(edit ? "User Updated" : "User Created", "success"));
+
+    dispatch(setAlert(res.data.Message, "success"));
     if (!edit) {
+      dispatch({ type: GET_DATA });
       dispatch({ type: INCREMENT_COUNT });
+      dispatch(getUsers("", 1, 10));
     }
   } catch (error) {
     const errors = error.response.data.errors;
