@@ -8,26 +8,23 @@ const { check, validationResult } = require("express-validator/check");
 const auth = require("../../middleware/auth");
 const uuid = require("uuid");
 const EmailService = require("../../services/EmailService");
+const UserService = require("../../services/UserService");
+const userService = new UserService();
 const User = require("../../models/User");
 
 router.get("/user-management/count", auth, async (req, res) => {
   try {
-    const userCount = await User.countDocuments();
+    const userCount = await userService.countUsers();
     res.json(userCount);
   } catch (err) {
     console.error(err.messge);
-
     res.status(500).send("Server Error");
   }
 });
 
 router.get("/user-management/count/:term", auth, async (req, res) => {
   try {
-    const term = new RegExp(req.params.term, "i");
-    const userCount = await User.countDocuments({
-      $or: [{ name: term }, { email: term }, { postcode: term }],
-    });
-
+    const userCount = await userService.countUsers(req.params.term);
     res.json(userCount);
   } catch (err) {
     res.status(500).send("Server Error");
@@ -41,12 +38,10 @@ router.get("/user-management/:page/:limit", auth, async (req, res) => {
   try {
     let users = await User.find()
       .skip(Number(req.params.page - 1) * Number(req.params.limit))
-      .limit(Number(req.params.limit))
-      .sort({ name: 1 });
+      .limit(Number(req.params.limit));
     res.json(users);
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server Error");
+    res.status(500).send("Server Error", err);
   }
 });
 
@@ -64,9 +59,7 @@ router.get("/user-management/:term/:page/:limit", auth, async (req, res) => {
 
     res.json(users);
   } catch (err) {
-    console.log(err.message);
-    console.error(err.messge);
-    res.status(500).send("Server Error");
+    res.status(500).send("Server Error", err);
   }
 });
 
@@ -97,8 +90,6 @@ router.post(
 
         userFields.id = uuid.v4();
         let password = uuid.v4().slice(0, 8);
-
-        //email password
 
         const salt = await bcrypt.genSalt(10);
         userFields.password = await bcrypt.hash(password, salt);
@@ -131,7 +122,6 @@ router.post(
 
       let user = await User.findOne({ _id: id });
       if (user) {
-        console.log("saving edited user", userFields);
         user = await User.findOneAndUpdate(
           { _id: id },
           { $set: userFields },
@@ -142,8 +132,7 @@ router.post(
       }
       const users = await User.find({ name: searchName })
         .skip(Number(page - 1) * Number(limit))
-        .limit(Number(limit))
-        .sort({ name: 1 });
+        .limit(Number(limit));
       return res.json(users);
 
       //check updated user
