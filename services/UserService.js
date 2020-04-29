@@ -3,7 +3,6 @@ const User = require("../models/User");
 const gravatar = require("gravatar");
 const bcrypt = require("bcryptjs");
 const uuid = require("uuid");
-
 function UserService() {}
 
 /*Count Users */
@@ -72,7 +71,7 @@ UserService.prototype.createUser = async function (newUserRequestArgs) {
   };
 
   let emailService = new EmailService(templateFields);
-  emailService.sendEmail();
+  await emailService.sendEmail();
 
   let response = {
     Status: "SUCCESS",
@@ -128,14 +127,46 @@ UserService.prototype.createOrUpdateUser = async function (userArgs) {
 /*Delete User*/
 UserService.prototype.deleteUser = async function (params) {
   try {
-    const { id } = req.params;
+    const { id } = params;
     await User.findOneAndRemove({ _id: id });
     return true;
   } catch {
     return false;
   }
 };
-UserService.prototype.resetPassword = async function () {};
+UserService.prototype.resetPassword = async function (params) {
+  try {
+    const { id } = params;
+    let user = await User.findOne({ _id: id });
+    if (user) {
+      let password = uuid.v4().slice(0, 8);
+      const salt = await bcrypt.genSalt(10);
+      const newPassword = await bcrypt.hash(password, salt);
+      user.password = newPassword;
+      await user.save();
+
+      const templateFields = {
+        name: user.name,
+        email: user.email,
+        password: password,
+        selectedTemplate: "PASSWORD_RESET",
+      };
+
+      let emailService = new EmailService(templateFields);
+      await emailService.sendEmail();
+
+      let response = {
+        Status: "SUCCESS",
+        Message: user.name + " password has been reset",
+        User: user,
+      };
+      return response;
+    }
+  } catch (err) {
+    console.log(err.message);
+    return false;
+  }
+};
 UserService.prototype.lockUser = async function () {};
 UserService.prototype.onFailedLogin = async function () {};
 

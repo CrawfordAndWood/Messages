@@ -93,7 +93,19 @@ router.post(
 //@access Private
 router.delete("/user-management/:id", auth, async (req, res) => {
   try {
-    const result = userService.deleteUser(req.params);
+    const result = await userService.deleteUser(req.params);
+    return res.json(result);
+  } catch (err) {
+    res.status(500).send("Server Error", err.message);
+  }
+});
+
+//@route  POST api/users/user-management/passwordReset
+//@desc   reset user password
+//@access Private
+router.post("/user-management/passwordReset/:id", auth, async (req, res) => {
+  try {
+    const result = await userService.resetPassword(req.params);
     return res.json(result);
   } catch (err) {
     res.status(500).send("Server Error", err.message);

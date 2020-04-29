@@ -1,5 +1,4 @@
 import React, { Fragment, useState } from "react";
-import PropTypes from "prop-types";
 import "./users.scss";
 import "../table/table.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -7,19 +6,18 @@ import {
   faCheckCircle,
   faTrash,
   faSave,
+  faRedo,
 } from "@fortawesome/free-solid-svg-icons";
 import { connect } from "react-redux";
-import { createItem, deleteItem } from "../../actions/view";
-import { adminCreateUser, deleteUser } from "../../actions/user";
-import Spinner from "../layout/Spinner";
+import { adminCreateUser, deleteUser, resetPassword } from "../../actions/user";
 
 const UserItems = ({
   user,
   adminCreateUser,
   deleteUser,
+  resetPassword,
   roles,
-  role: { rolesLoading },
-  view: { search, route, limit, page },
+  view: { search, limit, page },
 }) => {
   const [rowData, setRowData] = useState({
     id: user._id,
@@ -104,6 +102,13 @@ const UserItems = ({
           </select>
         }
       </td>
+      <td onClick={() => resetPassword(rowData)}>
+        {" "}
+        <FontAwesomeIcon
+          className={id !== "temp" ? "user-table-reset-pass" : ""}
+          icon={faRedo}
+        />
+      </td>
       <td
         className={
           editing || name === "" ? "item-table-editing" : "item-table-save"
@@ -129,6 +134,8 @@ const mapStateToProps = (state) => ({
   role: state.role,
 });
 
-export default connect(mapStateToProps, { adminCreateUser, deleteUser })(
-  UserItems
-);
+export default connect(mapStateToProps, {
+  adminCreateUser,
+  deleteUser,
+  resetPassword,
+})(UserItems);

@@ -174,7 +174,6 @@ export const addEmptyUser = () => (dispatch) => {
 };
 
 export const sort = (name, sortColumn) => (dispatch) => {
-  console.log(name, sortColumn);
   const dispatchFn = name === sortColumn ? SORT_BY_USER : SORT_BY_NEW_USER;
   dispatch({ type: dispatchFn, payload: name });
   dispatch({ type: SET_SORT_COLUMN, payload: name });
@@ -183,6 +182,31 @@ export const sort = (name, sortColumn) => (dispatch) => {
 export const resetSearch = (limit) => (dispatch) => {
   dispatch(getUsers("", 1, limit));
   dispatch({ type: RESET_SEARCH });
+};
+
+export const resetPassword = (rowData) => async (dispatch) => {
+  try {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    if (rowData.id !== "temp") {
+      await axios.post(
+        `/api/users/user-management/passwordReset/${rowData.id}`,
+        config
+      );
+      dispatch(setAlert("Password Reset", "success"));
+    }
+  } catch (error) {
+    dispatch({
+      type: VIEW_ERROR,
+      payload: {
+        msg: error.response.statusText,
+        status: error.response.status,
+      },
+    });
+  }
 };
 
 export const updateLimit = (search, newLimit) => (dispatch) => {

@@ -5,7 +5,7 @@ function EmailService(templateFields) {
   this.fields = new EmailTemplates(templateFields);
 }
 
-EmailService.prototype.sendEmail = function () {
+EmailService.prototype.sendEmail = async function () {
   var transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -20,7 +20,7 @@ EmailService.prototype.sendEmail = function () {
     subject: "Sending Email using Node.js",
     html: this.fields.message,
   };
-
+  console.log("opts", mailOptions);
   transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
       console.log(error);

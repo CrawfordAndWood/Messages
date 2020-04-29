@@ -1,6 +1,5 @@
 import React, { Fragment, useEffect } from "react";
 import "./users.scss";
-import { getData, addEmptyItem, setDefaultColumn } from "../../actions/view";
 import {
   getUsers,
   addEmptyUser,
