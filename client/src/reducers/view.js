@@ -2,9 +2,6 @@ import { sortTableColumn } from "../utils/tableFunctions";
 import {
   VIEW_ERROR,
   ADD_EMPTY_ROW,
-  EDIT_ROW,
-  ADD_ITEM,
-  DELETE_ITEM,
   GET_DATA,
   SORT_BY_COLUMN,
   SORT_BY_NEW_COLUMN,
@@ -40,28 +37,15 @@ export default function (state = initialState, action) {
     case ADD_EMPTY_ROW:
       return {
         ...state,
-        data: [payload, ...state.data],
         loading: false,
         canAddNewRow: false,
       };
     case GET_DATA:
       return {
         ...state,
-        data: payload
-          .slice()
-          .sort(sortTableColumn(state.sortColumn, state.sortDescending)),
         loading: false,
         canAddNewRow: true,
       };
-    // case GET_DATA:
-    //   return {
-    //     ...state,
-    //     roles: payload
-    //       .slice()
-    //       .sort(sortTableColumn(state.sortColumn, state.sortDescending)),
-    //     loading: false,
-    //     canAddNewRole: true,
-    //   };
     case ITEM_COUNT:
       return {
         ...state,
@@ -90,6 +74,7 @@ export default function (state = initialState, action) {
         loading: false,
       };
     case SET_SORT_COLUMN:
+      console.log("setting sort col", payload);
       return {
         ...state,
         sortColumn: payload,

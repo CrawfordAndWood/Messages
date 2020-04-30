@@ -14,22 +14,22 @@ const Dashboard = ({
   useEffect(() => {
     getCurrentProfile();
   }, [loading]);
-  return loading || profile === null ? (
+  return loading ? (
     <Spinner />
   ) : (
     <Fragment>
       <h2>Dashboard</h2>
       <p>Welcome {user && user.name}, choose an action from below.</p>
-      {profile !== null ? (
+      <DashbordActions />
+      {/* {profile !== null ? (
         <Fragment>
-          <DashbordActions />
         </Fragment>
       ) : (
         <Fragment>
           <p>You haven't yet setup a profile. Please add some info.</p>
           <Link to="/create-profile">Create Profile</Link>
         </Fragment>
-      )}
+      )} */}
     </Fragment>
   );
 };

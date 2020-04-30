@@ -1,51 +1,35 @@
 import { sortTableColumn } from "../utils/tableFunctions";
 import {
-  ADD_ROLE,
-  ROLE_ERROR,
+  ADD_EMPTY_ROLE,
   GET_ROLE,
   GET_ROLES,
   UPDATE_ROLE,
-  ADD_EMPTY_ROW,
-  SORT_BY_NAME,
-  SEARCH,
-  RESET_SEARCH,
+  SORT,
   LOAD,
-  UPDATE_PAGE,
-  UPDATE_LIMIT,
-  ROLE_COUNT,
-  INCREMENT_COUNT,
-  DECREMENT_COUNT,
 } from "../actions/types";
 
 const initialState = {
   role: null,
   roles: [],
-  loading: true,
-  error: {},
-  canAddNewRole: true,
+  sortColumn: "",
   sortDescending: true,
-  sortColumn: "name",
-  searchTerm: "",
-  limit: 10,
-  page: 1,
-  roleCount: 0,
+  rolesLoading: true,
 };
 export default function (state = initialState, action) {
   const { type, payload } = action;
   switch (type) {
-    case ADD_EMPTY_ROW:
+    case ADD_EMPTY_ROLE:
       return {
         ...state,
         roles: [payload, ...state.roles],
-        loading: false,
-        canAddNewRole: false,
+        rolesLoading: false,
+        canAddNewRow: false,
       };
-    case ADD_ROLE:
     case UPDATE_ROLE:
       return {
         ...state,
         roles: [...state.roles, payload],
-        loading: false,
+        rolesLoading: false,
         canAddNewRole: true,
         searchTerm: null,
       };
@@ -53,8 +37,13 @@ export default function (state = initialState, action) {
       return {
         ...state,
         role: payload,
-        loading: false,
+        rolesLoading: false,
         canAddNewRole: true,
+      };
+    case LOAD:
+      return {
+        ...state,
+        rolesLoading: true,
       };
     case GET_ROLES:
       return {
@@ -62,64 +51,19 @@ export default function (state = initialState, action) {
         roles: payload
           .slice()
           .sort(sortTableColumn(state.sortColumn, state.sortDescending)),
-        loading: false,
+        rolesLoading: false,
         canAddNewRole: true,
       };
-    case ROLE_COUNT:
+
+    case SORT:
       return {
         ...state,
-        roleCount: payload,
-      };
-    case SEARCH:
-      return {
-        ...state,
-        searchTerm: payload,
-      };
-    case RESET_SEARCH:
-      return {
-        ...state,
-        searchTerm: "",
-      };
-    case ROLE_ERROR:
-      return {
-        ...state,
-        error: payload,
-        loading: false,
-      };
-    case SORT_BY_NAME:
-      return {
-        ...state,
-        loading: false,
+        rolesLoading: false,
         roles: state.roles
           .slice()
           .sort(sortTableColumn(payload, !state.sortDescending)),
         sortColumn: payload,
         sortDescending: !state.sortDescending,
-      };
-    case LOAD:
-      return {
-        ...state,
-        loading: true,
-      };
-    case UPDATE_LIMIT:
-      return {
-        ...state,
-        limit: payload,
-      };
-    case UPDATE_PAGE:
-      return {
-        ...state,
-        page: payload,
-      };
-    case INCREMENT_COUNT:
-      return {
-        ...state,
-        roleCount: state.roleCount + 1,
-      };
-    case DECREMENT_COUNT:
-      return {
-        ...state,
-        roleCount: state.roleCount - 1,
       };
     default:
       return state;

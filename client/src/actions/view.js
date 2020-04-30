@@ -48,18 +48,15 @@ export const getData = (route, search = "", page = 1, limit = 10) => async (
     dispatch({ type: LOAD });
     dispatch({ type: SEARCH, payload: search });
     dispatch({ type: UPDATE_PAGE, payload: 1 });
-
-    await dispatch(countItems(route, search));
+    dispatch(countItems(route, search));
     const res = await axios.get(`/api/${route}/${search}/${page}/${limit}`);
     dispatch({ type: GET_DATA, payload: res.data });
     dispatch({ type: SET_ROUTE, payload: route });
   } catch (error) {
-    console.log("cerrors", error);
-
     dispatch({
       type: VIEW_ERROR,
       payload: {
-        msg: error.response.statusText,
+        msg: error.response,
         status: error.response.status,
       },
     });
@@ -76,7 +73,6 @@ export const createItem = (formData, route, edit = false) => async (
         "Content-Type": "application/json",
       },
     };
-    console.log("firing off", edit);
     const res = await axios.post(`/api/${route}`, formData, config);
     await dispatch({ type: GET_DATA, payload: res.data });
     await dispatch(setAlert(edit ? "Item Updated" : "Item Created", "success"));
@@ -108,8 +104,6 @@ export const deleteItem = (route, search, page, limit, rowData) => async (
         "Content-Type": "application/json",
       },
     };
-    console.log(route, search, page, limit, rowData);
-    console.log(rowData.id);
     if (rowData.id !== "temp") {
       await axios.delete(`/api/${route}/${rowData.id}`, config);
       dispatch(setAlert("Item Deleted", "success"));
@@ -130,6 +124,8 @@ export const deleteItem = (route, search, page, limit, rowData) => async (
 export const addEmptyItem = (item) => (dispatch) => {
   dispatch({ type: ADD_EMPTY_ROW, payload: item });
 };
+
+export const addNewRow = (item) => (dispatch) => {};
 
 export const sort = (name, sortColumn) => (dispatch) => {
   const dispatchFn = name === sortColumn ? SORT_BY_COLUMN : SORT_BY_NEW_COLUMN;

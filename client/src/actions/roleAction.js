@@ -1,4 +1,0 @@
-/*
-This class is for testing blending an action class with the table action
-
-*/

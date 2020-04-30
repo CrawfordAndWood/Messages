@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faUser,
   faUserPlus,
   faAddressCard,
   faTasks,
@@ -21,11 +22,6 @@ const DashboardActions = () => {
           <FontAwesomeIcon icon={faAddressCard} size="lg" />
         </div>
       </Link>
-
-      <div className="action-item" data-tip="Add New User" data-type="success">
-        <FontAwesomeIcon icon={faUserPlus} size="lg" />
-        <Link to="/add-new-user"></Link>
-      </div>
       <Link to="/roles">
         <div
           className="action-item"
@@ -33,6 +29,15 @@ const DashboardActions = () => {
           data-type="success"
         >
           <FontAwesomeIcon icon={faTasks} size="lg" />
+        </div>
+      </Link>
+      <Link to="/users">
+        <div
+          className="action-item"
+          data-tip="Manage Users"
+          data-type="success"
+        >
+          <FontAwesomeIcon icon={faUser} size="lg" />
         </div>
       </Link>
       <ReactTooltip />
