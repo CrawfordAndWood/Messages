@@ -17,8 +17,6 @@ import {
   ITEM_COUNT,
   INCREMENT_COUNT,
   DECREMENT_COUNT,
-  SORT_BY_COLUMN,
-  SORT_BY_NEW_COLUMN,
   SET_SORT_COLUMN,
   GET_USERS,
   GET_DATA,
@@ -190,6 +188,7 @@ export const resetPassword = (rowData) => async (dispatch) => {
       headers: {
         "Content-Type": "application/json",
       },
+      email: rowData.email,
     };
     if (rowData.id !== "temp") {
       await axios.post(
@@ -199,6 +198,8 @@ export const resetPassword = (rowData) => async (dispatch) => {
       dispatch(setAlert("Password Reset", "success"));
     }
   } catch (error) {
+    const errors = error.response.data.errors;
+    errors.forEach((error) => dispatch(setAlert(error.msg, "danger")));
     dispatch({
       type: VIEW_ERROR,
       payload: {

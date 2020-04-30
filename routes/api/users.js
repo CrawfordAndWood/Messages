@@ -5,9 +5,14 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const config = require("config");
 const { check, validationResult } = require("express-validator/check");
+
+//middleware
 const auth = require("../../middleware/auth");
+const emailVerifier = require("../../middleware/email");
+//services
 const UserService = require("../../services/UserService");
 const userService = new UserService();
+//models
 const User = require("../../models/User");
 
 router.get("/user-management/count", auth, async (req, res) => {
@@ -60,6 +65,7 @@ router.post(
   "/user-management",
   [
     auth,
+    emailVerifier,
     [
       check("name", "Name is required").not().isEmpty(),
       check("email", "Please include a valid email").isEmail(),
@@ -103,14 +109,19 @@ router.delete("/user-management/:id", auth, async (req, res) => {
 //@route  POST api/users/user-management/passwordReset
 //@desc   reset user password
 //@access Private
-router.post("/user-management/passwordReset/:id", auth, async (req, res) => {
-  try {
-    const result = await userService.resetPassword(req.params);
-    return res.json(result);
-  } catch (err) {
-    res.status(500).send("Server Error", err.message);
+router.post(
+  "/user-management/passwordReset/:id",
+  auth,
+  emailVerifier,
+  async (req, res) => {
+    try {
+      const result = await userService.resetPassword(req.params);
+      return res.json(result);
+    } catch (err) {
+      res.status(500).send("Server Error", err.message);
+    }
   }
-});
+);
 
 //@route    POST api/users
 //@desc     Register a New User from the Registration page. May be deprecated.

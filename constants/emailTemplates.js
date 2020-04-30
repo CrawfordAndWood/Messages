@@ -27,7 +27,9 @@ function EmailTemplates(options) {
     ` </p>`;
 
   //FINAL
-  this.message = this.configureEmail();
+  (this.to = options.email),
+    (this.subject = options.subject),
+    (this.message = this.configureEmail());
 }
 
 EmailTemplates.prototype.configureEmail = function () {
