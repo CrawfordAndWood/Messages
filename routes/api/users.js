@@ -65,7 +65,7 @@ router.post(
   "/user-management",
   [
     auth,
-    emailVerifier,
+    //emailVerifier,
     [
       check("name", "Name is required").not().isEmpty(),
       check("email", "Please include a valid email").isEmail(),
@@ -112,10 +112,44 @@ router.delete("/user-management/:id", auth, async (req, res) => {
 router.post(
   "/user-management/passwordReset/:id",
   auth,
-  emailVerifier,
+  //emailVerifier,
   async (req, res) => {
     try {
       const result = await userService.resetPassword(req.params);
+      return res.json(result);
+    } catch (err) {
+      res.status(500).send("Server Error", err.message);
+    }
+  }
+);
+
+//@route  POST api/users/user-management/update/details
+//@desc   update user details
+//@access Private
+router.post(
+  "/user-management/update/details",
+  auth,
+  //emailVerifier,
+  async (req, res) => {
+    try {
+      const result = await userService.updateUserDetails(req.body);
+      return res.json(result);
+    } catch (err) {
+      res.status(500).send("Server Error", err.message);
+    }
+  }
+);
+
+//@route  POST api/users/user-management/update/password
+//@desc   update user password
+//@access Private
+router.post(
+  "/user-management/update/password",
+  auth,
+  //emailVerifier,
+  async (req, res) => {
+    try {
+      const result = await userService.updateUserPassword(req.body);
       return res.json(result);
     } catch (err) {
       res.status(500).send("Server Error", err.message);

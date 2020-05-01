@@ -13,10 +13,19 @@ import "./dashboard.scss";
 const DashboardActions = () => {
   return (
     <div className="action-list">
-      <Link to="/edit-profile">
+      {/* <Link to="/edit-profile">
         <div
           className="action-item"
-          data-tip="Edit Profile"
+          data-tip="Edit Your Profile"
+          data-type="success"
+        >
+          <FontAwesomeIcon icon={faAddressCard} size="lg" />
+        </div>
+      </Link> */}
+      <Link to="/edit-user">
+        <div
+          className="action-item"
+          data-tip="Edit Your Profile"
           data-type="success"
         >
           <FontAwesomeIcon icon={faAddressCard} size="lg" />

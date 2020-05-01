@@ -20,6 +20,7 @@ class UserService {
     });
     return userCount;
   }
+
   /*Get Users*/
   async getUsers(params) {
     if (params.term === undefined) {
@@ -38,6 +39,7 @@ class UserService {
       .limit(Number(params.limit));
     return users;
   }
+
   /*Create User*/
   async createUser(newUserRequestArgs) {
     let user = await User.findOne({ email: newUserRequestArgs.email });
@@ -77,6 +79,7 @@ class UserService {
     };
     return response;
   }
+
   /*Update User*/
   async updateUser(updatedUserArgs) {
     try {
@@ -110,6 +113,78 @@ class UserService {
       console.log(error);
     }
   }
+
+  /*Update User Details*/
+  async updateUserDetails(updatedUserArgs) {
+    try {
+      let { id, email, name, postcode } = updatedUserArgs;
+      const userFields = { id, email, name, postcode };
+      let userWithEmail = await User.findOne({ email: email });
+      if (userWithEmail && userWithEmail._id != id) {
+        let response = {
+          Status: "FAILED",
+          Message: email + " already exists and is assigned to another user",
+        };
+        return response;
+      }
+      let user = await User.findOne({ _id: id });
+      if (user) {
+        user = await User.findOneAndUpdate(
+          { _id: id },
+          { $set: userFields },
+          {
+            new: true,
+          }
+        );
+      }
+      let response = {
+        Status: "SUCCESS",
+        Message: "Your details been updated",
+        User: user,
+      };
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  /*Update User*/
+  async updateUserPassword(updatedUserArgs) {
+    try {
+      console.log(updatedUserArgs);
+
+      let { id, currentPassword, newPassword } = updatedUserArgs;
+      const userFields = { password: newPassword };
+      let user = await User.findOne({ _id: id });
+      if (user) {
+        const isMatch = await bcrypt.compare(currentPassword, user.password);
+
+        if (!isMatch) {
+          let response = {
+            Status: "danger",
+            Message: "Incorrect password",
+            User: user,
+          };
+          return response;
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        const password = await bcrypt.hash(newPassword, salt);
+        user.password = password;
+        await user.save();
+      }
+      let response = {
+        Status: "success",
+        Message: "Your password has been updated",
+        User: user,
+      };
+
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   /*Create Or Update User*/
   async createOrUpdateUser(userArgs) {
     if (userArgs.id === "temp") {
