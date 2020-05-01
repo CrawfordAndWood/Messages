@@ -23,6 +23,7 @@ import {
   ADD_EMPTY_USER,
   SORT_BY_USER,
   SORT_BY_NEW_USER,
+  USER_LOADED,
 } from "./types";
 
 export const countUsers = (search = "") => async (dispatch) => {
@@ -207,6 +208,26 @@ export const resetPassword = (rowData) => async (dispatch) => {
         status: error.response.status,
       },
     });
+  }
+};
+
+export const updateUserDetails = (route, formData) => async (dispatch) => {
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+  try {
+    const res = await axios.post(
+      `/api/users/user-management/update/${route}`,
+      formData,
+      config
+    );
+    dispatch(setAlert(res.data.Message, res.data.Status));
+
+    dispatch({ Type: USER_LOADED, payload: res.data });
+  } catch (error) {
+    console.log(error);
   }
 };
 
