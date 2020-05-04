@@ -1,10 +1,13 @@
 const https = require("https");
-const EmailService = require("../services/EmailService");
 const User = require("../models/User");
 const gravatar = require("gravatar");
 const bcrypt = require("bcryptjs");
 const uuid = require("uuid");
 const Verifier = require("email-verifier");
+
+//Services
+const EmailService = require("../services/EmailService");
+const UserHistoryService = require("../services/UserHistoryService");
 
 class UserService {
   constructor() {}
@@ -62,6 +65,8 @@ class UserService {
     userFields.avatar = avatar;
     user = new User(userFields);
     await user.save();
+
+    //prepare templates and send welcome email
     const templateFields = {
       to: email,
       subject: "Welcome to Messages",
@@ -70,8 +75,20 @@ class UserService {
       password: password,
       selectedTemplate: "NEW_ACCOUNT_MESSAGE",
     };
+
     let emailService = new EmailService(templateFields);
     await emailService.sendEmail();
+
+    //add to history
+    let userHistoryService = new UserHistoryService();
+    let userHistoryFields = {
+      description: "New Account set up",
+      updatedBy: newUserRequestArgs.adminId,
+      user: id,
+      date: new Date(),
+    };
+    await userHistoryService.addUserHistory(userHistoryFields);
+
     let response = {
       Status: "SUCCESS",
       Message: name + " has been created and a welcome email sent",
@@ -103,6 +120,18 @@ class UserService {
           }
         );
       }
+
+      //add to history
+      let userHistoryService = new UserHistoryService();
+      let userHistoryFields = {
+        description: "Admin Updated User",
+        updatedBy: updatedUserArgs.adminId,
+        user: id,
+        date: new Date(),
+      };
+      await userHistoryService.addUserHistory(userHistoryFields);
+
+      //Prepare response message
       let response = {
         Status: "SUCCESS",
         Message: name + " has been updated",
@@ -137,8 +166,24 @@ class UserService {
           }
         );
       }
+
+      //add to history
+      let userHistoryService = new UserHistoryService();
+      let userHistoryFields = {
+        description: "User Details Updated",
+        updatedBy: updatedUserArgs.adminId,
+        user: id,
+        date: new Date(),
+      };
+      console.log(
+        "user service adding userhistory userdetails",
+        userHistoryFields
+      );
+      await userHistoryService.addUserHistory(userHistoryFields);
+
+      //return resp
       let response = {
-        Status: "SUCCESS",
+        Status: "success",
         Message: "Your details been updated",
         User: user,
       };
@@ -173,6 +218,21 @@ class UserService {
         user.password = password;
         await user.save();
       }
+
+      //add to history
+      let userHistoryService = new UserHistoryService();
+      let userHistoryFields = {
+        description: "User Password Updated",
+        updatedBy: updatedUserArgs.adminId,
+        user: id,
+        date: new Date(),
+      };
+      console.log(
+        "user service adding userhistory updateuserpass",
+        userHistoryFields
+      );
+      await userHistoryService.addUserHistory(userHistoryFields);
+
       let response = {
         Status: "success",
         Message: "Your password has been updated",
@@ -197,13 +257,28 @@ class UserService {
   /*Delete User*/
   async deleteUser(params) {
     try {
-      const { id } = params;
+      const { id, adminId } = params;
       await User.findOneAndRemove({ _id: id });
+
+      //add to history
+      let userHistoryService = new UserHistoryService();
+      let userHistoryFields = {
+        description: "User Deleted",
+        updatedBy: adminId,
+        user: id,
+        date: new Date(),
+      };
+      console.log(
+        "user service adding userhistory updateuserpass",
+        userHistoryFields
+      );
+      await userHistoryService.addUserHistory(userHistoryFields);
       return true;
     } catch {
       return false;
     }
   }
+
   async resetPassword(params) {
     try {
       const { id } = params;

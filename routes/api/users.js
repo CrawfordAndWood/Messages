@@ -97,7 +97,7 @@ router.post(
 //@route  DELETE api/users
 //@desc   Delete user
 //@access Private
-router.delete("/user-management/:id", auth, async (req, res) => {
+router.delete("/user-management/:id/:adminId", auth, async (req, res) => {
   try {
     const result = await userService.deleteUser(req.params);
     return res.json(result);
