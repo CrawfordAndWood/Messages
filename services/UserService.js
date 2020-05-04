@@ -45,56 +45,60 @@ class UserService {
 
   /*Create User*/
   async createUser(newUserRequestArgs) {
-    let user = await User.findOne({ email: newUserRequestArgs.email });
-    if (user) {
-      user.Status = "FAILED";
-      user.Message = "A User with the same email already exists";
-      return user;
+    try {
+      let user = await User.findOne({ email: newUserRequestArgs.email });
+      if (user) {
+        user.Status = "FAILED";
+        user.Message = "A User with the same email already exists";
+        return user;
+      }
+      let { id, email, name, postcode, roleId } = newUserRequestArgs;
+      const userFields = { id, email, name, role: roleId, postcode };
+      userFields.id = uuid.v4();
+      let password = uuid.v4().slice(0, 8);
+      const salt = await bcrypt.genSalt(10);
+      userFields.password = await bcrypt.hash(password, salt);
+      const avatar = gravatar.url(email, {
+        s: "200",
+        r: "pg",
+        d: "mm",
+      });
+      userFields.avatar = avatar;
+      user = new User(userFields);
+      await user.save();
+
+      //prepare templates and send welcome email
+      const templateFields = {
+        to: email,
+        subject: "Welcome to Messages",
+        name: name,
+        email: email,
+        password: password,
+        selectedTemplate: "NEW_ACCOUNT_MESSAGE",
+      };
+
+      let emailService = new EmailService(templateFields);
+      await emailService.sendEmail();
+
+      //add to history
+      let userHistoryService = new UserHistoryService();
+      let userHistoryFields = {
+        description: "New Account set up",
+        updatedBy: newUserRequestArgs.adminId,
+        user: user._id,
+        date: new Date(),
+      };
+      await userHistoryService.addUserHistory(userHistoryFields);
+
+      let response = {
+        Status: "SUCCESS",
+        Message: name + " has been created and a welcome email sent",
+        User: user,
+      };
+      return response;
+    } catch (error) {
+      console.log(error.message);
     }
-    let { id, email, name, postcode, roleId } = newUserRequestArgs;
-    const userFields = { id, email, name, role: roleId, postcode };
-    userFields.id = uuid.v4();
-    let password = uuid.v4().slice(0, 8);
-    const salt = await bcrypt.genSalt(10);
-    userFields.password = await bcrypt.hash(password, salt);
-    const avatar = gravatar.url(email, {
-      s: "200",
-      r: "pg",
-      d: "mm",
-    });
-    userFields.avatar = avatar;
-    user = new User(userFields);
-    await user.save();
-
-    //prepare templates and send welcome email
-    const templateFields = {
-      to: email,
-      subject: "Welcome to Messages",
-      name: name,
-      email: email,
-      password: password,
-      selectedTemplate: "NEW_ACCOUNT_MESSAGE",
-    };
-
-    let emailService = new EmailService(templateFields);
-    await emailService.sendEmail();
-
-    //add to history
-    let userHistoryService = new UserHistoryService();
-    let userHistoryFields = {
-      description: "New Account set up",
-      updatedBy: newUserRequestArgs.adminId,
-      user: id,
-      date: new Date(),
-    };
-    await userHistoryService.addUserHistory(userHistoryFields);
-
-    let response = {
-      Status: "SUCCESS",
-      Message: name + " has been created and a welcome email sent",
-      User: user,
-    };
-    return response;
   }
 
   /*Update User*/
@@ -258,12 +262,18 @@ class UserService {
   async deleteUser(params) {
     try {
       const { id, adminId } = params;
-      await User.findOneAndRemove({ _id: id });
-
+      let user = await User.findOneAndRemove({ _id: id });
+      console.log("delete3", params);
       //add to history
       let userHistoryService = new UserHistoryService();
       let userHistoryFields = {
-        description: "User Deleted",
+        description:
+          "User Deleted - " +
+          user.name +
+          " " +
+          user.email +
+          " " +
+          user.postcode,
         updatedBy: adminId,
         user: id,
         date: new Date(),

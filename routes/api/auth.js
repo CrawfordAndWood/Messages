@@ -6,6 +6,10 @@ const jwt = require("jsonwebtoken");
 const config = require("config");
 const { check, validationResult } = require("express-validator/check");
 
+//Service imports
+const UserHistoryService = require("../../services/UserHistoryService");
+const userHistoryService = new UserHistoryService();
+//model imports
 const User = require("../../models/User");
 
 //@route    GET api/auth
@@ -28,7 +32,7 @@ router.post(
   "/",
   [
     check("email", "Please include a valid email").isEmail(),
-    check("password", "Password is required").exists()
+    check("password", "Password is required").exists(),
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -55,9 +59,18 @@ router.post(
 
       const payload = {
         user: {
-          id: user.id
-        }
+          id: user.id,
+        },
       };
+
+      //add to history
+      let userHistoryFields = {
+        description: "User signed in",
+        updatedBy: null,
+        user: user.id,
+        date: new Date(),
+      };
+      await userHistoryService.addUserHistory(userHistoryFields);
 
       jwt.sign(
         payload,
@@ -74,5 +87,26 @@ router.post(
     }
   }
 );
+
+//@route    GET api/auth
+//@desc     Test route
+//@access   Public
+router.post("/logout", auth, async (req, res) => {
+  try {
+    const { activeUserId } = req.body;
+
+    let userHistoryFields = {
+      description: "User signed out",
+      updatedBy: null,
+      user: activeUserId,
+      date: new Date(),
+    };
+    await userHistoryService.addUserHistory(userHistoryFields);
+    res.json(true);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
 
 module.exports = router;
