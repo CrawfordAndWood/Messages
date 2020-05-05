@@ -20,7 +20,6 @@ const History = () => {
 
   return (
     <Fragment>
-      <h2>History</h2>
       <button
         type="button"
         className={

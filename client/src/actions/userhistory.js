@@ -38,7 +38,6 @@ export const getUserHistory = (search = "", page = 1, limit = 10) => async (
     dispatch({ type: SEARCH, payload: search });
     dispatch(countUserHistory(search));
     const res = await axios.get(`/api/userhistory/${search}/${page}/${limit}`);
-    console.log(res.data);
     dispatch({ type: GET_USER_HISTORY, payload: res.data });
     dispatch({ type: UPDATE_LIMIT, payload: limit });
     dispatch({ type: UPDATE_PAGE, payload: page });
@@ -65,4 +64,15 @@ export const sort = (name, sortColumn) => (dispatch) => {
 export const resetSearch = (limit) => (dispatch) => {
   dispatch(getUserHistory("", 1, limit));
   dispatch({ type: RESET_SEARCH });
+};
+
+export const updateLimit = (search, newLimit) => (dispatch) => {
+  dispatch(getUserHistory(search, 1, newLimit));
+  dispatch({ type: UPDATE_PAGE, payload: 1 });
+  dispatch({ type: UPDATE_LIMIT, payload: newLimit });
+};
+
+export const updatePage = (search, page, limit) => (dispatch) => {
+  dispatch(getUserHistory(search, page, limit));
+  dispatch({ type: UPDATE_PAGE, payload: page });
 };

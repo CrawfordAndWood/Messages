@@ -8,8 +8,8 @@ import {
 
 const initialState = {
   userhistory: [],
-  sortColumn: "",
-  sortDescending: true,
+  sortColumn: "date",
+  sortDescending: false,
   loading: true,
 };
 

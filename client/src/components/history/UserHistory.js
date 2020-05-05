@@ -3,57 +3,103 @@
 import React, { Fragment, useState, useEffect } from "react";
 import { connect } from "react-redux";
 import Spinner from "../layout/Spinner";
-import { getUserHistory } from "../../actions/userhistory";
+import {
+  getUserHistory,
+  updateLimit,
+  updatePage,
+  resetSearch,
+  sort,
+} from "../../actions/userhistory";
 import Moment from "react-moment";
+import SortColumn from "../table/SortColumn";
+import Pagination from "../table/Pagination";
+import Search from "../table/Search";
 
 const UserHistory = ({
   getUserHistory,
+  updateLimit,
+  updatePage,
+  resetSearch,
+  sort,
   userhistory: { loading, sortDescending, userhistory },
-  view: { search, limit, page },
 }) => {
   useEffect(() => {
     getUserHistory();
   }, []);
   return (
     <Fragment>
+      <Search searchFn={getUserHistory} resetFn={resetSearch} />
       {loading ? (
         <Spinner />
       ) : (
-        <table className="table user-history-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Action</th>
-              <th>Updated By</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-          <tbody className="user-histoy">
-            {" "}
-            {userhistory !== undefined ? (
-              <Fragment>
-                {userhistory.map((hist) => (
-                  <tr key={hist._id}>
-                    <td>{hist.user !== null ? hist.user.name : ""}</td>
-                    <td>{hist.description}</td>
-                    <td>
-                      {hist.updatedBy !== null && hist.updatedBy.name !== null
-                        ? hist.updatedBy.name
-                        : ""}
-                    </td>
-                    <td>
-                      <Moment format="YYYY/MM/DD HH:MM" date={hist.date} />
-                    </td>
-                  </tr>
-                ))}
-              </Fragment>
-            ) : (
+        <Fragment>
+          <table className="table user-history-table">
+            <thead>
               <tr>
-                <td>No User History found...</td>
+                <th>
+                  Date
+                  <SortColumn
+                    columnName={"date"}
+                    sortFn={sort}
+                    sortDescending={sortDescending}
+                  />
+                </th>
+                <th>
+                  Name
+                  <SortColumn
+                    columnName={"name"}
+                    sortFn={sort}
+                    sortDescending={sortDescending}
+                  />
+                </th>
+                <th>
+                  Action
+                  <SortColumn
+                    columnName={"action"}
+                    sortFn={sort}
+                    sortDescending={sortDescending}
+                  />
+                </th>
+                <th>
+                  Updated By
+                  <SortColumn
+                    columnName={"updatedBy"}
+                    sortFn={sort}
+                    sortDescending={sortDescending}
+                  />
+                </th>
               </tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="user-histoy">
+              {userhistory !== undefined ? (
+                <Fragment>
+                  {userhistory.map((hist) => (
+                    <tr key={hist._id}>
+                      <td>
+                        <Moment format="DD/MM/YYYY HH:mm" date={hist.date} />
+                      </td>
+                      <td>{hist.user !== null ? hist.user.name : ""}</td>
+                      <td>
+                        {hist.description !== null ? hist.description : ""}
+                      </td>
+                      <td>
+                        {hist.updatedBy !== null &&
+                        hist.hasOwnProperty("updatedBy")
+                          ? hist.updatedBy.name
+                          : ""}
+                      </td>
+                    </tr>
+                  ))}
+                </Fragment>
+              ) : (
+                <tr>
+                  <td>No User History found...</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+          <Pagination updatePageFn={updatePage} updateLimitFn={updateLimit} />
+        </Fragment>
       )}
     </Fragment>
   );
@@ -65,4 +111,10 @@ const mapStateToProps = (state) => ({
   userhistory: state.userhistory,
 });
 
-export default connect(mapStateToProps, { getUserHistory })(UserHistory);
+export default connect(mapStateToProps, {
+  getUserHistory,
+  updatePage,
+  updateLimit,
+  resetSearch,
+  sort,
+})(UserHistory);
