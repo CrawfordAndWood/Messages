@@ -21,15 +21,6 @@ const Dashboard = ({
       <h2>Dashboard</h2>
       <p>Welcome {user && user.name}, choose an action from below.</p>
       <DashbordActions />
-      {/* {profile !== null ? (
-        <Fragment>
-        </Fragment>
-      ) : (
-        <Fragment>
-          <p>You haven't yet setup a profile. Please add some info.</p>
-          <Link to="/create-profile">Create Profile</Link>
-        </Fragment>
-      )} */}
     </Fragment>
   );
 };

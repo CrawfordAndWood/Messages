@@ -331,6 +331,7 @@ class UserService {
     }
   }
   async lockUser() {}
+  async unlockUser() {}
   async onFailedLogin() {}
 }
 
