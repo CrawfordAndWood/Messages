@@ -144,7 +144,10 @@ export const deleteUser = (search, page, limit, rowData) => async (
       },
     };
     if (rowData.id !== "temp") {
-      await axios.delete(`/api/users/user-management/${rowData.id}`, config);
+      await axios.delete(
+        `/api/users/user-management/${rowData.id}/${rowData.adminId}`,
+        config
+      );
       dispatch(setAlert("User Deleted", "success"));
       dispatch({ type: DECREMENT_COUNT });
     }
@@ -223,9 +226,10 @@ export const updateUserDetails = (route, formData) => async (dispatch) => {
       formData,
       config
     );
+    console.log("deets up", res.data);
     dispatch(setAlert(res.data.Message, res.data.Status));
 
-    dispatch({ Type: USER_LOADED, payload: res.data });
+    dispatch({ type: USER_LOADED, payload: res.data });
   } catch (error) {
     console.log(error);
   }

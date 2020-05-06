@@ -18,9 +18,11 @@ const UserItems = ({
   resetPassword,
   roles,
   view: { search, limit, page },
+  auth: { activeUserId },
 }) => {
   const [rowData, setRowData] = useState({
     id: user._id,
+    adminId: activeUserId,
     postcode: user.postcode,
     email: user.email,
     name: user.name,
@@ -132,6 +134,7 @@ const UserItems = ({
 const mapStateToProps = (state) => ({
   view: state.view,
   role: state.role,
+  auth: state.auth,
 });
 
 export default connect(mapStateToProps, {

@@ -1,10 +1,14 @@
 const https = require("https");
-const EmailService = require("../services/EmailService");
 const User = require("../models/User");
+const Role = require("../models/Roles");
 const gravatar = require("gravatar");
 const bcrypt = require("bcryptjs");
 const uuid = require("uuid");
 const Verifier = require("email-verifier");
+
+//Services
+const EmailService = require("../services/EmailService");
+const UserHistoryService = require("../services/UserHistoryService");
 
 class UserService {
   constructor() {}
@@ -42,42 +46,60 @@ class UserService {
 
   /*Create User*/
   async createUser(newUserRequestArgs) {
-    let user = await User.findOne({ email: newUserRequestArgs.email });
-    if (user) {
-      user.Status = "FAILED";
-      user.Message = "A User with the same email already exists";
-      return user;
+    try {
+      let user = await User.findOne({ email: newUserRequestArgs.email });
+      if (user) {
+        user.Status = "FAILED";
+        user.Message = "A User with the same email already exists";
+        return user;
+      }
+      let { id, email, name, postcode, roleId } = newUserRequestArgs;
+      const userFields = { id, email, name, role: roleId, postcode };
+      userFields.id = uuid.v4();
+      let password = uuid.v4().slice(0, 8);
+      const salt = await bcrypt.genSalt(10);
+      userFields.password = await bcrypt.hash(password, salt);
+      const avatar = gravatar.url(email, {
+        s: "200",
+        r: "pg",
+        d: "mm",
+      });
+      userFields.avatar = avatar;
+      user = new User(userFields);
+      await user.save();
+
+      //prepare templates and send welcome email
+      const templateFields = {
+        to: email,
+        subject: "Welcome to Messages",
+        name: name,
+        email: email,
+        password: password,
+        selectedTemplate: "NEW_ACCOUNT_MESSAGE",
+      };
+
+      let emailService = new EmailService(templateFields);
+      await emailService.sendEmail();
+
+      //add to history
+      let userHistoryService = new UserHistoryService();
+      let userHistoryFields = {
+        description: "New Account set up",
+        updatedBy: newUserRequestArgs.adminId,
+        user: user._id,
+        date: new Date(),
+      };
+      await userHistoryService.addUserHistory(userHistoryFields);
+
+      let response = {
+        Status: "SUCCESS",
+        Message: name + " has been created and a welcome email sent",
+        User: user,
+      };
+      return response;
+    } catch (error) {
+      console.log(error.message);
     }
-    let { id, email, name, postcode, roleId } = newUserRequestArgs;
-    const userFields = { id, email, name, role: roleId, postcode };
-    userFields.id = uuid.v4();
-    let password = uuid.v4().slice(0, 8);
-    const salt = await bcrypt.genSalt(10);
-    userFields.password = await bcrypt.hash(password, salt);
-    const avatar = gravatar.url(email, {
-      s: "200",
-      r: "pg",
-      d: "mm",
-    });
-    userFields.avatar = avatar;
-    user = new User(userFields);
-    await user.save();
-    const templateFields = {
-      to: email,
-      subject: "Welcome to Messages",
-      name: name,
-      email: email,
-      password: password,
-      selectedTemplate: "NEW_ACCOUNT_MESSAGE",
-    };
-    let emailService = new EmailService(templateFields);
-    await emailService.sendEmail();
-    let response = {
-      Status: "SUCCESS",
-      Message: name + " has been created and a welcome email sent",
-      User: user,
-    };
-    return response;
   }
 
   /*Update User*/
@@ -93,8 +115,9 @@ class UserService {
         };
         return response;
       }
-      let user = await User.findOne({ _id: id });
-      if (user) {
+      let user = {};
+      let existingUser = await User.findOne({ _id: id });
+      if (existingUser) {
         user = await User.findOneAndUpdate(
           { _id: id },
           { $set: userFields },
@@ -103,6 +126,26 @@ class UserService {
           }
         );
       }
+
+      let oldRole = await Role.findOne({ _id: existingUser.role }).select(
+        "name"
+      );
+
+      let newRole = await Role.findOne({ _id: user.role }).select("name");
+      let desc = `Admin updated user. 
+      Old: ${existingUser.name}  ${existingUser.email} ${existingUser.postcode} ${oldRole.name}
+      New: ${user.name} ${user.email} ${user.postcode} ${newRole.name}`;
+      //add to history
+      let userHistoryService = new UserHistoryService();
+      let userHistoryFields = {
+        description: desc,
+        updatedBy: updatedUserArgs.adminId,
+        user: id,
+        date: new Date(),
+      };
+      await userHistoryService.addUserHistory(userHistoryFields);
+
+      //Prepare response message
       let response = {
         Status: "SUCCESS",
         Message: name + " has been updated",
@@ -137,8 +180,24 @@ class UserService {
           }
         );
       }
+
+      //add to history
+      let userHistoryService = new UserHistoryService();
+      let userHistoryFields = {
+        description: "User Details Updated",
+        updatedBy: updatedUserArgs.adminId,
+        user: id,
+        date: new Date(),
+      };
+      console.log(
+        "user service adding userhistory userdetails",
+        userHistoryFields
+      );
+      await userHistoryService.addUserHistory(userHistoryFields);
+
+      //return resp
       let response = {
-        Status: "SUCCESS",
+        Status: "success",
         Message: "Your details been updated",
         User: user,
       };
@@ -173,6 +232,21 @@ class UserService {
         user.password = password;
         await user.save();
       }
+
+      //add to history
+      let userHistoryService = new UserHistoryService();
+      let userHistoryFields = {
+        description: "User Password Updated",
+        updatedBy: updatedUserArgs.adminId,
+        user: id,
+        date: new Date(),
+      };
+      console.log(
+        "user service adding userhistory updateuserpass",
+        userHistoryFields
+      );
+      await userHistoryService.addUserHistory(userHistoryFields);
+
       let response = {
         Status: "success",
         Message: "Your password has been updated",
@@ -197,13 +271,33 @@ class UserService {
   /*Delete User*/
   async deleteUser(params) {
     try {
-      const { id } = params;
-      await User.findOneAndRemove({ _id: id });
+      const { id, adminId } = params;
+      let user = await User.findOneAndRemove({ _id: id });
+      //add to history
+      let userHistoryService = new UserHistoryService();
+      let userHistoryFields = {
+        description:
+          "User Deleted - " +
+          user.name +
+          " " +
+          user.email +
+          " " +
+          user.postcode,
+        updatedBy: adminId,
+        user: id,
+        date: new Date(),
+      };
+      console.log(
+        "user service adding userhistory updateuserpass",
+        userHistoryFields
+      );
+      await userHistoryService.addUserHistory(userHistoryFields);
       return true;
     } catch {
       return false;
     }
   }
+
   async resetPassword(params) {
     try {
       const { id } = params;

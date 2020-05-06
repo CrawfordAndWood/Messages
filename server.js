@@ -17,6 +17,8 @@ app.use("/api/inventory", require("./routes/api/inventory"));
 app.use("/api/households", require("./routes/api/households"));
 app.use("/api/profile", require("./routes/api/profile"));
 app.use("/api/roles", require("./routes/api/roles"));
+app.use("/api/rolehistory", require("./routes/api/rolehistory"));
+app.use("/api/userhistory", require("./routes/api/userhistory"));
 
 //Serve statis assets in production
 if (process.env.NODE_ENV === "production") {

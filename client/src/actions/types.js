@@ -55,3 +55,11 @@ export const GET_DATA = "GET_DATA";
 export const SET_ROUTE = "SET_ROUTE";
 export const SET_SORT_COLUMN = "SET_SORT_COLUMN";
 export const SORT = "SORT";
+
+//User History
+export const GET_USER_HISTORY = "GET_USER_HISTORY";
+export const SORT_BY_USER_HISTORY = "SORT_BY_USER_HISTORY";
+export const SORT_BY_NEW_USER_HISTORY = "SORT_BY_NEW_USER_HISTORY";
+
+//Role History
+export const GET_ROLE_HISTORY = "GET_ROLE_HISTORY";

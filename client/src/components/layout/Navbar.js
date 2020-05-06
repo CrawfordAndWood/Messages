@@ -9,10 +9,14 @@ import {
   faTachometerAlt,
   faSignOutAlt,
   faUserPlus,
-  faDoorOpen
+  faDoorOpen,
 } from "@fortawesome/free-solid-svg-icons";
 
-const Navbar = ({ auth: { isAuthenticated, loading }, logout, history }) => {
+const Navbar = ({
+  auth: { isAuthenticated, loading, activeUserId },
+  logout,
+  history,
+}) => {
   const authLinks = (
     <Fragment>
       <Link to="/dashboard">
@@ -25,7 +29,7 @@ const Navbar = ({ auth: { isAuthenticated, loading }, logout, history }) => {
         </div>
       </Link>
       <div className="navLink">
-        <a onClick={() => logout(history)} href="#">
+        <a onClick={() => logout(history, activeUserId)} href="#">
           <span>
             {" "}
             <FontAwesomeIcon icon={faSignOutAlt} />
@@ -70,11 +74,11 @@ const Navbar = ({ auth: { isAuthenticated, loading }, logout, history }) => {
 
 Navbar.propTypes = {
   logout: PropTypes.func.isRequired,
-  auth: PropTypes.object.isRequired
+  auth: PropTypes.object.isRequired,
 };
 
-const mapStateToProps = state => ({
-  auth: state.auth
+const mapStateToProps = (state) => ({
+  auth: state.auth,
 });
 
 export default connect(mapStateToProps, { logout })(withRouter(Navbar));
