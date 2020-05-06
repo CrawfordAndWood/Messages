@@ -1,5 +1,6 @@
 const https = require("https");
 const User = require("../models/User");
+const Role = require("../models/Roles");
 const gravatar = require("gravatar");
 const bcrypt = require("bcryptjs");
 const uuid = require("uuid");
@@ -114,8 +115,9 @@ class UserService {
         };
         return response;
       }
-      let user = await User.findOne({ _id: id });
-      if (user) {
+      let user = {};
+      let existingUser = await User.findOne({ _id: id });
+      if (existingUser) {
         user = await User.findOneAndUpdate(
           { _id: id },
           { $set: userFields },
@@ -125,10 +127,18 @@ class UserService {
         );
       }
 
+      let oldRole = await Role.findOne({ _id: existingUser.role }).select(
+        "name"
+      );
+
+      let newRole = await Role.findOne({ _id: user.role }).select("name");
+      let desc = `Admin updated user. 
+      Old: ${existingUser.name}  ${existingUser.email} ${existingUser.postcode} ${oldRole.name}
+      New: ${user.name} ${user.email} ${user.postcode} ${newRole.name}`;
       //add to history
       let userHistoryService = new UserHistoryService();
       let userHistoryFields = {
-        description: "Admin Updated User",
+        description: desc,
         updatedBy: updatedUserArgs.adminId,
         user: id,
         date: new Date(),
@@ -263,7 +273,6 @@ class UserService {
     try {
       const { id, adminId } = params;
       let user = await User.findOneAndRemove({ _id: id });
-      console.log("delete3", params);
       //add to history
       let userHistoryService = new UserHistoryService();
       let userHistoryFields = {

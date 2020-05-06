@@ -62,7 +62,6 @@ class UserHistoryService {
 
   /* Post User History */
   async addUserHistory(historyArgs) {
-    console.log("adding user history", historyArgs);
     let history = new UserHistory(historyArgs);
     await history.save();
     return history;
