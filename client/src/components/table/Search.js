@@ -25,6 +25,12 @@ export const Search = ({
     searchFn(searchInput.term, page, limit);
   };
 
+  const onEnter = (e) => {
+    if (e.keyCode === 13) {
+      onSubmit(e);
+    }
+  };
+
   const onReset = () => {
     setsearchInput({
       ...searchInput,
@@ -48,6 +54,7 @@ export const Search = ({
                 name="term"
                 value={term}
                 onChange={(e) => onSearchChange(e)}
+                onKeyDown={(e) => onEnter(e)}
               />
               <FontAwesomeIcon
                 icon={faSearch}
