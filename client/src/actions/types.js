@@ -2,6 +2,16 @@
 export const SET_ALERT = "SET_ALERT";
 export const REMOVE_ALERT = "REMOVE_ALERT";
 
+//Area
+
+export const ADD_EMPTY_AREA = "ADD_EMPTY_AREA";
+export const GET_AREA = "GET_AREA";
+export const GET_AREAS = "GET_AREAS";
+export const UPDATE_AREA = "UPDATE_AREA";
+export const SORT_BY_AREA = "SORT_BY_AREA";
+export const SORT_BY_NEW_AREA = "SORT_BY_NEW_AREA";
+export const AREA_LOADED = "AREA_LOADED";
+
 //Auth
 export const REGISTER_SUCCESS = "REGISTER_SUCCESS";
 export const REGISTER_FAIL = "REGISTER_FAIL";

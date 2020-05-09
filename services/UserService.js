@@ -1,14 +1,14 @@
-const https = require("https");
-const User = require("../models/User");
-const Role = require("../models/Roles");
 const gravatar = require("gravatar");
 const bcrypt = require("bcryptjs");
 const uuid = require("uuid");
-const Verifier = require("email-verifier");
 
 //Services
 const EmailService = require("../services/EmailService");
 const UserHistoryService = require("../services/UserHistoryService");
+
+//Models
+const User = require("../models/User");
+const Role = require("../models/Roles");
 
 class UserService {
   constructor() {}

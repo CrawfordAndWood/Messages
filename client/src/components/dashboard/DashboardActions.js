@@ -9,6 +9,7 @@ import {
   faTasks,
   faHistory,
   faHome,
+  faMap,
 } from "@fortawesome/free-solid-svg-icons";
 import ReactTooltip from "react-tooltip";
 import "./dashboard.scss";
@@ -61,6 +62,11 @@ const DashboardActions = ({ auth: { user } }) => {
       <Link to="/households">
         <div className="action-item" data-tip="Houeholds" data-type="success">
           <FontAwesomeIcon icon={faHome} size="lg" />
+        </div>
+      </Link>
+      <Link to="/areas">
+        <div className="action-item" data-tip="Areas" data-type="success">
+          <FontAwesomeIcon icon={faMap} size="lg" />
         </div>
       </Link>
       <ReactTooltip />

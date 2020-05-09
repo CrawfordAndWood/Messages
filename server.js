@@ -9,6 +9,7 @@ connectDB();
 //init middleware
 app.use(express.json({ extended: false }));
 
+app.use("/api/areas", require("./routes/api/areas"));
 app.use("/api/users", require("./routes/api/users"));
 app.use("/api/auth", require("./routes/api/auth"));
 app.use("/api/streets", require("./routes/api/streets"));

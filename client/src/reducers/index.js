@@ -1,5 +1,6 @@
 import { combineReducers } from "redux";
 import alert from "./alert";
+import area from "./area";
 import auth from "./auth";
 import profile from "./profile";
 import role from "./role";
@@ -9,6 +10,7 @@ import userhistory from "./userhistory";
 
 export default combineReducers({
   alert,
+  area,
   auth,
   profile,
   role,
