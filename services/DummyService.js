@@ -60,7 +60,7 @@ class AreaService {
       let { id, code, name } = updatedAreaArgs;
       const areaFields = { id, code, name };
       let clashingArea = await Area.findOne({
-        $or: [{ code: code }, { name: name }],
+        $or: [{ code: term }, { name: term }],
       });
       if (clashingArea) {
         let response = {

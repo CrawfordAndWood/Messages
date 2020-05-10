@@ -10,6 +10,9 @@ connectDB();
 app.use(express.json({ extended: false }));
 
 app.use("/api/areas", require("./routes/api/areas"));
+app.use("/api/areahistory", require("./routes/api/areahistory"));
+app.use("/api/households", require("./routes/api/households"));
+app.use("/api/householdhistory", require("./routes/api/householdhistory"));
 app.use("/api/users", require("./routes/api/users"));
 app.use("/api/auth", require("./routes/api/auth"));
 app.use("/api/streets", require("./routes/api/streets"));
