@@ -1,0 +1,17 @@
+.form-group {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  border-radius: 2px;
+}
+
+.form-group label {
+  padding: 5px;
+}
+
+.form-group input {
+  float: right;
+  width: 92%;
+  border: 2px solid #ccc;
+  -webkit-border-radius: 1px;
+  border-radius: 2px;
+}

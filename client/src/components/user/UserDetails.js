@@ -2,6 +2,7 @@ import React, { Fragment, useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { setAlert } from "../../actions/alert";
 import { updateUserDetails } from "../../actions/user";
+import "./user.scss";
 
 export const UserDetails = ({ updateUserDetails, auth: { user, loading } }) => {
   const [formData, setFormData] = useState({
@@ -33,37 +34,41 @@ export const UserDetails = ({ updateUserDetails, auth: { user, loading } }) => {
   return (
     <Fragment>
       <form className="form" onSubmit={(e) => onSubmit(e)}>
-        <div className="form-group">
-          <input
-            className="formInput"
-            type="text"
-            placeholder="Name"
-            name="name"
-            value={name}
-            onChange={(e) => onChange(e)}
-          />
-        </div>
-        <div className="form-group">
-          <input
-            className="formInput"
-            type="email"
-            placeholder="Email address"
-            name="email"
-            value={email}
-            onChange={(e) => onChange(e)}
-          />
-        </div>
-        <div className="form-group">
-          <input
-            className="formInput"
-            type="text"
-            placeholder="Postcode"
-            name="postcode"
-            value={postcode}
-            onChange={(e) => onChange(e)}
-          />
-        </div>
-
+        <ol>
+          <div className="form-group">
+            <label for={name}>Name </label>
+            <input
+              //className="formInput"
+              type="text"
+              placeholder="Name"
+              name="name"
+              value={name}
+              onChange={(e) => onChange(e)}
+            />
+          </div>
+          <div className="form-group">
+            <label for={email}>Email </label>
+            <input
+              //className="formInput"
+              type="email"
+              placeholder="Email address"
+              name="email"
+              value={email}
+              onChange={(e) => onChange(e)}
+            />
+          </div>
+          <div className="form-group">
+            <label for={postcode}>Postcode </label>
+            <input
+              //className="formInput"
+              type="text"
+              placeholder="Postcode"
+              name="postcode"
+              value={postcode}
+              onChange={(e) => onChange(e)}
+            />
+          </div>
+        </ol>
         <input type="submit" className="btn btn-success" value="Save Changes" />
       </form>
     </Fragment>
