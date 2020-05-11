@@ -17,6 +17,7 @@ import EditUser from "./components/user/EditUser";
 import History from "./components/history/History";
 import Groups from "./components/groups/Groups";
 import Households from "./components/households/Households";
+import Areas from "./components/areas/Areas";
 
 //redux
 import { Provider } from "react-redux";
@@ -63,6 +64,7 @@ const App = () => {
                 <PrivateRoute exact path="/history" component={History} />
                 <PrivateRoute exact path="/groups" component={Groups} />
                 <PrivateRoute exact path="/households" component={Households} />
+                <PrivateRoute exact path="/areas" component={Areas} />
                 <PrivateRoute component={NotFound} />
               </Switch>
             </div>

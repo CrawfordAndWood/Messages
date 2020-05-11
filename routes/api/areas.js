@@ -1,5 +1,3 @@
-/*Built off of households. Replace household with your type */
-
 const express = require("express");
 const router = express.Router();
 const config = require("config");
@@ -8,14 +6,15 @@ const { check, validationResult } = require("express-validator/check");
 //middleware
 const auth = require("../../middleware/auth");
 //services
-const HouseholdService = require("../../services/HouseholdService");
-const householdService = new HouseholdService();
+const AreaService = require("../../services/AreaService");
+const areaService = new AreaService();
 //models
+const Area = require("../../models/Area");
 
 router.get("/count", auth, async (req, res) => {
   try {
-    const householdCount = await householdService.countHouseholds();
-    res.json(householdCount);
+    const areaCount = await areaService.countAreas();
+    res.json(areaCount);
   } catch (err) {
     console.error(err.messge);
     res.status(500).send("Server Error");
@@ -24,50 +23,48 @@ router.get("/count", auth, async (req, res) => {
 
 router.get("/count/:term", auth, async (req, res) => {
   try {
-    const householdCount = await householdService.countHouseholds(
-      req.params.term
-    );
-    res.json(householdCount);
+    const areaCount = await areaService.countAreas(req.params.term);
+    res.json(areaCount);
   } catch (err) {
     res.status(500).send("Server Error");
   }
 });
 
-//@route    GET api/households/
-//@desc     Get household management page
+//@route    GET api/areas/
+//@desc     Get area management page
 //@access   Private - eventually only global admin has option
 router.get("/:page/:limit", auth, async (req, res) => {
   try {
-    let households = await householdService.getHouseholds(req.params);
-    res.json(households);
+    let areas = await areaService.getAreas(req.params);
+    res.json(areas);
   } catch (err) {
     res.status(500).send("Server Error", err);
   }
 });
 
-//@route    GET api/household/search
-//@desc     Filter household
+//@route    GET api/area/search
+//@desc     Filter area
 //@access   Private - eventually only global admin has option
 router.get("/:term/:page/:limit", auth, async (req, res) => {
   try {
-    let households = await householdService.getHouseholds(req.params);
+    let areas = await areaService.getAreas(req.params);
 
-    res.json(households);
+    res.json(areas);
   } catch (err) {
     res.status(500).send("Server Error", err);
   }
 });
 
 //@route    POST api//
-//@desc     Add or update households from the management page
+//@desc     Add or update areas from the management page
 //@access   Private - eventually only global admin has option
 router.post(
   "/",
   [
     auth,
     [
-      check("street", "Street is required").not().isEmpty(),
-      check("house", "House is required").not().isEmpty(),
+      check("name", "Name is required").not().isEmpty(),
+      check("code", "Code is required").not().isEmpty(),
     ],
   ],
   async (req, res) => {
@@ -77,27 +74,27 @@ router.post(
     }
 
     try {
-      let createUpdateHouseholdResult = await householdService.createOrUpdateHousehold(
+      let createUpdateAreaResult = await areaService.createOrUpdateArea(
         req.body
       );
-      if (createUpdateHouseholdResult.Status === "FAILED") {
+      if (createUpdateAreaResult.Status === "FAILED") {
         return res
           .status(400)
-          .json({ errors: [{ msg: createUpdateHouseholdResult.Message }] });
+          .json({ errors: [{ msg: createUpdateAreaResult.Message }] });
       }
-      return res.json(createUpdateHouseholdResult);
+      return res.json(createUpdateAreaResult);
     } catch (err) {
       res.status(500).send("Server error", err.message);
     }
   }
 );
 
-//@route  DELETE api/households
-//@desc   Delete household
+//@route  DELETE api/areas
+//@desc   Delete area
 //@access Private
 router.delete("/:id/:adminId", auth, async (req, res) => {
   try {
-    const result = await householdService.deleteHousehold(req.params);
+    const result = await areaService.deleteArea(req.params);
     return res.json(result);
   } catch (err) {
     res.status(500).send("Server Error", err.message);

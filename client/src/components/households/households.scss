@@ -1,0 +1,139 @@
+$myBlue: royalblue;
+
+.households-paging {
+}
+
+.households-paging td {
+  height: 2em;
+}
+
+.households-paging input {
+  width: 2em;
+}
+
+.pager-active svg {
+  cursor: pointer;
+  color: $myBlue;
+}
+
+.pager-inactive svg {
+  color: grey;
+}
+
+.pager-padder {
+  width: 15%;
+}
+
+.pager {
+  width: 5%;
+}
+
+.pager-counter {
+  width: 20%;
+}
+
+.limit-updater {
+  width: 20%;
+}
+
+.householdInput {
+  padding: 0.2em;
+  margin-top: 0.1em;
+  margin-bottom: 0.1em;
+  border: none;
+  -webkit-border-radius: 1px;
+  border-radius: 1em;
+  width: 90%;
+  font-size: 1em;
+}
+
+.search-bar {
+  padding-left: 1em;
+  width: 50%;
+  border: 2px solid gray;
+  border-radius: 1em;
+}
+
+.searchInput {
+  width: 65%;
+  border: none;
+  border-radius: 5px;
+  padding-left: 2em;
+  padding-right: 1em;
+  height: 2em;
+}
+
+tr:nth-child(odd) .householdInput {
+  background-color: snow;
+}
+
+tr:nth-child(even) .householdInput {
+  background-color: rgba(233, 231, 231, 0.911);
+}
+
+.table {
+  width: 90%;
+  border: 1px solid lightslategray;
+  border-radius: 0.1px;
+  font-size: large;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  text-align: center;
+}
+
+.table td {
+  padding: 0;
+  border: 1px solid lightgray;
+  border-radius: 0.1px;
+}
+
+table tr:nth-child(odd) td {
+  color: rgb(46, 46, 46);
+  background-color: snow;
+}
+table tr:nth-child(even) td {
+  background-color: rgba(233, 231, 231, 0.911);
+}
+
+.household-table-save svg {
+  cursor: pointer;
+  color: green;
+}
+
+.household-table-disabled svg {
+  color: grey;
+}
+.household-table-delete svg {
+  cursor: pointer;
+  color: red;
+}
+
+.household-table-reset-pass {
+  cursor: pointer;
+  color: royalblue;
+}
+
+.table-sort-icon {
+  cursor: pointer;
+  background-color: gray;
+  border: 0.05em solid gray;
+  border-radius: 2em;
+  float: right;
+}
+
+.household-table-editing svg {
+  cursor: pointer;
+  color: blue;
+}
+
+table tr:nth-child(odd) td select {
+  color: rgb(46, 46, 46);
+  background-color: snow;
+}
+table tr:nth-child(even) td select {
+  background-color: rgba(233, 231, 231, 0.911);
+}
+
+table select {
+  font-size: large;
+  border: none;
+}
