@@ -5,6 +5,8 @@ const { check, validationResult } = require("express-validator/check");
 const uuid = require("uuid");
 
 const Roles = require("../../models/Roles");
+const RoleService = require("../../services/RoleService");
+const roleService = new RoleService();
 
 router.get("/count", auth, async (req, res) => {
   try {
@@ -76,19 +78,22 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { id, name, term, page, limit } = req.body;
+    const { id, code, name, term, page, limit } = req.body;
     //Build role
     //APRIL 20 TODO - all requests should have the paging stuff in the body so it can have just one route
     const roleFields = {};
     roleFields.name = name;
+    roleFields.code = code;
 
     try {
       let searchName = new RegExp(term, "i");
       //check if name exists
-      let role = await Roles.findOne({ name: name });
+      let role = await Roles.findOne({
+        $and: [{ name: name }, { code: code }],
+      });
       if (role) {
         return res.status(400).json({
-          errors: [{ msg: "A Role with the same name already exists" }],
+          errors: [{ msg: "A Role with the same name/code already exists" }],
         });
       }
 
@@ -97,7 +102,9 @@ router.post(
         roleFields.id = uuid.v4();
         let role = new Roles(roleFields);
         await role.save();
-        const roles = await Roles.find({ name: searchName })
+        const roles = await Roles.find({
+          $or: [{ name: searchName }, { code: searchName }],
+        })
           .skip(Number(page - 1) * Number(limit))
           .limit(Number(limit));
         return res.json(roles);
@@ -114,7 +121,9 @@ router.post(
           }
         );
       }
-      const roles = await Roles.find({ name: searchName })
+      const roles = await Roles.find({
+        $or: [{ name: searchName }, { code: searchName }],
+      })
         .skip(Number(page - 1) * Number(limit))
         .limit(Number(limit))
         .sort({ name: 1 });

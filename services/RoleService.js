@@ -1,8 +1,8 @@
 class RoleService {
   constructor() {}
-  async updateRoles() {
+  async updateRoles(roleArgs) {
     try {
-      let searchName = new RegExp(term, "i");
+      let searchName = new RegExp(roleArgs.term, "i");
       //check if name exists
       let role = await Roles.findOne({ name: name });
       if (role) {

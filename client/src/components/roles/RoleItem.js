@@ -8,7 +8,6 @@ import {
   faSave,
 } from "@fortawesome/free-solid-svg-icons";
 import { connect } from "react-redux";
-import { createItem, deleteItem } from "../../actions/view";
 import { createRole, deleteRole } from "../../actions/role";
 
 const RoleItem = ({
@@ -20,13 +19,14 @@ const RoleItem = ({
 }) => {
   const [rowData, setRowData] = useState({
     id: role._id,
+    code: role.code,
     name: role.name,
     editing: false,
     term: search,
     limit: limit,
     page: page,
   });
-  const { name, id, editing } = rowData;
+  const { code, name, id, editing } = rowData;
 
   const onChange = (e) => {
     setRowData({ ...rowData, [e.target.name]: e.target.value, editing: true });
@@ -34,7 +34,7 @@ const RoleItem = ({
 
   const onSaveRole = (e) => {
     e.preventDefault();
-    if (role.name == rowData.name) return false;
+    if (role.name == rowData.name && role.code == rowData.code) return false;
     createRole(rowData, role._id !== "temp");
     setRowData({ ...rowData, _id: role._id, editing: false });
   };
@@ -42,6 +42,16 @@ const RoleItem = ({
   return (
     <tr key={role._id}>
       <td>{num}</td>
+      <td>
+        <input
+          className="roleInput"
+          type="text"
+          placeholder="Code"
+          name="code"
+          value={code}
+          onChange={(e) => onChange(e)}
+        />
+      </td>
       <td>
         <input
           className="roleInput"

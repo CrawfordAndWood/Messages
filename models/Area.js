@@ -10,6 +10,7 @@ const AreaSchema = new Schema({
   name: {
     type: String,
   },
+  postcodes: [String],
 });
 
 module.exports = Area = mongoose.model("area", AreaSchema);

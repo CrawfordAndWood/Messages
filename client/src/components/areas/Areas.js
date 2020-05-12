@@ -58,6 +58,7 @@ const Areas = ({
                     sortDescending={sortDescending}
                   />
                 </th>
+                <th>Postcodes</th>
                 <th
                   className={
                     canAddNewRow ? "area-table-save" : "area-table-disabled"

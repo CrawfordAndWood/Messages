@@ -13,7 +13,7 @@ class AreaService {
     }
     const regTerm = new RegExp(term, "i");
     const areaCount = await Area.countDocuments({
-      $or: [{ code: regTerm }, { name: regTerm }],
+      $or: [{ code: regTerm }, { name: regTerm }, { postcodes: regTerm }],
     });
     return areaCount;
   }
@@ -28,7 +28,7 @@ class AreaService {
     }
     let term = new RegExp(params.term, "i");
     let areas = await Area.find({
-      $or: [{ code: term }, { name: term }],
+      $or: [{ code: term }, { name: term }, { postcodes: term }],
     })
       .skip(Number(params.page - 1) * Number(params.limit))
       .limit(Number(params.limit));
@@ -57,10 +57,10 @@ class AreaService {
   async updateArea(updatedAreaArgs) {
     try {
       //we know id isn't temp
-      let { id, code, name } = updatedAreaArgs;
-      const areaFields = { id, code, name };
+      let { id, code, name, postcodes } = updatedAreaArgs;
+      const areaFields = { id, code, name, postcodes: postcodes.split(",") };
       let clashingArea = await Area.findOne({
-        $and: [{ code: code }, { name: name }],
+        $and: [{ code: code }, { name: name }, { postcodes: postcodes }],
       });
       if (clashingArea) {
         let response = {

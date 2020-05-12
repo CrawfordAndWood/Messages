@@ -20,7 +20,7 @@ export const loadUser = () => async (dispatch) => {
 
   try {
     const res = await axios.get("/api/auth");
-
+    console.log("user loading", res.data);
     dispatch({
       type: USER_LOADED,
       payload: res.data,
@@ -72,17 +72,21 @@ export const login = (email, password) => async (dispatch) => {
 
   try {
     const res = await axios.post("/api/auth", body, config);
+    console.log("login succ");
     dispatch({
       type: LOGIN_SUCCESS,
       payload: res.data,
     });
+    console.log("gispa");
     dispatch(loadUser());
+    console.log("got the user");
   } catch (error) {
-    const errors = error.response.data.errors;
+    console.log(error.message);
+    // const errors = error.response.data.errors;
 
-    if (errors) {
-      errors.forEach((error) => dispatch(setAlert(error.msg, "danger")));
-    }
+    // if (errors) {
+    //   errors.forEach((error) => dispatch(setAlert(error.msg, "danger")));
+    // }
     dispatch({
       type: LOGIN_FAIL,
     });

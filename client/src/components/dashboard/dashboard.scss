@@ -2,9 +2,6 @@ $myLightGreen: rgb(164, 233, 185);
 
 .action-list {
   display: flex;
-  background-color: rgb(229, 238, 237);
-  border: 1px solid gray;
-  border-radius: 0.5em;
 }
 
 .action-item {
@@ -27,4 +24,11 @@ svg {
 
 #tooltip {
   font-size: 2em;
+}
+
+.dashboard {
+  display: inline-flex;
+  background-color: rgb(229, 238, 237);
+  border: 1px solid gray;
+  border-radius: 0.5em;
 }

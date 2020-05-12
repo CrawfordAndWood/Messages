@@ -6,11 +6,10 @@ import Register from "./components/auth/Register";
 import Login from "./components/auth/Login";
 import Alert from "./components/layout/Alert";
 import Dashboard from "./components/dashboard/Dashboard";
-import CreateProfile from "./components/profile-forms/CreateProfile";
-import EditProfile from "./components/profile-forms/EditProfile";
 import Footer from "./components/layout/Footer";
 import NotFound from "./components/layout/NotFound";
 import PrivateRoute from "./components/routing/PrivateRoute";
+import GlobalAdminRoute from "./components/routing/GlobalAdminRoute";
 import Roles from "./components/roles/Roles";
 import Users from "./components/users/Users";
 import EditUser from "./components/user/EditUser";
@@ -48,23 +47,13 @@ const App = () => {
                 <Route exact path="/register" component={Register} />
                 <Route exact path="/login" component={Login} />
                 <PrivateRoute exact path="/dashboard" component={Dashboard} />
-                <PrivateRoute
-                  exact
-                  path="/create-profile"
-                  component={CreateProfile}
-                />
-                <PrivateRoute
-                  exact
-                  path="/edit-profile"
-                  component={EditProfile}
-                />
                 <PrivateRoute exact path="/edit-user" component={EditUser} />
-                <PrivateRoute exact path="/roles" component={Roles} />
+                <GlobalAdminRoute exact path="/roles" component={Roles} />
                 <PrivateRoute exact path="/users" component={Users} />
                 <PrivateRoute exact path="/history" component={History} />
                 <PrivateRoute exact path="/groups" component={Groups} />
                 <PrivateRoute exact path="/households" component={Households} />
-                <PrivateRoute exact path="/areas" component={Areas} />
+                <GlobalAdminRoute exact path="/areas" component={Areas} />
                 <PrivateRoute component={NotFound} />
               </Switch>
             </div>

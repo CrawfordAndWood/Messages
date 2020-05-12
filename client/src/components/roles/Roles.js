@@ -42,7 +42,15 @@ const Roles = ({
           <table className="table">
             <thead>
               <tr>
-                <th> </th>
+                <th />
+                <th>
+                  Code
+                  <SortColumn
+                    sortFn={sort}
+                    sortDescending={sortDescending}
+                    columnName={"code"}
+                  />
+                </th>
                 <th>
                   Name
                   <SortColumn

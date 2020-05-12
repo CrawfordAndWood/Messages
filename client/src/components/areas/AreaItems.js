@@ -23,20 +23,24 @@ const AreaItems = ({
     adminId: activeUserId,
     code: area.code,
     name: area.name,
+    postcodes: area.postcodes,
     editing: false,
     term: search,
     limit: limit,
     page: page,
   });
-  const { code, name, id, editing } = rowData;
+  const { code, name, id, postcodes, editing } = rowData;
 
   const onChange = (e) => {
     setRowData({ ...rowData, [e.target.name]: e.target.value, editing: true });
   };
   const onSaveArea = (e) => {
     e.preventDefault();
-
-    if (area.name == rowData.name && area.code === rowData.code) {
+    if (
+      area.name == rowData.name &&
+      area.code === rowData.code &&
+      area.postcodes === rowData.postcodes
+    ) {
       return false;
     }
     adminCreateArea(rowData, area._id !== "temp");
@@ -62,6 +66,16 @@ const AreaItems = ({
           placeholder="Name"
           name="name"
           value={name}
+          onChange={(e) => onChange(e)}
+        />
+      </td>
+      <td>
+        <input
+          className="areaInput"
+          type="text"
+          placeholder="Postcodes"
+          name="postcodes"
+          value={postcodes}
           onChange={(e) => onChange(e)}
         />
       </td>

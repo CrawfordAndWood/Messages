@@ -11,13 +11,17 @@ const UserHistoryService = require("../../services/UserHistoryService");
 const userHistoryService = new UserHistoryService();
 //model imports
 const User = require("../../models/User");
+const Role = require("../../models/Roles");
 
 //@route    GET api/auth
 //@desc     Test route
 //@access   Public
 router.get("/", auth, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select("-password");
+    const user = await User.findOne({ _id: req.user.id })
+      .populate("role")
+      .select("-password");
+    console.log("user", user);
     res.json(user);
   } catch (err) {
     console.error(err.message);
