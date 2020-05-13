@@ -10,6 +10,7 @@ export const UPDATE_AREA = "UPDATE_AREA";
 export const SORT_BY_AREA = "SORT_BY_AREA";
 export const SORT_BY_NEW_AREA = "SORT_BY_NEW_AREA";
 export const AREA_LOADED = "AREA_LOADED";
+export const UPDATE_AREA_ADMIN = "UPDATE_AREA_ADMIN";
 
 //Area History
 export const GET_AREA_HISTORY = "GET_AREA_HISTORY";

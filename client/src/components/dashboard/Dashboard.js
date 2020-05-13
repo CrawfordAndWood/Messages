@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import Spinner from "../layout/Spinner";
 import DashbordActions from "./DashboardActions";
 import GlobalAdminDashboard from "./GlobalAdminDashboard";
+import AreaAdminDashboard from "./AreaAdminDashboard";
 
 const Dashboard = ({ auth: { user, loading } }) => {
   return loading ? (
@@ -16,6 +17,7 @@ const Dashboard = ({ auth: { user, loading } }) => {
       <div className="dashboard">
         {" "}
         {user.role.code === "GLA" ? <GlobalAdminDashboard /> : ""}
+        {user.role.code === "AA" ? <AreaAdminDashboard /> : ""}
         <DashbordActions />
       </div>
     </Fragment>

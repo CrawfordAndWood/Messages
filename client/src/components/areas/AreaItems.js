@@ -10,6 +10,7 @@ import {
 import { connect } from "react-redux";
 import { adminCreateArea, deleteArea } from "../../actions/area";
 import "./areas.scss";
+import { resetSearch } from "../../actions/userhistory";
 
 const AreaItems = ({
   area,
@@ -24,12 +25,16 @@ const AreaItems = ({
     code: area.code,
     name: area.name,
     postcodes: area.postcodes,
+    adminEmails:
+      area.admins !== undefined
+        ? area.admins.map((aa) => `${aa.email}  \n`)
+        : "",
     editing: false,
     term: search,
     limit: limit,
     page: page,
   });
-  const { code, name, id, postcodes, editing } = rowData;
+  const { code, name, id, postcodes, editing, adminEmails } = rowData;
 
   const onChange = (e) => {
     setRowData({ ...rowData, [e.target.name]: e.target.value, editing: true });
@@ -43,8 +48,13 @@ const AreaItems = ({
     ) {
       return false;
     }
-    adminCreateArea(rowData, area._id !== "temp");
-    setRowData({ ...rowData, _id: area._id, editing: false });
+    let result = adminCreateArea(rowData, area._id !== "temp");
+    setRowData({
+      ...rowData,
+      _id: area._id,
+      editing: false,
+    });
+    console.log("res", result);
   };
 
   return (
@@ -79,6 +89,7 @@ const AreaItems = ({
           onChange={(e) => onChange(e)}
         />
       </td>
+      <td>{adminEmails}</td>
       <td
         className={
           editing || name === "" ? "item-table-editing" : "item-table-save"

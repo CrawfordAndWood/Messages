@@ -2,6 +2,8 @@ const Area = require("../models/Area");
 const AreaHistoryService = require("../services/AreaHistoryService");
 const areaHistoryService = new AreaHistoryService();
 const uuid = require("uuid");
+const User = require("../models/User");
+const Role = require("../models/Roles");
 
 class AreaService {
   constructor() {}
@@ -22,6 +24,7 @@ class AreaService {
   async getAreas(params) {
     if (params.term === undefined) {
       let area = await Area.find()
+        .populate("admins", ["email"])
         .skip(Number(params.page - 1) * Number(params.limit))
         .limit(Number(params.limit));
       return area;
@@ -30,6 +33,7 @@ class AreaService {
     let areas = await Area.find({
       $or: [{ code: term }, { name: term }, { postcodes: term }],
     })
+      .populate("admins", ["email"])
       .skip(Number(params.page - 1) * Number(params.limit))
       .limit(Number(params.limit));
     return areas;
@@ -38,14 +42,27 @@ class AreaService {
   /* Post Area  */
   async addArea(areaArgs) {
     try {
+      //Check the users table to link the users who have user admin id
+      let areaRoleId = await Role.findOne({ code: "AA" });
+      let areaAdminIds = await User.find({
+        $and: [
+          { postcode: { $in: [areaArgs.postcodes] } },
+          { role: areaRoleId },
+        ],
+      }).select("_id");
       let area = new Area(areaArgs);
       area.id = uuid.v4();
+      area.admins = areaAdminIds;
+
       let areaHistoryFields = {
         description: `New Area ${areaArgs.code + areaArgs.name}`,
         updatedBy: areaArgs.adminId,
+        admins: areaAdminIds,
         date: new Date(),
       };
       await areaHistoryService.addAreaHistory(areaHistoryFields);
+      console.log(area);
+
       await area.save();
       return area;
     } catch (error) {
@@ -70,6 +87,15 @@ class AreaService {
         return response;
       }
       let area = {};
+      let areaRoleId = await Role.findOne({ code: "AA" });
+      let areaAdminIds = await User.find({
+        $and: [
+          { postcode: { $in: areaFields.postcodes } },
+          { role: areaRoleId },
+        ],
+      }).select("_id");
+      areaFields.admins = areaAdminIds;
+
       let existingArea = await Area.findOne({ _id: id });
       if (existingArea) {
         area = await Area.findOneAndUpdate(
@@ -91,11 +117,13 @@ class AreaService {
         date: new Date(),
       };
       await areaHistoryService.addAreaHistory(areaHistoryFields);
-
+      let areas = await this.getAreas(updatedAreaArgs);
+      console.log("areas", areas);
       //Prepare response message
       let response = {
         Status: "SUCCESS",
         Message: name + " has been updated",
+        Areas: areas,
       };
       return response;
     } catch (error) {

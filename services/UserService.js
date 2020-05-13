@@ -47,6 +47,8 @@ class UserService {
   /*Create User*/
   async createUser(newUserRequestArgs) {
     try {
+      //TODO: change postcode - check if they're area admin
+
       let user = await User.findOne({ email: newUserRequestArgs.email });
       if (user) {
         user.Status = "FAILED";
@@ -105,6 +107,9 @@ class UserService {
   /*Update User*/
   async updateUser(updatedUserArgs) {
     try {
+      //TODO: change postcode - check if they're area admin
+      //TODO: If role is changed check if that's area admin or no longer
+      //AreaAdminService - updateAreaAdminFromUser
       let { id, email, name, postcode, roleId } = updatedUserArgs;
       const userFields = { id, email, name, role: roleId, postcode };
       let userWithEmail = await User.findOne({ email: email });

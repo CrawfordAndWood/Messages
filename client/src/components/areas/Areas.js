@@ -30,7 +30,6 @@ const Areas = ({
 }) => {
   useEffect(() => {
     getAreas();
-    console.log(canAddNewRow, "new r?");
   }, []);
   return (
     <Fragment>
@@ -59,6 +58,7 @@ const Areas = ({
                   />
                 </th>
                 <th>Postcodes</th>
+                <th>Admins</th>
                 <th
                   className={
                     canAddNewRow ? "area-table-save" : "area-table-disabled"

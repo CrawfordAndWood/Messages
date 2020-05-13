@@ -49,11 +49,9 @@ export const getAreas = (search = "", page = 1, limit = 10) => async (
     dispatch({ type: SEARCH, payload: search });
     dispatch(countAreas(search));
     const res = await axios.get(`/api/areas/${search}/${page}/${limit}`);
-    console.log(res.data);
     dispatch({ type: GET_AREAS, payload: res.data });
     dispatch({ type: UPDATE_LIMIT, payload: limit });
     dispatch({ type: UPDATE_PAGE, payload: page });
-    console.log("getting data");
     dispatch({ type: GET_DATA });
   } catch (error) {
     console.log(error);
@@ -80,6 +78,8 @@ export const adminCreateArea = (formData, edit = false) => async (dispatch) => {
     if (!edit) {
       dispatch({ type: GET_DATA });
       dispatch({ type: INCREMENT_COUNT });
+      dispatch(getAreas("", 1, 10));
+    } else {
       dispatch(getAreas("", 1, 10));
     }
   } catch (error) {
