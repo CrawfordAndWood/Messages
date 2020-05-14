@@ -10,12 +10,14 @@ import Footer from "./components/layout/Footer";
 import NotFound from "./components/layout/NotFound";
 import PrivateRoute from "./components/routing/PrivateRoute";
 import GlobalAdminRoute from "./components/routing/GlobalAdminRoute";
+import AreaAdminRoute from "./components/routing/AreaAdminRoute";
 import Roles from "./components/roles/Roles";
 import Users from "./components/users/Users";
 import EditUser from "./components/user/EditUser";
 import History from "./components/history/History";
 import Groups from "./components/groups/Groups";
 import Households from "./components/households/Households";
+import Volunteers from "./components/volunteers/Volunteers";
 import Areas from "./components/areas/Areas";
 
 //redux
@@ -47,13 +49,28 @@ const App = () => {
                 <Route exact path="/register" component={Register} />
                 <Route exact path="/login" component={Login} />
                 <PrivateRoute exact path="/dashboard" component={Dashboard} />
-                <PrivateRoute exact path="/edit-user" component={EditUser} />
-                <GlobalAdminRoute exact path="/roles" component={Roles} />
+                <PrivateRoute
+                  exact
+                  path="/edit-user"
+                  component={EditUser}
+                />{" "}
                 <PrivateRoute exact path="/users" component={Users} />
-                <PrivateRoute exact path="/history" component={History} />
-                <PrivateRoute exact path="/groups" component={Groups} />
-                <PrivateRoute exact path="/households" component={Households} />
+                {/* Global Admin Routes */}
+                <GlobalAdminRoute exact path="/roles" component={Roles} />
+                <GlobalAdminRoute exact path="/history" component={History} />
+                <GlobalAdminRoute exact path="/groups" component={Groups} />
+                <GlobalAdminRoute
+                  exact
+                  path="/households"
+                  component={Households}
+                />
                 <GlobalAdminRoute exact path="/areas" component={Areas} />
+                {/* Area Admin Routes */}
+                <AreaAdminRoute
+                  exact
+                  path="/volunteers"
+                  component={Volunteers}
+                />
                 <PrivateRoute component={NotFound} />
               </Switch>
             </div>

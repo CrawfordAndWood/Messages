@@ -15,6 +15,12 @@ const householdSchema = new Schema({
   postcode: {
     type: String,
   },
+  phone: {
+    type: String,
+  },
+  email: {
+    type: String,
+  },
   occupants: {
     type: Number,
   },

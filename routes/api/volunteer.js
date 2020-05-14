@@ -6,67 +6,62 @@ const { check, validationResult } = require("express-validator/check");
 //middleware
 const auth = require("../../middleware/auth");
 //services
-const AreaService = require("../../services/AreaService");
-const areaService = new AreaService();
+const VolunteerService = require("../../services/VolunteerService");
+const volunteerService = new VolunteerService();
 //models
-const Area = require("../../models/Area");
+const Volunteer = require("../../models/Volunteer");
 
-router.get("/count", auth, async (req, res) => {
+router.get("/count/:areaId", auth, async (req, res) => {
   try {
-    const areaCount = await areaService.countAreas();
-    res.json(areaCount);
+    const volunteerCount = await volunteerService.countVolunteers(
+      req.params.areaId
+    );
+    res.json(volunteerCount);
   } catch (err) {
     console.error(err.messge);
     res.status(500).send("Server Error");
   }
 });
 
-router.get("/count/:term", auth, async (req, res) => {
+router.get("/count/:areaId/:term", auth, async (req, res) => {
   try {
-    const areaCount = await areaService.countAreas(req.params.term);
-    res.json(areaCount);
+    const volunteerCount = await volunteerService.countVolunteers(
+      req.params.areaId,
+      req.params.term
+    );
+    res.json(volunteerCount);
   } catch (err) {
     res.status(500).send("Server Error");
   }
 });
 
-router.post("/admin", auth, async (req, res) => {
-  try {
-    const adminAreas = await areaService.getAdminAreas(req.body);
-    return res.json(adminAreas);
-  } catch (error) {
-    console.log(error);
-    res.status(500).send("Server Error");
-  }
-});
-
-//@route    GET api/areas/
-//@desc     Get area management page
+//@route    GET api/volunteers/
+//@desc     Get volunteer management page
 //@access   Private - eventually only global admin has option
-router.get("/:page/:limit", auth, async (req, res) => {
+router.get("/:areaId/:page/:limit", auth, async (req, res) => {
   try {
-    let areas = await areaService.getAreas(req.params);
-    res.json(areas);
+    let volunteers = await volunteerService.getVolunteers(req.params);
+    res.json(volunteers);
   } catch (err) {
     res.status(500).send("Server Error", err);
   }
 });
 
-//@route    GET api/area/search
-//@desc     Filter area
+//@route    GET api/volunteer/search
+//@desc     Filter volunteer
 //@access   Private - eventually only global admin has option
-router.get("/:term/:page/:limit", auth, async (req, res) => {
+router.get("/:areaId/:term/:page/:limit", auth, async (req, res) => {
   try {
-    let areas = await areaService.getAreas(req.params);
+    let volunteers = await volunteerService.getVolunteers(req.params);
 
-    res.json(areas);
+    res.json(volunteers);
   } catch (err) {
     res.status(500).send("Server Error", err);
   }
 });
 
 //@route    POST api//
-//@desc     Add or update areas from the management page
+//@desc     Add or update volunteers from the management page
 //@access   Private - eventually only global admin has option
 router.post(
   "/",
@@ -84,27 +79,27 @@ router.post(
     }
 
     try {
-      let createUpdateAreaResult = await areaService.createOrUpdateArea(
+      let createUpdateVolunteerResult = await volunteerService.createOrUpdateVolunteer(
         req.body
       );
-      if (createUpdateAreaResult.Status === "FAILED") {
+      if (createUpdateVolunteerResult.Status === "FAILED") {
         return res
           .status(400)
-          .json({ errors: [{ msg: createUpdateAreaResult.Message }] });
+          .json({ errors: [{ msg: createUpdateVolunteerResult.Message }] });
       }
-      return res.json(createUpdateAreaResult);
+      return res.json(createUpdateVolunteerResult);
     } catch (err) {
       res.status(500).send("Server error", err.message);
     }
   }
 );
 
-//@route  DELETE api/areas
-//@desc   Delete area
+//@route  DELETE api/volunteers
+//@desc   Delete volunteer
 //@access Private
 router.delete("/:id/:adminId", auth, async (req, res) => {
   try {
-    const result = await areaService.deleteArea(req.params);
+    const result = await volunteerService.deleteVolunteer(req.params);
     return res.json(result);
   } catch (err) {
     res.status(500).send("Server Error", err.message);

@@ -17,18 +17,18 @@ import {
   INCREMENT_COUNT,
   DECREMENT_COUNT,
   SET_SORT_COLUMN,
-  GET_AREA,
-  GET_AREAS,
+  GET_VOLUNTEERS,
   GET_DATA,
-  ADD_EMPTY_AREA,
-  SORT_BY_AREA,
-  SORT_BY_NEW_AREA,
-  AREA_LOADED,
+  ADD_EMPTY_VOLUNTEER,
+  SORT_BY_VOLUNTEER,
+  SORT_BY_NEW_VOLUNTEER,
+  VOLUNTEER_LOADED,
 } from "./types";
 
-export const countAreas = (search = "") => async (dispatch) => {
+export const countVolunteers = (areaCode, search = "") => async (dispatch) => {
   try {
-    const res = await axios.get(`api/areas/count/${search}`);
+    console.log("countin vol");
+    const res = await axios.get(`api/volunteers/count/${areaCode}/${search}`);
     dispatch({ type: ITEM_COUNT, payload: res.data });
   } catch (error) {
     dispatch({
@@ -41,31 +41,22 @@ export const countAreas = (search = "") => async (dispatch) => {
   }
 };
 
-export const getAdminAreas = (user) => async (dispatch) => {
-  try {
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-    const res = await axios.post(`/api/areas/admin`, user, config);
-    console.log("areas for admin", user, res);
-    dispatch({ type: GET_AREA, payload: res.data });
-  } catch (error) {
-    console.log("err getting admin area", error.message);
-  }
-};
-
-export const getAreas = (search = "", page = 1, limit = 10) => async (
-  dispatch
-) => {
+export const getVolunteers = (
+  areaCode,
+  search = "",
+  page = 1,
+  limit = 10
+) => async (dispatch) => {
   //TODO factor out params into single options object.
   try {
+    console.log("getting colly");
     dispatch({ type: LOAD });
     dispatch({ type: SEARCH, payload: search });
-    dispatch(countAreas(search));
-    const res = await axios.get(`/api/areas/${search}/${page}/${limit}`);
-    dispatch({ type: GET_AREAS, payload: res.data });
+    dispatch(countVolunteers(search));
+    const res = await axios.get(
+      `/api/volunteers/${areaCode}/${search}/${page}/${limit}`
+    );
+    dispatch({ type: GET_VOLUNTEERS, payload: res.data });
     dispatch({ type: UPDATE_LIMIT, payload: limit });
     dispatch({ type: UPDATE_PAGE, payload: page });
     dispatch({ type: GET_DATA });
@@ -81,22 +72,24 @@ export const getAreas = (search = "", page = 1, limit = 10) => async (
   }
 };
 
-export const adminCreateArea = (formData, edit = false) => async (dispatch) => {
+export const adminCreateVolunteer = (formData, edit = false) => async (
+  dispatch
+) => {
   try {
     const config = {
       headers: {
         "Content-Type": "application/json",
       },
     };
-    const res = await axios.post(`/api/areas`, formData, config);
+    const res = await axios.post(`/api/volunteers`, formData, config);
 
     dispatch(setAlert(res.data.Message, "success"));
     if (!edit) {
       dispatch({ type: GET_DATA });
       dispatch({ type: INCREMENT_COUNT });
-      dispatch(getAreas("", 1, 10));
+      dispatch(getVolunteers("", 1, 10));
     } else {
-      dispatch(getAreas("", 1, 10));
+      dispatch(getVolunteers("", 1, 10));
     }
   } catch (error) {
     const errors = error.response.data.errors;
@@ -114,17 +107,19 @@ export const adminCreateArea = (formData, edit = false) => async (dispatch) => {
 };
 
 // Create or update item.
-export const createArea = (formData, edit = false) => async (dispatch) => {
+export const createVolunteer = (formData, edit = false) => async (dispatch) => {
   try {
     const config = {
       headers: {
         "Content-Type": "application/json",
       },
     };
-    const res = await axios.post(`/api/areas`, formData, config);
-    dispatch({ type: GET_AREAS, payload: res.data });
+    const res = await axios.post(`/api/volunteers`, formData, config);
+    dispatch({ type: GET_VOLUNTEERS, payload: res.data });
     dispatch({ type: GET_DATA });
-    dispatch(setAlert(edit ? "Area Updated" : "Area Created", "success"));
+    dispatch(
+      setAlert(edit ? "Volunteer Updated" : "Volunteer Created", "success")
+    );
     if (!edit) {
       dispatch({ type: INCREMENT_COUNT });
     }
@@ -144,7 +139,7 @@ export const createArea = (formData, edit = false) => async (dispatch) => {
 };
 
 //Delete a Role
-export const deleteArea = (search, page, limit, rowData) => async (
+export const deleteVolunteer = (search, page, limit, rowData) => async (
   dispatch
 ) => {
   try {
@@ -154,11 +149,14 @@ export const deleteArea = (search, page, limit, rowData) => async (
       },
     };
     if (rowData.id !== "temp") {
-      await axios.delete(`/api/areas/${rowData.id}/${rowData.adminId}`, config);
-      dispatch(setAlert("Area Deleted", "success"));
+      await axios.delete(
+        `/api/volunteers/${rowData.id}/${rowData.adminId}`,
+        config
+      );
+      dispatch(setAlert("Volunteer Deleted", "success"));
       dispatch({ type: DECREMENT_COUNT });
     }
-    dispatch(getAreas(search, page, limit));
+    dispatch(getVolunteers(search, page, limit));
   } catch (error) {
     dispatch({
       type: VIEW_ERROR,
@@ -170,30 +168,31 @@ export const deleteArea = (search, page, limit, rowData) => async (
   }
 };
 
-export const addEmptyArea = () => (dispatch) => {
-  const newArea = {
+export const addEmptyVolunteer = () => (dispatch) => {
+  const newVolunteer = {
     _id: "temp",
     postcode: "",
     email: "",
     name: "",
     roleId: "",
   };
-  dispatch({ type: ADD_EMPTY_AREA, payload: newArea });
+  dispatch({ type: ADD_EMPTY_VOLUNTEER, payload: newVolunteer });
   dispatch({ type: ADD_EMPTY_ROW });
 };
 
 export const sort = (name, sortColumn) => (dispatch) => {
-  const dispatchFn = name === sortColumn ? SORT_BY_AREA : SORT_BY_NEW_AREA;
+  const dispatchFn =
+    name === sortColumn ? SORT_BY_VOLUNTEER : SORT_BY_NEW_VOLUNTEER;
   dispatch({ type: dispatchFn, payload: name });
   dispatch({ type: SET_SORT_COLUMN, payload: name });
 };
 
 export const resetSearch = (limit) => (dispatch) => {
-  dispatch(getAreas("", 1, limit));
+  dispatch(getVolunteers("", 1, limit));
   dispatch({ type: RESET_SEARCH });
 };
 
-export const updateAreaDetails = (route, formData) => async (dispatch) => {
+export const updateVolunteerDetails = (route, formData) => async (dispatch) => {
   const config = {
     headers: {
       "Content-Type": "application/json",
@@ -201,30 +200,57 @@ export const updateAreaDetails = (route, formData) => async (dispatch) => {
   };
   try {
     const res = await axios.post(
-      `/api/areas/update/${route}`,
+      `/api/volunteers/update/${route}`,
       formData,
       config
     );
     console.log("deets up", res.data);
     dispatch(setAlert(res.data.Message, res.data.Status));
 
-    dispatch({ type: AREA_LOADED, payload: res.data });
+    dispatch({ type: VOLUNTEER_LOADED, payload: res.data });
   } catch (error) {
     console.log(error);
   }
 };
 
 export const updateLimit = (search, newLimit) => (dispatch) => {
-  dispatch(getAreas(search, 1, newLimit));
+  dispatch(getVolunteers(search, 1, newLimit));
   dispatch({ type: UPDATE_PAGE, payload: 1 });
   dispatch({ type: UPDATE_LIMIT, payload: newLimit });
 };
 
 export const updatePage = (search, page, limit) => (dispatch) => {
-  dispatch(getAreas(search, page, limit));
+  dispatch(getVolunteers(search, page, limit));
   dispatch({ type: UPDATE_PAGE, payload: page });
 };
 
 export const setDefaultColumn = (name) => (dispatch) => {
   dispatch({ type: SET_SORT_COLUMN, payload: name });
+};
+export const resetPassword = (rowData) => async (dispatch) => {
+  try {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      email: rowData.email,
+    };
+    if (rowData.id !== "temp") {
+      await axios.post(
+        `/api/users/user-management/passwordReset/${rowData.id}`,
+        config
+      );
+      dispatch(setAlert("Password Reset", "success"));
+    }
+  } catch (error) {
+    const errors = error.response.data.errors;
+    errors.forEach((error) => dispatch(setAlert(error.msg, "danger")));
+    dispatch({
+      type: VIEW_ERROR,
+      payload: {
+        msg: error.response.statusText,
+        status: error.response.status,
+      },
+    });
+  }
 };

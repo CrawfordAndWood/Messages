@@ -89,6 +89,7 @@ class UserService {
         description: "New Account set up",
         updatedBy: newUserRequestArgs.adminId,
         user: user._id,
+        role: user.role,
         date: new Date(),
       };
       await userHistoryService.addUserHistory(userHistoryFields);
@@ -146,6 +147,7 @@ class UserService {
         description: desc,
         updatedBy: updatedUserArgs.adminId,
         user: id,
+        role: newRole,
         date: new Date(),
       };
       await userHistoryService.addUserHistory(userHistoryFields);
@@ -192,6 +194,7 @@ class UserService {
         description: "User Details Updated",
         updatedBy: updatedUserArgs.adminId,
         user: id,
+        role: user.role,
         date: new Date(),
       };
       console.log(
@@ -244,6 +247,7 @@ class UserService {
         description: "User Password Updated",
         updatedBy: updatedUserArgs.adminId,
         user: id,
+        role: user.role,
         date: new Date(),
       };
       console.log(
@@ -292,10 +296,6 @@ class UserService {
         user: id,
         date: new Date(),
       };
-      console.log(
-        "user service adding userhistory updateuserpass",
-        userHistoryFields
-      );
       await userHistoryService.addUserHistory(userHistoryFields);
       return true;
     } catch {

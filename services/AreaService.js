@@ -20,7 +20,23 @@ class AreaService {
     return areaCount;
   }
 
-  /*Get Area */
+  /*Get Area By Id*/
+  async getAreaByID(areaId) {
+    const area = Area.findOne({ _id: areaId });
+    return area;
+  }
+
+  async getAdminAreas(adminAreaArgs) {
+    try {
+      console.log("getting areas", adminAreaArgs);
+      const regCode = new RegExp(adminAreaArgs.postcode, "i");
+      let areasForAdmin = await Area.find({ postcodes: regCode });
+      return areasForAdmin;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  /*Get Areas */
   async getAreas(params) {
     if (params.term === undefined) {
       let area = await Area.find()
@@ -118,7 +134,6 @@ class AreaService {
       };
       await areaHistoryService.addAreaHistory(areaHistoryFields);
       let areas = await this.getAreas(updatedAreaArgs);
-      console.log("areas", areas);
       //Prepare response message
       let response = {
         Status: "SUCCESS",
@@ -151,7 +166,6 @@ class AreaService {
         updatedBy: adminId,
         date: new Date(),
       };
-      console.log("Area service adding hist ", areaHistoryFields);
       await areaHistoryService.addAreaHistory(areaHistoryFields);
       return true;
     } catch (error) {

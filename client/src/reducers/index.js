@@ -10,6 +10,7 @@ import role from "./role";
 import view from "./view";
 import user from "./user";
 import userhistory from "./userhistory";
+import volunteer from "./volunteer";
 
 export default combineReducers({
   alert,
@@ -23,4 +24,5 @@ export default combineReducers({
   view,
   user,
   userhistory,
+  volunteer,
 });

@@ -1,5 +1,17 @@
+const Roles = require("../models/Roles");
+
 class RoleService {
   constructor() {}
+  async getRoleById(roleId) {
+    let role = await Roles.findOne({ _id: roleId });
+    return role;
+  }
+
+  async getRoleByCode(code) {
+    let role = await Roles.findOne({ code: code });
+    return role;
+  }
+
   async updateRoles(roleArgs) {
     try {
       let searchName = new RegExp(roleArgs.term, "i");

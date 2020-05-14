@@ -1,4 +1,7 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
+import { getAdminAreas } from "../../actions/area";
+import { connect } from "react-redux";
+import Spinner from "../layout/Spinner";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -13,40 +16,60 @@ import {
 import ReactTooltip from "react-tooltip";
 import "./dashboard.scss";
 
-const AreaAdminDashboardActions = () => {
+const AreaAdminDashboardActions = (
+  { getAdminAreas, auth: { user, loading } },
+  area
+) => {
+  useEffect(() => {
+    getAdminAreas(user);
+  }, []);
   return (
-    <div className="action-list">
-      <Link to="/volunteers">
-        <div
-          className="action-item"
-          data-tip="Manage Volunteers"
-          data-type="success"
-        >
-          <FontAwesomeIcon icon={faUser} size="lg" />
-        </div>
-      </Link>
-      <Link to="/areahistory">
-        <div
-          className="action-item"
-          data-tip="Area Event Log"
-          data-type="success"
-        >
-          <FontAwesomeIcon icon={faHistory} size="lg" />
-        </div>
-      </Link>
-      <Link to="/groups">
-        <div className="action-item" data-tip="Groups" data-type="success">
-          <FontAwesomeIcon icon={faUserFriends} size="lg" />
-        </div>
-      </Link>
-      <Link to="/areas">
-        <div className="action-item" data-tip="Areas" data-type="success">
-          <FontAwesomeIcon icon={faMap} size="lg" />
-        </div>
-      </Link>
-      <ReactTooltip />
-    </div>
+    <Fragment>
+      {loading ? (
+        <Spinner />
+      ) : (
+        <Fragment>
+          <div className="action-list">
+            <Link to="/volunteers">
+              <div
+                className="action-item"
+                data-tip="Manage Volunteers"
+                data-type="success"
+              >
+                <FontAwesomeIcon icon={faUser} size="lg" />
+              </div>
+            </Link>
+            {/* <Link to="/areahistory">
+      <div
+        className="action-item"
+        data-tip="Area Event Log"
+        data-type="success"
+      >
+        <FontAwesomeIcon icon={faHistory} size="lg" />
+      </div>
+    </Link> */}
+            <Link to="/groups">
+              <div
+                className="action-item"
+                data-tip="Groups"
+                data-type="success"
+              >
+                <FontAwesomeIcon icon={faUserFriends} size="lg" />
+              </div>
+            </Link>
+            <ReactTooltip />
+          </div>
+        </Fragment>
+      )}
+    </Fragment>
   );
 };
 
-export default AreaAdminDashboardActions;
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+  area: state.area,
+});
+
+export default connect(mapStateToProps, { getAdminAreas })(
+  AreaAdminDashboardActions
+);

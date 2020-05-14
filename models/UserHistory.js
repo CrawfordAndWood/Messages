@@ -13,6 +13,10 @@ const UserHistorySchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "user",
   },
+  userRole: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "role",
+  },
   date: {
     type: Date,
     default: Date.now,

@@ -1,13 +1,12 @@
 import React, { Fragment, useEffect } from "react";
-import "./users.scss";
 import {
-  getUsers,
-  addEmptyUser,
+  getVolunteers,
+  addEmptyVolunteer,
   resetSearch,
   sort,
   updatePage,
   updateLimit,
-} from "../../actions/user";
+} from "../../actions/volunteer";
 import { connect } from "react-redux";
 import Spinner from "../layout/Spinner";
 import SortColumn from "../table/SortColumn";
@@ -15,81 +14,74 @@ import Pagination from "../table/Pagination";
 import Search from "../table/Search";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
-import UserItems from "./UserItems";
+import VolunteerItems from "./VolunteerItems";
 import { getRoles } from "../../actions/role";
+import "./volunteers.scss";
 
-const Users = ({
-  getRoles,
-  getUsers,
-  addEmptyUser,
+const Volunteers = ({
+  getVolunteers,
+  addEmptyVolunteer,
   resetSearch,
   sort,
   updatePage,
   updateLimit,
-  view: { canAddNewRow },
-  user: { loading, users, sortDescending },
-  role: { roles },
+  view: { loading, canAddNewRow },
+  volunteer: { volunteers, sortDescending },
+  area: { area },
 }) => {
   useEffect(() => {
-    getRoles("", 1, 100, false);
-    getUsers();
+    getVolunteers(area.code);
   }, []);
   return (
     <Fragment>
-      <Search searchFn={getUsers} resetFn={resetSearch} />
+      <Search searchFn={getVolunteers} resetFn={resetSearch} />
       {loading ? (
         <Spinner />
       ) : (
         <Fragment>
-          <table className="table user-management-table">
+          <table className="table volunteer-management-table">
             <thead>
               <tr>
                 <th>
-                  Email
+                  Name
                   <SortColumn
-                    columnName={"email"}
+                    columnName={"code"}
                     sortFn={sort}
                     sortDescending={sortDescending}
                   />
                 </th>
                 <th>
-                  Name
+                  Email
                   <SortColumn
                     columnName={"name"}
                     sortFn={sort}
                     sortDescending={sortDescending}
                   />
                 </th>
-                <th>
-                  Postcode
-                  <SortColumn
-                    columnName={"postcode"}
-                    sortFn={sort}
-                    sortDescending={sortDescending}
-                  />
-                </th>
-                <th>Role</th>
+                <th>Postcode</th>
                 <th
                   className={
-                    canAddNewRow ? "user-table-save" : "user-table-disabled"
+                    canAddNewRow
+                      ? "volunteer-table-save"
+                      : "volunteer-table-disabled"
                   }
-                  onClick={() => (canAddNewRow ? addEmptyUser() : null)}
+                  onClick={() => (canAddNewRow ? addEmptyVolunteer() : null)}
                 >
                   <FontAwesomeIcon icon={faPlusCircle} size="lg" />
                 </th>
                 <th />
               </tr>
             </thead>
-            <tbody className="users">
-              {users !== undefined ? (
+            <tbody className="volunteers">
+              {volunteers !== undefined ? (
                 <Fragment>
-                  {users.map((user) => (
-                    <UserItems key={user._id} user={user} roles={roles} />
+                  {volunteers.map((volunteer) => (
+                    <VolunteerItems key={volunteer._id} volunteer={volunteer} />
                   ))}
                 </Fragment>
               ) : (
                 <tr>
-                  <td>No Users found...</td>
+                  <td>No Volunteers found...</td>
                 </tr>
               )}
             </tbody>
@@ -102,17 +94,17 @@ const Users = ({
 };
 
 const mapStateToProps = (state) => ({
+  area: state.area,
   view: state.view,
-  user: state.user,
-  role: state.role,
+  volunteer: state.volunteer,
 });
 
 export default connect(mapStateToProps, {
   getRoles,
-  getUsers,
-  addEmptyUser,
+  getVolunteers,
+  addEmptyVolunteer,
   resetSearch,
   sort,
   updatePage,
   updateLimit,
-})(Users);
+})(Volunteers);
