@@ -47,9 +47,10 @@ export const getVolunteers = (
   page = 1,
   limit = 10
 ) => async (dispatch) => {
-  //TODO factor out params into single options object.
+  //TODO find way of checking local storage to pass area around
+  //because when it refreshes we need the area
   try {
-    console.log("areacode from component", areaCode);
+    console.log("areacode from component", areaCode, localStorage);
     dispatch({ type: LOAD });
     dispatch({ type: SEARCH, payload: search });
     dispatch(countVolunteers(areaCode, search));
@@ -187,8 +188,8 @@ export const sort = (name, sortColumn) => (dispatch) => {
   dispatch({ type: SET_SORT_COLUMN, payload: name });
 };
 
-export const resetSearch = (limit) => (dispatch) => {
-  dispatch(getVolunteers("", 1, limit));
+export const resetSearch = (areacode, limit) => (dispatch) => {
+  dispatch(getVolunteers(areacode, "", 1, limit));
   dispatch({ type: RESET_SEARCH });
 };
 

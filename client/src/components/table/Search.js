@@ -5,7 +5,7 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 export const Search = ({
   searchFn,
-  resetFn,
+  searchArgs,
   view: { search, page, limit },
 }) => {
   const [searchInput, setsearchInput] = useState({
@@ -22,7 +22,11 @@ export const Search = ({
 
   const onSubmit = (e) => {
     e.preventDefault();
-    searchFn(searchInput.term, page, limit);
+    if (searchArgs === undefined) {
+      return searchFn(searchInput.term, page, limit);
+    }
+    console.log(searchArgs, "sar");
+    return searchFn(searchArgs, searchInput.term, page, limit);
   };
 
   const onEnter = (e) => {
@@ -36,8 +40,12 @@ export const Search = ({
       ...searchInput,
       term: "",
     });
-    console.log("resetting");
-    searchFn("", 1, limit);
+
+    if (searchArgs === undefined) {
+      return searchFn("", 1, limit);
+    }
+    console.log(searchArgs, "sar");
+    return searchFn(searchArgs, "", 1, limit);
   };
 
   return (

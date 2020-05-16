@@ -35,7 +35,7 @@ const Volunteers = ({
   }, []);
   return (
     <Fragment>
-      <Search searchFn={getVolunteers} resetFn={resetSearch} />
+      <Search searchFn={getVolunteers} searchArgs={area.code} />
       {loading ? (
         <Spinner />
       ) : (
