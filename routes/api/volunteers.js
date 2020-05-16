@@ -9,54 +9,57 @@ const auth = require("../../middleware/auth");
 const VolunteerService = require("../../services/VolunteerService");
 const volunteerService = new VolunteerService();
 //models
-const Volunteer = require("../../models/Volunteer");
+const User = require("../../models/User");
 
-router.get("/count/:areaId", auth, async (req, res) => {
+router.get("/count/:areacode", auth, async (req, res) => {
   try {
-    const volunteerCount = await volunteerService.countVolunteers(
-      req.params.areaId
-    );
+    console.log("area count", req.params);
+    const volunteerCount = await volunteerService.countVolunteers(req.params);
     res.json(volunteerCount);
   } catch (err) {
-    console.error(err.messge);
-    res.status(500).send("Server Error");
+    console.error(err.Message);
+    res.status(500).send("Server Error", err.Message);
   }
 });
 
-router.get("/count/:areaId/:term", auth, async (req, res) => {
+router.get("/count/:areacode/:term", auth, async (req, res) => {
+  console.log("crount with term", req.params);
   try {
-    const volunteerCount = await volunteerService.countVolunteers(
-      req.params.areaId,
-      req.params.term
-    );
+    const volunteerCount = await volunteerService.countVolunteers(req.params);
     res.json(volunteerCount);
   } catch (err) {
-    res.status(500).send("Server Error");
+    console.log("error getting areas", err.Message);
+    res.status(500).send("Server Error", err.Message);
   }
 });
 
 //@route    GET api/volunteers/
 //@desc     Get volunteer management page
 //@access   Private - eventually only global admin has option
-router.get("/:areaId/:page/:limit", auth, async (req, res) => {
+router.get("/:areacode/:page/:limit", auth, async (req, res) => {
+  console.log("gppd mrning yall");
+
   try {
     let volunteers = await volunteerService.getVolunteers(req.params);
+    console.log("getting vols", volunteers);
     res.json(volunteers);
   } catch (err) {
-    res.status(500).send("Server Error", err);
+    console.log(err.Message);
+    res.status(500).send("Server Error", err.Message);
   }
 });
 
 //@route    GET api/volunteer/search
 //@desc     Filter volunteer
 //@access   Private - eventually only global admin has option
-router.get("/:areaId/:term/:page/:limit", auth, async (req, res) => {
+router.get("/:areacode/:term/:page/:limit", auth, async (req, res) => {
+  console.log("search me!!");
   try {
     let volunteers = await volunteerService.getVolunteers(req.params);
 
     res.json(volunteers);
   } catch (err) {
-    res.status(500).send("Server Error", err);
+    res.status(500).send("Server Error", err.Message);
   }
 });
 

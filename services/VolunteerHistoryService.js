@@ -1,4 +1,4 @@
-const VolunteerHistory = require("../models/VolunteerHistory");
+const VolunteerHistory = require("../models/UserHistory");
 const User = require("../models/User");
 
 //TODO this is bollocks fix

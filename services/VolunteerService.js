@@ -13,44 +13,55 @@ const volunteerHistoryService = new VolunteerHistoryService();
 class VolunteerService {
   constructor() {}
   /*Count Volunteer  */
-  async countVolunteers(areaId, term = null) {
-    let pcodes = areaService.getAreaByID(areaId).postcodes;
-    if (term === null) {
+  async countVolunteers(params) {
+    try {
+      let thisarea = await areaService.getAreaByCode(params.areacode);
+      let pcodes = thisarea.postcodes;
+      if (params.term === null) {
+        //to do make sure you're getting the right roless
+        const volunteerCount = await User.countDocuments({
+          postcode: { $in: pcodes },
+        });
+        return volunteerCount;
+      }
+      const regTerm = new RegExp(params.term, "i");
       const volunteerCount = await User.countDocuments({
-        postcode: { $in: pcodes },
+        $and: [
+          {
+            postcode: { $in: pcodes },
+            $or: [{ code: regTerm }, { name: regTerm }],
+          },
+        ],
       });
       return volunteerCount;
+    } catch (error) {
+      console.log("error", error);
     }
-    const regTerm = new RegExp(term, "i");
-    const volunteerCount = await User.countDocuments({
-      $and: [
-        {
-          postcode: { $in: pcodes },
-          $or: [{ code: regTerm }, { name: regTerm }],
-        },
-      ],
-    });
-    return volunteerCount;
   }
 
   /*Get Volunteer */
   async getVolunteers(params) {
-    if (params.term === undefined) {
-      let pcodes = areaService.getAreaByID(params.areaId).postcodes;
-      let volunteer = await User.find({ postcode: { $in: pcodes } })
+    try {
+      if (params.term === undefined) {
+        let thisArea = await areaService.getAreaByCode(params.areacode);
+        let pcodes = thisArea.postcodes;
+        let volunteer = await User.find({ postcode: { $in: pcodes } })
+          .skip(Number(params.page - 1) * Number(params.limit))
+          .limit(Number(params.limit));
+        return volunteer;
+      }
+      let term = new RegExp(params.term, "i");
+      let volunteers = await User.find({
+        $and: [
+          { postcode: { $in: pcodes }, $or: [{ code: term }, { name: term }] },
+        ],
+      })
         .skip(Number(params.page - 1) * Number(params.limit))
         .limit(Number(params.limit));
-      return volunteer;
+      return volunteers;
+    } catch (error) {
+      console.log(error.Message);
     }
-    let term = new RegExp(params.term, "i");
-    let volunteers = await User.find({
-      $and: [
-        { postcode: { $in: pcodes }, $or: [{ code: term }, { name: term }] },
-      ],
-    })
-      .skip(Number(params.page - 1) * Number(params.limit))
-      .limit(Number(params.limit));
-    return volunteers;
   }
 
   /* Post Volunteer  */

@@ -14,7 +14,7 @@ router.get("/count", auth, async (req, res) => {
     console.log(householdHistoryCount);
     res.json(householdHistoryCount);
   } catch (err) {
-    console.error(err.messge);
+    console.error(err.Message);
     res.status(500).send("Server Error");
   }
 });

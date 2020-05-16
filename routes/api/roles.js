@@ -13,7 +13,7 @@ router.get("/count", auth, async (req, res) => {
     const roleCount = await Roles.countDocuments();
     res.json(roleCount);
   } catch (err) {
-    console.error(err.messge);
+    console.error(err.Message);
 
     res.status(500).send("Server Error");
   }
@@ -25,7 +25,7 @@ router.get("/count/:term", auth, async (req, res) => {
     const roleCount = await Roles.countDocuments({ name: sanitisedName });
     res.json(roleCount);
   } catch (err) {
-    console.error(err.messge);
+    console.error(err.Message);
     res.status(500).send("Server Error");
   }
 });
@@ -41,7 +41,7 @@ router.get("/:page/:limit", auth, async (req, res) => {
       .sort({ name: 1 });
     res.json(roles);
   } catch (err) {
-    console.error(err.messge);
+    console.error(err.Message);
     res.status(500).send("Server Error");
   }
 });
@@ -61,7 +61,7 @@ router.get("/:term/:page/:limit", auth, async (req, res) => {
     console.log(roles);
     res.json(roles);
   } catch (err) {
-    console.error(err.messge);
+    console.error(err.Message);
     res.status(500).send("Server Error");
   }
 });

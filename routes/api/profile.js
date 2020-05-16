@@ -19,7 +19,7 @@ router.get("/me", auth, async (req, res) => {
     }
     res.json(profile);
   } catch (err) {
-    console.error(err.messge);
+    console.error(err.Message);
     res.status(500).send("Server Error");
   }
 });
@@ -66,7 +66,7 @@ router.post(
       await profile.save();
       res.json(profile);
     } catch (err) {
-      console.error(err.messge);
+      console.error(err.Message);
       res.status(500).send("Server error");
     }
   }
@@ -80,7 +80,7 @@ router.get("/", async (req, res) => {
     const profiles = await Profile.find().populate("user", ["name", "avatar"]);
     res.json(profiles);
   } catch (err) {
-    console.error(err.messge);
+    console.error(err.Message);
     res.status(500).send("Server Error");
   }
 });
@@ -98,7 +98,7 @@ router.get("/user/:user_id", async (req, res) => {
 
     res.json(profile);
   } catch (err) {
-    console.error(err.messge);
+    console.error(err.Message);
     res.status(500).send("Server Error");
   }
 });
@@ -116,7 +116,7 @@ router.delete("/", auth, async (req, res) => {
 
     res.json({ msg: "User Removed" });
   } catch (err) {
-    console.error(err.messge);
+    console.error(err.Message);
     res.status(500).send("Server Error");
   }
 });

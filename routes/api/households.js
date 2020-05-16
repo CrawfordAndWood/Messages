@@ -17,7 +17,7 @@ router.get("/count", auth, async (req, res) => {
     const householdCount = await householdService.countHouseholds();
     res.json(householdCount);
   } catch (err) {
-    console.error(err.messge);
+    console.error(err.Message);
     res.status(500).send("Server Error");
   }
 });

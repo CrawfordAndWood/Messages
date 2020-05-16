@@ -16,7 +16,6 @@ router.get("/count", auth, async (req, res) => {
     const areaCount = await areaService.countAreas();
     res.json(areaCount);
   } catch (err) {
-    console.error(err.messge);
     res.status(500).send("Server Error");
   }
 });

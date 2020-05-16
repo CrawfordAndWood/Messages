@@ -27,7 +27,7 @@ import {
 
 export const countVolunteers = (areaCode, search = "") => async (dispatch) => {
   try {
-    console.log("countin vol");
+    console.log("counting volunteer code:", areaCode);
     const res = await axios.get(`api/volunteers/count/${areaCode}/${search}`);
     dispatch({ type: ITEM_COUNT, payload: res.data });
   } catch (error) {
@@ -49,10 +49,10 @@ export const getVolunteers = (
 ) => async (dispatch) => {
   //TODO factor out params into single options object.
   try {
-    console.log("getting colly");
+    console.log("areacode from component", areaCode);
     dispatch({ type: LOAD });
     dispatch({ type: SEARCH, payload: search });
-    dispatch(countVolunteers(search));
+    dispatch(countVolunteers(areaCode, search));
     const res = await axios.get(
       `/api/volunteers/${areaCode}/${search}/${page}/${limit}`
     );
@@ -61,7 +61,7 @@ export const getVolunteers = (
     dispatch({ type: UPDATE_PAGE, payload: page });
     dispatch({ type: GET_DATA });
   } catch (error) {
-    console.log(error);
+    console.log(error.Message);
     dispatch({
       type: VIEW_ERROR,
       payload: {

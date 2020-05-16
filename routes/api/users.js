@@ -20,7 +20,7 @@ router.get("/user-management/count", auth, async (req, res) => {
     const userCount = await userService.countUsers();
     res.json(userCount);
   } catch (err) {
-    console.error(err.messge);
+    console.error(err.Message);
     res.status(500).send("Server Error");
   }
 });

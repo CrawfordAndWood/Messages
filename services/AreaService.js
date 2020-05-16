@@ -22,7 +22,14 @@ class AreaService {
 
   /*Get Area By Id*/
   async getAreaByID(areaId) {
-    const area = Area.findOne({ _id: areaId });
+    const area = await Area.findOne({ _id: areaId });
+    return area;
+  }
+
+  /*Get Area By Code*/
+  async getAreaByCode(areaCode) {
+    const area = await Area.findOne({ code: areaCode });
+    console.log("getting area by code", area, areaCode);
     return area;
   }
 
