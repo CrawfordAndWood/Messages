@@ -49,11 +49,15 @@ export const getAdminAreas = (user) => async (dispatch) => {
       },
     };
     const res = await axios.post(`/api/areas/admin`, user, config);
-    console.log("areas for admin", user, res);
-    dispatch({ type: GET_AREA, payload: res.data });
+    dispatch({ type: GET_AREAS, payload: res.data });
+    dispatch({ type: GET_AREA, payload: res.data[0] });
   } catch (error) {
     console.log("err getting admin area", error.message);
   }
+};
+
+export const updateArea = (rowData) => async (dispatch) => {
+  dispatch({ type: GET_AREA, payload: rowData });
 };
 
 export const getAreas = (search = "", page = 1, limit = 10) => async (

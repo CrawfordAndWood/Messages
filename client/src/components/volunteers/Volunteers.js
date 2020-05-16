@@ -31,6 +31,7 @@ const Volunteers = ({
 }) => {
   useEffect(() => {
     getVolunteers(area.code);
+    console.log("current area", area);
   }, []);
   return (
     <Fragment>

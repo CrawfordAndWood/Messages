@@ -15,7 +15,7 @@ import "./dashboard.scss";
 
 const GlobalDashboardActions = () => {
   return (
-    <div className="action-list">
+    <div className="dashboard action-list">
       <Link to="/roles">
         <div
           className="action-item"

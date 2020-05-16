@@ -12,9 +12,8 @@ const Dashboard = ({ auth: { user, loading } }) => {
     <Spinner />
   ) : (
     <Fragment>
-      <h2>Dashboard</h2>
       <p>Welcome {user && user.name}, choose an action from below.</p>
-      <div className="dashboard">
+      <div className="dashboard-actions">
         {" "}
         {user.role.code === "GLA" ? <GlobalAdminDashboard /> : ""}
         {user.role.code === "AA" ? <AreaAdminDashboard /> : ""}

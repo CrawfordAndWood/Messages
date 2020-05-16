@@ -1,35 +1,56 @@
-import React, { Fragment, useEffect } from "react";
-import { getAdminAreas } from "../../actions/area";
+import React, { Fragment, useEffect, useState } from "react";
+import { getAdminAreas, updateArea } from "../../actions/area";
 import { connect } from "react-redux";
 import Spinner from "../layout/Spinner";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faUser,
-  faUserFriends,
-  faAddressCard,
-  faTasks,
-  faHistory,
-  faHome,
-  faMap,
-} from "@fortawesome/free-solid-svg-icons";
+import { faUser, faUserFriends } from "@fortawesome/free-solid-svg-icons";
 import ReactTooltip from "react-tooltip";
 import "./dashboard.scss";
 
-const AreaAdminDashboardActions = (
-  { getAdminAreas, auth: { user, loading } },
-  area
-) => {
+const AreaAdminDashboardActions = ({
+  updateArea,
+  getAdminAreas,
+  auth: { user, loading },
+  area: { area, areas },
+}) => {
   useEffect(() => {
-    getAdminAreas(user);
+    if (areas !== null && areas.length < 1) getAdminAreas(user);
   }, []);
+
+  const onChange = (e) => {
+    let matchingArea = areas.filter((a) => a._id === e.target.value);
+    updateArea(matchingArea[0]);
+  };
+
   return (
     <Fragment>
       {loading ? (
         <Spinner />
       ) : (
         <Fragment>
-          <div className="action-list">
+          {area !== null ? (
+            <select
+              onChange={(e) => onChange(e)}
+              name="areaId"
+              defaultValue={area !== null ? area._id : ""}
+              selected={area !== null ? area._id : ""}
+            >
+              {areas.map((a) => (
+                <option
+                  className="role-asignment-option"
+                  key={a._id}
+                  value={a._id}
+                >
+                  {a.name}
+                </option>
+              ))}
+            </select>
+          ) : (
+            ""
+          )}
+          <p></p>
+          <div className="dashboard action-list">
             <Link to="/volunteers">
               <div
                 className="action-item"
@@ -70,6 +91,6 @@ const mapStateToProps = (state) => ({
   area: state.area,
 });
 
-export default connect(mapStateToProps, { getAdminAreas })(
+export default connect(mapStateToProps, { getAdminAreas, updateArea })(
   AreaAdminDashboardActions
 );

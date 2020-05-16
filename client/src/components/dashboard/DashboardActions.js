@@ -7,7 +7,7 @@ import "./dashboard.scss";
 
 const DashboardActions = () => {
   return (
-    <div className="action-list">
+    <div className="dashboard action-list">
       <div>
         <Link to="/edit-user">
           <div
